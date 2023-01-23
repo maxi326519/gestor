@@ -1,0 +1,12 @@
+{
+  "CLI_CODIGO": 0,
+  "CLI_DIRECCION": "bolivar y sucre",
+  "CLI_EMAIL": "mma@gmail.com",
+  "CLI_ESTADO": 1,
+  "CLI_IDENTIFICACION": "3333333333001",
+  "CLI_NOMBRE": "MANUEL MEDRANO",
+  "CLI_TELEFONO": "999999999",
+  "CLI_TIPOIDE": "04",
+  "LOC_CODIGO": 0,
+  "USU_KEY": "clave_Authentification"
+}

@@ -1,0 +1,39 @@
+.sideBar{
+    display: flex;
+    flex-direction: column;
+    padding: 10px 30px;
+    border-radius: 0px 20px 20px 0px;
+    background-color: var(--primary-color);
+}
+
+.sideBar a{
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+    padding: 5px;
+    text-decoration: none;
+    color: #ccc;
+    border-radius: 10px;
+}
+
+.sideBar a:hover{
+    background-color: #fff1;
+    outline: 1px solid white;
+}
+
+.sideBar__title{
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: white;
+}
+
+.sideBar__icon{
+    width: 20px;
+    height: 20px;
+    filter: invert(100);
+}
+
+.sideBar__text{
+    margin-left: 15px;
+    font-size: 18px;
+}
