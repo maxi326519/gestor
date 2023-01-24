@@ -1,0 +1,21 @@
+.userList{
+    flex-grow: 1;
+    margin-right: 10px;
+    padding: 20px;
+    border-radius: 20px;
+    background-color: #333;
+    color: white;
+}
+
+.userList__searchBar{
+    display: flex;
+    margin: 20px 0px;
+}
+
+.userList__searchBar input{
+    max-width: 500px;
+}
+
+.userList__searchBar button{
+    margin-left: 20px;
+}

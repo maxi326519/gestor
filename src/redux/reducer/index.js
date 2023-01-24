@@ -1,30 +1,12 @@
-import {
-  ADD_USER,
-  ADD_USER_ERROR,
-  ADD_PRODUCT,
-  GET_USER,
-  GET_USER_ERROR,
-  GET_PRODUCT,
-} from "../actions";
+import { ADD_CLIENT, ADD_PRODUCT, GET_CLIENTS, GET_PRODUCTS } from "../actions";
 
 const initialState = {
-  users: {
-    data: [
-      {
-        name: "Maximiliano Miguel Garcia",
-        userName: "maxi.326",
-        email: "maxi.326519@gmail.com",
-        adress: "Martin Miguens 7651",
-        phone: "1139062471",
-      },
-      {
-        name: "Maximiliano Miguel Garcia",
-        userName: "maxi.326",
-        email: "maxi.326519@gmail.com",
-        adress: "Martin Miguens 7651",
-        phone: "1139062471",
-      },
-    ],
+  clients: {
+    data: [],
+    error: {},
+  },
+  products: {
+    data: [],
     error: {},
   },
 };
@@ -32,15 +14,68 @@ const initialState = {
 export const Reducer = (state = initialState, action) => {
   switch (action.type) {
     // Agregar cada caso
-    case ADD_USER:
+    case ADD_CLIENT:
       return {
         ...state,
-        users: {
-          data: [...state.users.data, ...action.payload],
+        clients: {
+          data: [...state.clients.data, action.payload],
           error: {},
         },
       };
 
+    case GET_CLIENTS:
+      return {
+        ...state,
+        clients: {
+          data: [
+            ...state.clients.data,
+            ...action.payload.map((u) => {
+              return {
+                name: u.doc.data.value.mapValue.fields.name.stringValue,
+                email: u.doc.data.value.mapValue.fields.email.stringValue,
+                address: u.doc.data.value.mapValue.fields.address.stringValue,
+                phone: u.doc.data.value.mapValue.fields.phone.stringValue,
+              };
+            }),
+          ],
+          error: {},
+        },
+      };
+
+    case ADD_PRODUCT:
+      return {
+        ...state,
+        products: {
+          data: [...state.products.data, action.payload],
+          error: {},
+        },
+      };
+
+    case GET_PRODUCTS:
+      return {
+        ...state,
+        products: {
+          data: [
+            ...state.products.data,
+            ...action.payload.map((u) => {
+              return {
+                bars: u.doc.data.value.mapValue.fields.bars.stringValue,
+                code: u.doc.data.value.mapValue.fields.code.stringValue,
+                state: u.doc.data.value.mapValue.fields.state.stringValue,
+                ice: u.doc.data.value.mapValue.fields.ice.stringValue,
+                taxes: u.doc.data.value.mapValue.fields.taxes.stringValue,
+                pvp: u.doc.data.value.mapValue.fields.pvp.stringValue,
+                type: u.doc.data.value.mapValue.fields.type.stringValue,
+                locCode: u.doc.data.value.mapValue.fields.locCode.stringValue,
+                amount: u.doc.data.value.mapValue.fields.amount.stringValue,
+                description:
+                  u.doc.data.value.mapValue.fields.description.stringValue,
+              };
+            }),
+          ],
+          error: {},
+        },
+      };
     default:
       return state;
   }

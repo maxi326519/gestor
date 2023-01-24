@@ -1,8 +1,11 @@
-.userList{
-    flex-grow: 1;
-    margin-right: 10px;
+.clientForm{
+    margin-left: 10px;
     padding: 20px;
     border-radius: 20px;
     background-color: #333;
     color: white;
+}
+
+.clientForm input{
+    min-width: 400px;
 }

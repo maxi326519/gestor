@@ -1,32 +1,31 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addUser } from '../../../../redux/actions';
+import { addClient } from '../../../../redux/actions';
 
-import './UserForm.css'
+import './ClientForm.css'
 
-export default function UserForm(){
+export default function ClientForm(){
 
     const dispatch = useDispatch();
-    const [user, setUser] = useState({
+    const [client, setclient] = useState({
         name: "",
-        userName: "",
+        clientName: "",
         email: "",
-        adress: "",
+        address: "",
         phone: ""
     });
 
     function handleChange(e){
-        console.log(user);
-        setUser({ ...user, [e.target.name]: e.target.value});
+        setclient({ ...client, [e.target.name]: e.target.value});
     }
 
     function handleSubmit(e){
         e.preventDefault();
-        dispatch(addUser(user));
+        dispatch(addClient(client));
     }
 
     return(
-        <form className="userForm" onSubmit={handleSubmit}>
+        <form className="clientForm" onSubmit={handleSubmit}>
             {/* Name */}
             <div className="mb-3">
                 <label className="form-label">Nombre</label>
@@ -36,7 +35,7 @@ export default function UserForm(){
             {/* Usuario */}
             <div className="mb-3">
                 <label className="form-label">Usuario</label>
-                <input className="form-control" name="userName" onChange={handleChange}/>
+                <input className="form-control" name="clientName" onChange={handleChange}/>
             </div>
 
             {/* Email*/}
