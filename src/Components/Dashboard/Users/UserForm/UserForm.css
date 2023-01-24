@@ -2,5 +2,10 @@
     margin-left: 10px;
     padding: 20px;
     border-radius: 20px;
-    background-color: white;
+    background-color: #333;
+    color: white;
+}
+
+.userForm input{
+    min-width: 400px;
 }

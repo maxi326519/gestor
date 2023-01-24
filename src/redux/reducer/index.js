@@ -4,12 +4,27 @@ import {
   ADD_PRODUCT,
   GET_USER,
   GET_USER_ERROR,
-  GET_PRODUCT
+  GET_PRODUCT,
 } from "../actions";
 
 const initialState = {
   users: {
-    data: [],
+    data: [
+      {
+        name: "Maximiliano Miguel Garcia",
+        userName: "maxi.326",
+        email: "maxi.326519@gmail.com",
+        adress: "Martin Miguens 7651",
+        phone: "1139062471",
+      },
+      {
+        name: "Maximiliano Miguel Garcia",
+        userName: "maxi.326",
+        email: "maxi.326519@gmail.com",
+        adress: "Martin Miguens 7651",
+        phone: "1139062471",
+      },
+    ],
     error: {},
   },
 };
