@@ -23,7 +23,7 @@ function App() {
   useEffect(()=>{
     const userData = JSON.parse(localStorage.getItem("user"));
     if (userData) {
-      dispatch(login(userData))
+      dispatch(login(userData)).then(()=> redirect('./dahsboard/clients'))
     } else {
       redirect("/login");
     }
