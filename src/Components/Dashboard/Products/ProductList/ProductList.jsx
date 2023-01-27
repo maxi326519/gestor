@@ -45,10 +45,11 @@ export default function ProductList() {
   }
 
   return (
-    <div className="userList">
+    <div className="productList">
       <h3>Listado de Productos</h3>
-      <div className="userList__searchBar">
+      <div className="productList__searchBar">
         <input className="form-control" placeholder="Buscar producto" onChange={handleChange}/>
+        <button className='btn btn-success'>Exportar</button>
       </div>
       <DataGrid columns={columns} rows={filterRows ? filterRows : rows}/>
     </div>

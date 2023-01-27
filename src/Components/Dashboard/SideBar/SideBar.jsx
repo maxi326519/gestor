@@ -19,7 +19,12 @@ export default function SideBar() {
   return (
     <div className="sideBar">
       <h1 className="sideBar__title">Dashboard</h1>
+      <button>Perfil</button>
       <button onClick={handleLogOut}>Cerrar sesion</button>
+      <Link to="/dashboard">
+        <img className="sideBar__icon" src={null} alt="users" />
+        <span className="sideBar__text">Home</span>
+      </Link>
       <Link to="/dashboard/products">
         <img className="sideBar__icon" src={products} alt="users" />
         <span className="sideBar__text">Productos</span>

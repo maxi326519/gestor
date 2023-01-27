@@ -42,10 +42,11 @@ export default function ClientList() {
   }
 
   return (
-    <div className="userList">
+    <div className="clientList">
       <h3>Listado de clientes</h3>
-      <div className="userList__searchBar">
+      <div className="clientList__searchBar">
         <input className="form-control" placeholder="Buscar cliente" onChange={handleChange}/>
+        <button className='btn btn-success'>Exportar</button>
       </div>
       <DataGrid columns={columns} rows={filterRows ? filterRows : rows}/>
     </div>
