@@ -1,0 +1,11 @@
+.invoicesForm{
+    margin-left: 10px;
+    padding: 20px;
+    border-radius: 20px;
+    background-color: #333;
+    color: white;
+}
+
+.invoicesForm input{
+    min-width: 400px;
+}

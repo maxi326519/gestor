@@ -1,175 +1,130 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { signin } from "../../redux/actions";
+import { Link, useNavigate } from "react-router-dom";
 import "./Signin.css";
-const INITIAL_STATE = {
-  name: "",
-  userName: "",
-  email: "",
-  password: "",
-  confirm_password: "",
-  phone: "",
-  wallet: 0,
-  isActive: true,
-  isAdmin: false,
-};
 
-const CreateUserForm = () => {
-  const [register, setRegister] = useState(INITIAL_STATE);
-  const [validateRegister, setValidateRegister] = useState({
-    name: true,
-    email: true,
-    password: true,
-    equalsPassword: true,
+export default function Signin() {
+  const dispatch = useDispatch();
+  const redirect = useNavigate();
+  const [user, setUser] = useState({
+    name: "",
+    userName: "",
+    email: "",
+    password: "",
+    confirm_password: "",
   });
 
-  const handleChange = (evt) => {};
-  const handleSubmitRegister = async (evt) => {};
+  const [error, setError] = useState({
+    name: null,
+    userName: null,
+    email: null,
+    password: null,
+    confirmPassword: null,  
+  });
+
+  function handleChange(e){
+    setUser({ ...user, [e.target.name]: e.target.value });
+  };
+
+  function handleSubmit(e){
+    e.preventDefault();
+    dispatch(signin({
+      name: user.name,
+      userName: user.userName,
+      email: user.email,
+      password: user.password,
+    }))
+    .then(() => redirect('/dashboard/clients'))
+    .catch((e) => setError({ ...error, email: e.message.split(':')[1]}))
+  };
 
   return (
-    <div className="container-register">
-      <div className="container-form-body">
-        <h3 className="title-form">Registrate</h3>
-        <form onSubmit={handleSubmitRegister} className="form-body">
-          {/* NOMBRE */}
-          <div className="form-floating mb-3 ">
-            <input
-              type="text"
-              name="name"
-              className={`form-control ${
-                validateRegister.name ? "" : "is-invalid"
-              }`}
-              id={
-                validateRegister.name ? "floatingInputInvalid" : "floatingInput"
-              }
-              placeholder="name"
-              onChange={handleChange}
-            />
-            <label for="floatingInput">Nombre</label>
-          </div>
-          {validateRegister.name ? null : (
-            <span className="span-form">
-              El nombre no puede contener numeros y menos de 5 letras
-            </span>
-          )}
-
-          {/* USUARIO */}
-          <div className="form-floating mb-3">
-            <input
-              type="text"
-              name="userName"
-              className="form-control"
-              id="floatingInput"
-              placeholder="name"
-              onChange={handleChange}
-            />
-            <label for="floatingInput">Nombre de usuario</label>
-          </div>
-
-          {/* EMAIL */}
-          <div className="form-floating mb-3">
-            <input
-              type="email"
-              name="email"
-              className={`form-control ${
-                validateRegister.email ? "" : "is-invalid"
-              }`}
-              id={
-                validateRegister.email
-                  ? "floatingInputInvalid"
-                  : "floatingInput"
-              }
-              placeholder="name@example.com"
-              onChange={handleChange}
-            />
-            <label for="floatingInput">Email address</label>
-          </div>
-          {validateRegister.email ? null : (
-            <span className="span-form">
-              El correo electronico no es valido
-            </span>
-          )}
-
-          {/* CONTRASEÑA */}
-          <div className="form-floating mb-3">
-            <input
-              type="password"
-              name="password"
-              className="form-control"
-              id="floatingInput"
-              placeholder="Contraseña"
-              value={register.password}
-              onChange={handleChange}
-            />
-            <label for="floatingInput">Contraseña</label>
-          </div>
-
-          {/* CONFIRMAR CONTRASEÑA */}
-          <div className="form-floating mb-3">
-            <input
-              type="password"
-              name="confirm_password"
-              placeholder="Confirmar Contraseña"
-              className={`form-control ${
-                validateRegister.password ? "" : "is-invalid"
-              }`}
-              id={
-                validateRegister.password
-                  ? "floatingInputInvalid"
-                  : "floatingInput"
-              }
-              value={register.confirm_password}
-              onChange={handleChange}
-            />
-            <label for="floatingInput">Confirmar contraseña</label>
-          </div>
-          {validateRegister.password ? null : (
-            <span className="span-form">
-              La contraseña tiene que contener minimo 8 caracteres
-            </span>
-          )}
-          {register.password !== register.confirm_password &&
-          register.password.length >= 8 ? (
-            <span className="span-form">Las contraseñas no coinciden</span>
-          ) : null}
-
-          {/* TELEFONO */}
-          <div className="form-floating mb-3">
-            <input
-              type="text"
-              name="phone"
-              placeholder="Telefono"
-              className="form-control"
-              id="floatingInput"
-              value={register.phone}
-              onChange={handleChange}
-            />
-            <label for="floatingInput">Telefono</label>
-          </div>
-
-          {/* BOTON DE REGISTRO */}
-          <div className="button-check-register">
-            <Link to="/dashboard" className="btn btn-primary">Registrarse</Link>
-          </div>
-
-          {/* Auth0 de 3ros */}
-          <button className="container-google">
-            <img
-              src="https://rotulosmatesanz.com/wp-content/uploads/2017/09/2000px-Google_G_Logo.svg_.png"
-              alt="google-logo"
-              className="google-logo"
-            />
-            Iniciar con Google
-          </button>
-        </form>
-        <div className="register-link">
-          <p className="text-form-register">¿Ya tienes cuenta?</p>
-          <Link to="/login" className="btn btn-outline-primary">
-            Iniciar sesion
-          </Link>
+    <div className="sesion">
+      <form onSubmit={handleSubmit} className="to-left">
+        <h2>Registrate</h2>
+        {/* NOMBRE */}
+        <div className="form-floating mb-3 ">
+          <input
+            type="text"
+            name="name"
+            className={`form-control ${!error.name ? "" : "is-invalid"}`}
+            id={error.name ? "floatingInputInvalid" : "floatingInput"}
+            placeholder="name"
+            onChange={handleChange}
+          />
+          <label htmlFor="floatingInput">Nombre</label>
+          {!error.name ? null : <small>{error.name}</small>}
         </div>
-      </div>
+
+        {/* USUARIO */}
+        <div className="form-floating mb-3">
+          <input
+            type="text"
+            name="userName"
+            className={`form-control ${!error.userName ? "" : "is-invalid"}`}
+            id={error.userName ? "floatingInputInvalid" : "floatingInput"}
+            placeholder="name"
+            onChange={handleChange}
+          />
+          <label htmlFor="floatingInput">Nombre de usuario</label>
+          {!error.userName ? null : <small>{error.userName}</small>}
+        </div>
+
+        {/* EMAIL */}
+        <div className="form-floating mb-3">
+          <input
+            type="email"
+            name="email"
+            className={`form-control ${!error.email ? "" : "is-invalid"}`}
+            id={error.email ? "floatingInputInvalid" : "floatingInput"}
+            placeholder="name@example.com"
+            onChange={handleChange}
+          />
+          <label htmlFor="floatingInput">Email address</label>
+          {!error.email ? null : <small>{error.email}</small>}
+        </div>
+
+        {/* CONTRASEÑA */}
+        <div className="form-floating mb-3">
+          <input
+            type="password"
+            name="password"
+            className={`form-control ${!error.password ? "" : "is-invalid"}`}
+            id={error.password ? "floatingInputInvalid" : "floatingInput"}
+            placeholder="Contraseña"
+            onChange={handleChange}
+          />
+          <label htmlFor="floatingInput">Contraseña</label>
+          {!error.password ? null : <small>{error.password}</small>}
+        </div>
+
+        {/* CONFIRMAR CONTRASEÑA */}
+        <div className="form-floating mb-3">
+          <input
+            type="password"
+            name="confirm_password"
+            placeholder="Confirmar Contraseña"
+            className={`form-control ${
+              !error.confirmPassword ? "" : "is-invalid"
+            }`}
+            id={
+              error.confirmPassword ? "floatingInputInvalid" : "floatingInput"
+            }
+            onChange={handleChange}
+          />
+          <label htmlFor="floatingInput">Confirmar contraseña</label>
+          {!error.confirmPassword ? null : <small>{error.confirmPassword}</small>}
+        </div>
+
+        <button className="btn btn-primary" type="submit">Registrarse</button>
+
+        <p>¿Ya tienes cuenta?</p>
+
+        <Link to="/login" className="btn btn-outline-primary">
+          Iniciar sesion
+        </Link>
+      </form>
     </div>
   );
-};
-
-export default CreateUserForm;
+}

@@ -1,14 +1,25 @@
-import { Link } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import { logOut } from '../../../redux/actions';
+import { Link, useNavigate } from "react-router-dom";
 
-import users from "../../../assets/users.svg";
-import products from "../../../assets/products.svg";
-import invoices from "../../../assets/invoices.svg";
+import users from "../../../assets/svg/users.svg";
+import products from "../../../assets/svg/products.svg";
+import invoices from "../../../assets/svg/invoices.svg";
 import "./SideBar.css";
 
 export default function SideBar() {
+  const dispatch = useDispatch();
+  const redirect = useNavigate();
+
+  function handleLogOut(){
+    dispatch(logOut());
+    redirect('/login');
+  }
+
   return (
     <div className="sideBar">
       <h1 className="sideBar__title">Dashboard</h1>
+      <button onClick={handleLogOut}>Cerrar sesion</button>
       <Link to="/dashboard/products">
         <img className="sideBar__icon" src={products} alt="users" />
         <span className="sideBar__text">Productos</span>

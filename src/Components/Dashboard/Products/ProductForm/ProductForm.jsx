@@ -1,42 +1,45 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { addProduct } from '../../../../redux/actions';
 
 import './ProductForm.css'
 
 export default function ProductForm(){
-
+    const userId = useSelector((state) => state.user.id);
     const dispatch = useDispatch();
     const [product, setProduct] = useState({
-        bars: "",
-        code: "",
-        state: "",
-        ice: "",
+        name: "",
+        price: "",
         taxes: "",
-        pvp: "",
         type: "",
-        locCode: "",
-        amount: "",
+        code: "",
+        stock: "",
+        state: "",
         description: ""
     });
 
     function handleChange(e){
-        console.log(product);
         setProduct({ ...product, [e.target.name]: e.target.value});
     }
 
     function handleSubmit(e){
         e.preventDefault();
-        dispatch(addProduct(product));
+        dispatch(addProduct(userId, product));
     }
 
     return(
         <form className="userForm" onSubmit={handleSubmit}>
 
-            {/* Bars */}
+            {/* Name */}
             <div className="mb-3">
-                <label className="form-label">Barras</label>
-                <input className="form-control" name="bars" onChange={handleChange}/>
+                <label className="form-label">Nombre</label>
+                <input className="form-control" name="name" onChange={handleChange}/>
+            </div>
+
+            {/* Price */}
+            <div className="mb-3">
+                <label className="form-label">Precio</label>
+                <input className="form-control" name="price" onChange={handleChange}/>
             </div>
 
             {/* Code */}
@@ -51,22 +54,10 @@ export default function ProductForm(){
                 <input className="form-control" name="state" onChange={handleChange}/>
             </div>
 
-            {/* ICE */}
-            <div className="mb-3">
-                <label className="form-label">ICE</label>
-                <input className="form-control" name="ice" onChange={handleChange}/>
-            </div>
-
             {/* Taxes*/}
             <div className="mb-3">
                 <label className="form-label">Impuesto</label>
                 <input className="form-control" name="taxes" onChange={handleChange}/>
-            </div>
-            
-            {/* PVP*/}
-            <div className="mb-3">
-                <label className="form-label">PVP</label>
-                <input className="form-control" name="pvp" onChange={handleChange}/>
             </div>
                         
             {/* Type*/}
@@ -74,17 +65,11 @@ export default function ProductForm(){
                 <label className="form-label">Tipo</label>
                 <input className="form-control" name="type" onChange={handleChange}/>
             </div>
-
-            {/* Loc-Code*/}
-            <div className="mb-3">
-                <label className="form-label">Loc Codigo</label>
-                <input className="form-control" name="locCode" onChange={handleChange}/>
-            </div>
             
-            {/* Amount*/}
+            {/* Stock */}
             <div className="mb-3">
-                <label className="form-label">Cantidad</label>
-                <input className="form-control" name="amount" onChange={handleChange}/>
+                <label className="form-label">Stock</label>
+                <input className="form-control" name="stock" onChange={handleChange}/>
             </div>
             
             {/* Description */}

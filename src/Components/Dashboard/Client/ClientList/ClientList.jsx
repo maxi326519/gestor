@@ -6,23 +6,27 @@ import DataGrid from 'react-data-grid';
 
 import 'react-data-grid/lib/styles.css';
 import "./ClientList.css";
+import { toast } from "react-toastify";
 
 export default function ClientList() {
 
   const dispatch = useDispatch();
-  const rows = useSelector((state) => state.clients.data);
+  const rows = useSelector((state) => state.clients);
+  const userId = useSelector((state) => state.user.id);
   const [filterRows, setFilters] = useState(null);
   const columns = [
     { key: "name", name: "Nombre"},
-    { key: "userName", name: "Usuario"},
     { key: "email", name: "Email"},
     { key: "address", name: "Direccion"},
-    { key: "phone", name: "Telefono"},
+    { key: "phone", name: "Telefono"}
   ]
 
   useEffect(()=>{
-    if(rows.length <= 0)dispatch(getClients());
-  })
+    if(rows.length <= 0){
+      dispatch(getClients(userId))
+      .catch(e => toast(e.message.split(':')[1]))
+    }
+  },[userId])
 
   function handleChange(e){
     const value = e.target.value;
@@ -41,7 +45,7 @@ export default function ClientList() {
     <div className="userList">
       <h3>Listado de clientes</h3>
       <div className="userList__searchBar">
-        <input className="form-control" onChange={handleChange}/>
+        <input className="form-control" placeholder="Buscar cliente" onChange={handleChange}/>
       </div>
       <DataGrid columns={columns} rows={filterRows ? filterRows : rows}/>
     </div>

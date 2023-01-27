@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import {useSelector, useDispatch } from 'react-redux';
 import { addClient } from '../../../../redux/actions';
 
 import './ClientForm.css'
 
 export default function ClientForm(){
-
+    const userId = useSelector((state) => state.user.id);
     const dispatch = useDispatch();
     const [client, setclient] = useState({
         name: "",
-        clientName: "",
         email: "",
         address: "",
         phone: ""
@@ -21,7 +20,7 @@ export default function ClientForm(){
 
     function handleSubmit(e){
         e.preventDefault();
-        dispatch(addClient(client));
+        dispatch(addClient(userId, client));
     }
 
     return(
@@ -30,12 +29,6 @@ export default function ClientForm(){
             <div className="mb-3">
                 <label className="form-label">Nombre</label>
                 <input className="form-control" name="name" onChange={handleChange}/>
-            </div>
-
-            {/* Usuario */}
-            <div className="mb-3">
-                <label className="form-label">Usuario</label>
-                <input className="form-control" name="clientName" onChange={handleChange}/>
             </div>
 
             {/* Email*/}
@@ -47,7 +40,7 @@ export default function ClientForm(){
             {/* Adress */}
             <div className="mb-3">
                 <label className="form-label">Direccion</label>
-                <input className="form-control" name="adress" onChange={handleChange}/>
+                <input className="form-control" name="address" onChange={handleChange}/>
             </div>
 
             {/* Phone */}
@@ -57,7 +50,7 @@ export default function ClientForm(){
             </div>
 
             <button type='submit' className='btn btn-success'>
-                Agregar usuario
+                Agregar Cliente
             </button>
         </form>
     )    

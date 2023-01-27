@@ -1,89 +1,53 @@
-.container-register {
-  display: flex;
+.sesion{
+  displaY: flex;
   justify-content: center;
   align-items: center;
-  background: white;
   height: 100vh;
+
+  /* Background patens */
+  background-color: #e5e5f7;
+  background-image:  radial-gradient(#444cf7 0.8500000000000001px, transparent 0.8500000000000001px), radial-gradient(#444cf7 0.8500000000000001px, #e5e5f7 0.8500000000000001px);
+  background-size: 34px 34px;
+  background-position: 0 0,17px 17px;
+  /* Background patens */
 }
 
-.container-register-form {
-  display: flex;
-  background-color: #ddd;
-  justify-content: center;
-  align-items: center;
-}
-
-.container-form-body {
-  display: flex;
-  justify-content: center;
-  padding: 0;
-}
-
-.form-body {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  width: 100%;
-}
-
-.container-form-body {
+.sesion form{
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  border-radius: 20px;
   padding: 30px;
-  box-shadow: 0px 0px 10px 10px #0002;
+  width: 400px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0px 0px 30px 5px #0003;
   background-color: white;
 }
 
-.title-form {
-  font-size: 35px;
+.sesion form h2{
   margin-bottom: 30px;
 }
 
-.text-form {
-  text-align: left;
-  margin: 5px;
-}
-
-.form-body .form-floating{
-  width: 400px;
-}
-
-.button-check-register {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.text-form-register{
+.sesion form p{
   margin-top: 30px;
 }
 
-.register-link{
-  display: flex;
-  flex-direction: column;
+.sesion form small{
+  color: red;
 }
 
-.button-check-register button{
-  font-size: 18px;
+.to-left{
+  position: relative;
+  animation-name: toLeft;
+  animation-duration: 0.5s;
 }
 
-/* Boton de google */
-.google-logo {
-  width: 30px;
-}
-
-.container-google {
-  display: flex;
-  justify-content: space-evenly;
-  border: 1px solid rgb(199, 199, 199);
-  margin-top: 15px;
-  padding: 10px 20px 10px 20px;
-  border-radius: 10px;
-}
-
-.container-google:hover {
-  cursor: pointer;
-  filter: brightness(90%)
+@keyframes toLeft{
+  from{
+    opacity: 0;
+    left: -50px
+  }
+  to{
+    opacity: 100%;
+    left: 0;
+  }
 }

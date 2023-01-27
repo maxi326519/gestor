@@ -1,65 +1,78 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { login } from "../../redux/actions";
+import { Link, useNavigate} from "react-router-dom";
 import "./Login.css";
 
-const Login = () => {
-  const handleSubmit = async (evt) => {
-    evt.preventDefault();
+export default function Signin() {
+  const redirect = useNavigate();
+  const dispatch = useDispatch();
+  const [user, setUser] = useState({
+    userName: "",
+    password: "",
+  });
+
+  const [error, setError] = useState({
+    userName: null,
+    password: null,
+  });
+
+  function handleChange(e){
+    setUser({ ...user, [e.target.name]: e.target.value });
   };
-  const handleChange = (evt) => {};
+
+  function handleSubmit(e){
+    e.preventDefault();
+    dispatch(login(user))
+    .then(() => redirect('/dashboard/clients'))
+    .catch((e) => {
+      if(e.message.includes('usuario')) setError({ ...error, userName: e.message.split(':')[1]})
+      else if(e.message.includes('contraseña')) setError({ ...error, password: e.message.split(':')[1]})
+      console.log(e);
+    })
+  };
 
   return (
-    <div className="container-Login">
-      <div className="container-form">
-        <h3 className="title-login">Inicia Sesion</h3>
-        <form onSubmit={handleSubmit} className="form-body">
-          {/* EMAIL */}
-          <div className="form-floating mb-3">
-            <input
-              type="email"
-              name="email"
-              className="form-control"
-              placeholder="name@example.com"
-              onChange={handleChange}
-            />
-            <label for="floatingInput">Correo electronico</label>
-          </div>
-
-          {/* PASSWORD */}
-          <div className="form-floating mb-3">
-            <input
-              type="password"
-              name="password"
-              className="form-control"
-              placeholder="name@example.com"
-              onChange={handleChange}
-            />
-            <label for="floatingInput">Contraseña</label>
-          </div>
-
-          <div className="button-check-register">
-            <Link to="/dashboard" className="btn btn-primary btn-color">
-              Iniciar Sesion
-            </Link>
-          </div>
-        </form>
-        <button className="container-google">
-          <img
-            src="https://rotulosmatesanz.com/wp-content/uploads/2017/09/2000px-Google_G_Logo.svg_.png"
-            alt="google-logo"
-            className="google-logo"
+    <div className="sesion">
+      <form onSubmit={handleSubmit} className="to-left">
+        <h2>Iniciar sesion</h2>
+        {/* USUARIO */}
+        <div className="form-floating mb-3">
+          <input
+            type="text"
+            name="userName"
+            className={`form-control ${!error.userName ? "" : "is-invalid"}`}
+            id={error.userName ? "floatingInputInvalid" : "user"}
+            placeholder="name"
+            onChange={handleChange}
           />
-          Registrarse con Google
-        </button>
-        <div className="register-link">
-          <p className="text-form-register">¿No tienes cuenta?</p>
-          <Link to="/signin" className="btn btn-outline-primary">
-            Registarse
-          </Link>
+          <label htmlFor="floatingInput">Nombre de usuario</label>
+          {!error.userName ? null : <small>{error.userName}</small>}
         </div>
-      </div>
+
+        {/* CONTRASEÑA */}
+        <div className="form-floating mb-3">
+          <input
+            type="password"
+            name="password"
+            className={`form-control ${!error.password ? "" : "is-invalid"}`}
+            id={error.password ? "floatingInputInvalid" : "pass"}
+            placeholder="Contraseña"
+            onChange={handleChange}
+          />
+          <label htmlFor="floatingInput">Contraseña</label>
+          {!error.password ? null : <small>{error.password}</small>}
+        </div>
+
+        {/* BOTON DE REGISTRO */}
+        <button className="btn btn-primary" type="submit">Iniciar sesion</button>
+
+        <p>¿No tienes cuenta?</p>
+
+        <Link to="/signin" className="btn btn-outline-primary">
+          Registate
+        </Link>
+      </form>
     </div>
   );
-};
-
-export default Login;
+}
