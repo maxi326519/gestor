@@ -6,6 +6,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import Loading from "./Components/Loading/Loading";
+import Profile from "./Components/Dashboard/Profile/Profile";
 import Products from "./Components/Dashboard/Products/Products";
 import Client from "./Components/Dashboard/Client/Client";
 import Invoices from "./Components/Dashboard/Invoices/Invoices";
@@ -71,6 +72,7 @@ function App() {
       <ToastContainer />
       <Routes>
         <Route path="/" element={<Loading />} />
+        <Route path="/dashboard/profile" element={<Profile />} />
         <Route
           path="/dashboard/products"
           element={

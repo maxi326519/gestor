@@ -1,0 +1,13 @@
+.dahsboard__profile{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.dahsboard__profile form{
+    padding: 30px;
+    border-radius: 20px;
+    width: 400px;
+    background-color: white;
+}

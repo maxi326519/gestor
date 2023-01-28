@@ -16,7 +16,7 @@ export default function Invoices({
         handleAddProduct={handleAddProduct}
         handleAddClient={handleAddClient}
       />
-      <div className="dashboard__container">
+      <div className="dashboard__container to-left">
         <InvoicesList
           handleAddInvoice={handleAddInvoice}
           handleExportInvoices={handleExportInvoices}

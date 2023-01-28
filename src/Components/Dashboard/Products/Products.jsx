@@ -17,7 +17,7 @@ export default function Products({
         handleAddProduct={handleAddProduct}
         handleAddClient={handleAddClient}
       />
-      <div className="dashboard__container">
+      <div className="dashboard__container to-left">
         <ProductList handleAddProduct={handleAddProduct}/>
       </div>
     </div>
