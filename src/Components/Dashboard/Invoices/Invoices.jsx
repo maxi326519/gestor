@@ -1,18 +1,14 @@
-import React from 'react';
-
 import SideBar from "../SideBar/SideBar";
-import InvoicesForm from "./InvoicesForm/InvoicesForm";
 import InvoicesList from "./InvoicesList/InvoicesList";
 
-import './Invoices.css';
+import '../Dashboard.css';
 
-export default function Invoices() {
+export default function Invoices({ handleAddInvoice, handleExportInvoices }) {
   return (
-    <div className="invoices">
+    <div className="dashboard">
       <SideBar />
-      <div className="invoices__container">
-        <InvoicesList />
-        <InvoicesForm />
+      <div className="dashboard__container">
+        <InvoicesList handleAddInvoice={handleAddInvoice} handleExportInvoices={handleExportInvoices}/>
       </div>
     </div>
   );

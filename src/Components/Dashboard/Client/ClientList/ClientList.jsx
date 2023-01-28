@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getClients } from "../../../../redux/actions";
+import { toast } from "react-toastify";
 
 import DataGrid from 'react-data-grid';
+import addSquare from '../../../../assets/svg/add-square.svg';
 
 import 'react-data-grid/lib/styles.css';
 import "./ClientList.css";
-import { toast } from "react-toastify";
 
-export default function ClientList() {
+export default function ClientList({ handleAddClient }) {
 
   const dispatch = useDispatch();
   const rows = useSelector((state) => state.clients);
@@ -42,11 +43,14 @@ export default function ClientList() {
   }
 
   return (
-    <div className="clientList">
+    <div className="dashboardList">
       <h3>Listado de clientes</h3>
-      <div className="clientList__searchBar">
+      <div className="dashboardList__searchBar">
         <input className="form-control" placeholder="Buscar cliente" onChange={handleChange}/>
-        <button className='btn btn-success'>Exportar</button>
+        <button className='btn btn-primary' onClick={handleAddClient}>
+          <img src={addSquare} alt='export'/>
+          <span>Cliente</span>
+        </button>
       </div>
       <DataGrid columns={columns} rows={filterRows ? filterRows : rows}/>
     </div>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from "react-redux";
 import { logOut } from "../../../redux/actions";
 import { Link, useNavigate } from "react-router-dom";
@@ -15,7 +15,7 @@ import list from "../../../assets/svg/list.svg";
 import addSquere from "../../../assets/svg/add-square.svg";
 import "./SideBar.css";
 
-export default function SideBar() {
+export default function SideBar({ handleAddInvoice, handleAddProduct, handleAddClient }) {
   const dispatch = useDispatch();
   const redirect = useNavigate();
   const initialState = {
@@ -36,7 +36,7 @@ export default function SideBar() {
   }
 
   return (
-    <div className="container__sideBar" onMouseLeave={()=>{setAccordion(initialState)}} onMouseMoveCapture={(e)=>{console.log(e)}}>
+    <div className="container__sideBar" onMouseLeave={()=>{setAccordion(initialState)}}>
       <div className="sideBar">
         <div className="sideBar__title">
           <img src={dashboard} alt="dashboard" />
@@ -78,7 +78,7 @@ export default function SideBar() {
               <span className="sideBar__text">Listado</span>
           </button>
           </Link>
-          <button>
+          <button onClick={handleAddInvoice}>
               <img className="sideBar__icon" src={addSquere} alt="addSquere" />
               <span className="sideBar__text">Agregar factura</span>
           </button>
@@ -98,7 +98,7 @@ export default function SideBar() {
                 <span className="sideBar__text">Listado</span>
             </button>
           </Link>
-          <button>
+          <button onClick={handleAddProduct}>
               <img className="sideBar__icon" src={addSquere} alt="addSquere" />
               <span className="sideBar__text">Agregar producto</span>
           </button>
@@ -118,7 +118,7 @@ export default function SideBar() {
                 <span className="sideBar__text">Listado</span>
             </button>
           </Link>
-          <button>
+          <button onClick={handleAddClient}>
               <img className="sideBar__icon" src={addSquere} alt="addSquere" />
               <span className="sideBar__text">Agregar cliente</span>
           </button>

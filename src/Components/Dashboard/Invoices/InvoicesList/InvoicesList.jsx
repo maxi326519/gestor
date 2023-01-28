@@ -3,11 +3,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { getProducts } from "../../../../redux/actions";
 
 import DataGrid from 'react-data-grid';
+import exportIcon from '../../../../assets/svg/export.svg';
+import addSquare from '../../../../assets/svg/add-square.svg';
 
 import 'react-data-grid/lib/styles.css';
 import "./InvoicesList.css";
 
-export default function InvoicesList() {
+export default function InvoicesList({ handleAddInvoice, handleExportInvoice }) {
 
   const dispatch = useDispatch();
   const rows = useSelector((state) => state.products);
@@ -36,12 +38,18 @@ export default function InvoicesList() {
   }
 
   return (
-    <div className="invoicesList">
+    <div className="dashboardList">
       <h3>Listado de Facturas</h3>
-      <div className="invoicesList__searchBar">
+      <div className="dashboardList__searchBar">
         <input className="form-control" placeholder="Buscar factura" onChange={handleChange}/>
-        <button className='btn btn-success'>Ver en PDF</button>
-        <button className='btn btn-success'>Descargar en Excel</button>
+        <button className='btn btn-primary invoicesList__export' onClick={handleAddInvoice}>
+          <img src={addSquare} alt='export'/>
+          <span>Factura</span>
+        </button>
+        <button className='btn btn-primary' onClick={handleExportInvoice}>
+          <img src={exportIcon} alt='export'/>
+          <span>Excel</span>
+        </button>
       </div>
       <DataGrid columns={columns} rows={filterRows ? filterRows : rows}/>
     </div>

@@ -1,0 +1,7 @@
+.dateContainer{
+    display: flex;
+}
+
+.dateContainer .form-control{
+    width: 100px;
+}

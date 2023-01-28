@@ -1,17 +1,18 @@
-
 import SideBar from "../SideBar/SideBar";
-import ClientForm from "./ClientForm/ClientForm";
 import ClientList from "./ClientList/ClientList";
 
-import "./Client.css";
+import "../Dashboard.css";
 
-export default function Client() {
+export default function Client({ handleAddInvoice, handleAddProduct, handleAddClient }) {
   return (
-    <div className="clients">
-      <SideBar />
-      <div className="clients__container">
-        <ClientList />
-        <ClientForm />
+    <div className="dashboard">
+      <SideBar
+        handleAddInvoice={handleAddInvoice}
+        handleAddProduct={handleAddProduct}
+        handleAddClient={handleAddClient}
+      />
+      <div className="dashboard__container">
+        <ClientList handleAddClient={handleAddClient} />
       </div>
     </div>
   );

@@ -4,11 +4,12 @@ import { getProducts } from "../../../../redux/actions";
 import { toast } from "react-toastify";
 
 import DataGrid from 'react-data-grid';
+import addSquare from '../../../../assets/svg/add-square.svg';
 
 import 'react-data-grid/lib/styles.css';
 import "./ProductList.css";
 
-export default function ProductList() {
+export default function ProductList({ handleAddProduct }) {
   const dispatch = useDispatch();
   const rows = useSelector((state) => state.products);
   const userId = useSelector((state) => state.user.id);
@@ -45,11 +46,14 @@ export default function ProductList() {
   }
 
   return (
-    <div className="productList">
+    <div className="dashboardList">
       <h3>Listado de Productos</h3>
-      <div className="productList__searchBar">
+      <div className="dashboardList__searchBar">
         <input className="form-control" placeholder="Buscar producto" onChange={handleChange}/>
-        <button className='btn btn-success'>Exportar</button>
+        <button className='btn btn-primary' onClick={handleAddProduct}>
+          <img src={addSquare} alt='export'/>
+          <span>Producto</span>
+        </button>
       </div>
       <DataGrid columns={columns} rows={filterRows ? filterRows : rows}/>
     </div>

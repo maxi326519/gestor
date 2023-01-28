@@ -1,18 +1,24 @@
-import React from 'react';
+import React from "react";
 
 import SideBar from "../SideBar/SideBar";
-import ProductForm from "./ProductForm/ProductForm";
 import ProductList from "./ProductList/ProductList";
 
-import './Products.css';
+import "../Dashboard.css";
 
-export default function Products() {
+export default function Products({
+  handleAddInvoice,
+  handleAddProduct,
+  handleAddClient,
+}) {
   return (
-    <div className="products">
-      <SideBar />
-      <div className="products__container">
-        <ProductList />
-        <ProductForm />
+    <div className="dashboard">
+      <SideBar
+        handleAddInvoice={handleAddInvoice}
+        handleAddProduct={handleAddProduct}
+        handleAddClient={handleAddClient}
+      />
+      <div className="dashboard__container">
+        <ProductList handleAddProduct={handleAddProduct}/>
       </div>
     </div>
   );
