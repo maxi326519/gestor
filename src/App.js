@@ -23,7 +23,7 @@ function App() {
   useEffect(()=>{
     const userData = JSON.parse(localStorage.getItem("user"));
     if (userData) {
-      dispatch(login(userData)).then(()=> redirect('/dashboard/clients'))
+      dispatch(login(userData)).then(()=> redirect('/dashboard/invoices'))
     } else {
       redirect("/login");
     }

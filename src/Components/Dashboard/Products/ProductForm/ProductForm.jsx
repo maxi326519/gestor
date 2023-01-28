@@ -30,10 +30,26 @@ export default function ProductForm(){
     return(
         <form className="userForm" onSubmit={handleSubmit}>
 
-            {/* Name */}
+            {/* Code */}
             <div className="mb-3">
-                <label className="form-label">Nombre</label>
-                <input className="form-control" name="name" onChange={handleChange}/>
+                <label className="form-label">Codigo</label>
+                <input className="form-control" name="code" onChange={handleChange}/>
+            </div>
+
+            {/* Description */}
+            <div className="mb-3">
+                <label className="form-label">Descripcion</label>
+                <textarea className="form-control" name="description" onChange={handleChange}/>
+            </div>
+
+            {/* Type */}
+            <div className="mb-3">
+                <label className="form-label">Tipo</label>
+                <select className="form-control" name="type" onChange={handleChange}>
+                    <option>Seleccione un tipo</option>
+                    <option>Producto</option>
+                    <option>Servicio</option>
+                </select>
             </div>
 
             {/* Price */}
@@ -42,40 +58,15 @@ export default function ProductForm(){
                 <input className="form-control" name="price" onChange={handleChange}/>
             </div>
 
-            {/* Code */}
-            <div className="mb-3">
-                <label className="form-label">Codigo</label>
-                <input className="form-control" name="code" onChange={handleChange}/>
-            </div>
-
-            {/* State */}
-            <div className="mb-3">
-                <label className="form-label">Estado</label>
-                <input className="form-control" name="state" onChange={handleChange}/>
-            </div>
-
-            {/* Taxes*/}
+            {/* Impuesto */}
             <div className="mb-3">
                 <label className="form-label">Impuesto</label>
-                <input className="form-control" name="taxes" onChange={handleChange}/>
-            </div>
-                        
-            {/* Type*/}
-            <div className="mb-3">
-                <label className="form-label">Tipo</label>
-                <input className="form-control" name="type" onChange={handleChange}/>
-            </div>
-            
-            {/* Stock */}
-            <div className="mb-3">
-                <label className="form-label">Stock</label>
-                <input className="form-control" name="stock" onChange={handleChange}/>
-            </div>
-            
-            {/* Description */}
-            <div className="mb-3">
-                <label className="form-label">Descripcion</label>
-                <textarea className="form-control" name="description" onChange={handleChange}/>
+                <select className="form-control" name="type" onChange={handleChange}>
+                    <option>Seleccione si paga impuestos</option>
+                    <option>Si</option>
+                    <option>No</option>
+                </select>
+                <input className="form-control" name="impuesto" onChange={handleChange}/>
             </div>
 
             <button type='submit' className='btn btn-success'>

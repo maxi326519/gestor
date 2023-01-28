@@ -5,8 +5,9 @@
     margin-right: 10px;
     padding: 20px;
     border-radius: 20px;
-    background-color: #333;
-    color: white;
+    border: 1px solid #ccc;
+    background-color: white;
+    color: #333;
 }
 
 .invoicesList__searchBar{

@@ -8,30 +8,28 @@ export default function Signin() {
   const dispatch = useDispatch();
   const redirect = useNavigate();
   const [user, setUser] = useState({
-    name: "",
-    userName: "",
+    ruc: "",
     email: "",
     password: "",
     confirm_password: "",
   });
 
   const [error, setError] = useState({
-    name: null,
-    userName: null,
+    ruc: null,
     email: null,
     password: null,
     confirmPassword: null,  
   });
 
   function handleChange(e){
+    console.log(user);
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
   function handleSubmit(e){
     e.preventDefault();
     dispatch(signin({
-      name: user.name,
-      userName: user.userName,
+      ruc: user.ruc,
       email: user.email,
       password: user.password,
     }))
@@ -43,32 +41,18 @@ export default function Signin() {
     <div className="sesion">
       <form onSubmit={handleSubmit} className="to-left">
         <h2>Registrate</h2>
-        {/* NOMBRE */}
+        {/* RUC */}
         <div className="form-floating mb-3 ">
           <input
             type="text"
-            name="name"
-            className={`form-control ${!error.name ? "" : "is-invalid"}`}
-            id={error.name ? "floatingInputInvalid" : "floatingInput"}
+            name="ruc"
+            className={`form-control ${!error.ruc ? "" : "is-invalid"}`}
+            id={error.ruc ? "floatingInputInvalid" : "floatingInput"}
             placeholder="name"
             onChange={handleChange}
           />
-          <label htmlFor="floatingInput">Nombre</label>
-          {!error.name ? null : <small>{error.name}</small>}
-        </div>
-
-        {/* USUARIO */}
-        <div className="form-floating mb-3">
-          <input
-            type="text"
-            name="userName"
-            className={`form-control ${!error.userName ? "" : "is-invalid"}`}
-            id={error.userName ? "floatingInputInvalid" : "floatingInput"}
-            placeholder="name"
-            onChange={handleChange}
-          />
-          <label htmlFor="floatingInput">Nombre de usuario</label>
-          {!error.userName ? null : <small>{error.userName}</small>}
+          <label htmlFor="floatingInput">Ruc</label>
+          {!error.ruc ? null : <small>{error.ruc}</small>}
         </div>
 
         {/* EMAIL */}
