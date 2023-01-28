@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import { login } from "./redux/actions";
+import { login, logOut } from "./redux/actions";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -23,7 +23,9 @@ function App() {
   useEffect(()=>{
     const userData = JSON.parse(localStorage.getItem("user"));
     if (userData) {
-      dispatch(login(userData)).then(()=> redirect('/dashboard/invoices'))
+      dispatch(login(userData))
+      .then(()=> redirect('/dashboard/invoices'))
+      .catch(() => dispatch(logOut()))
     } else {
       redirect("/login");
     }
