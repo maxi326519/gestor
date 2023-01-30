@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addProduct } from "../../../../redux/actions";
 
-import "./ProductForm.css";
+import "../Form.css";
 
 export default function ProductForm({ addProduct, handleAddProduct }) {
   const userId = useSelector((state) => state.user.id);
@@ -29,11 +29,11 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
 
   return (
     <div
-      className="container__invoicesForm"
+      className="container__form"
       style={addProduct ? null : { display: "none" }}
     >
-      <form className="userForm" onSubmit={handleSubmit}>
-        <div className="invoicesForm__close">
+      <form className="form to-left" onSubmit={handleSubmit}>
+        <div className="form__close">
           <button
             type="button"
             className="btn-close"
@@ -92,7 +92,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
           />
         </div>
 
-        <button type="submit" className="btn btn-success">
+        <button type="submit" className="btn btn-primary">
           Agregar producto
         </button>
       </form>

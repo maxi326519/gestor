@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addProduct } from "../../../../redux/actions";
 
-import "./InvoicesForm.css";
+import "../Form.css";
 
 export default function InvoicesForm({ addInvoice, handleAddInvoice }) {
   const clients = useSelector((state) => state.clients);
@@ -29,9 +29,9 @@ export default function InvoicesForm({ addInvoice, handleAddInvoice }) {
   }
 
   return (
-    <div className="container__invoicesForm" style={ addInvoice ? null : {display:'none'}}>
-      <form className="invoicesForm to-left" onSubmit={handleSubmit}>
-        <div className="invoicesForm__close">
+    <div className="container__form" style={ addInvoice ? null : {display:'none'}}>
+      <form className="form to-left" onSubmit={handleSubmit}>
+        <div className="form__close">
           <button type="button" className="btn-close" aria-label="Close" onClick={handleAddInvoice}></button>
         </div>
 

@@ -46,7 +46,7 @@ export default function InvoicesList({ handleAddInvoice, handleExportInvoice }) 
           <img src={addSquare} alt='export'/>
           <span>Factura</span>
         </button>
-        <button className='btn btn-primary' onClick={handleExportInvoice}>
+        <button className='btn btn-primary' onClick={()=>{console.log('asd');handleExportInvoice();}}>
           <img src={exportIcon} alt='export'/>
           <span>Excel</span>
         </button>

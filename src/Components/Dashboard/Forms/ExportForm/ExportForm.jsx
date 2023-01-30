@@ -19,11 +19,11 @@ export default function ExportForm({ exportInvoice, handleExportInvoice }) {
 
   return (
     <div
-      className="container__invoicesForm"
+      className="container__form"
       style={exportInvoice ? null : { display: "none" }}
     >
-      <form className="invoicesForm to-left" onSubmit={handleSubmit}>
-        <div className="invoicesForm__close">
+      <form className="form to-left" onSubmit={handleSubmit}>
+        <div className="form__close">
           <button
             type="button"
             className="btn-close"

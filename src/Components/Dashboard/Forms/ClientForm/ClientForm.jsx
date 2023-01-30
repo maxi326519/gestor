@@ -25,11 +25,11 @@ export default function ClientForm({ addClient, handleAddClient }) {
 
   return (
     <div
-      className="container__invoicesForm"
+      className="container__form"
       style={addClient ? null : { display: "none" }}
     >
-      <form className="clientForm" onSubmit={handleSubmit}>
-      <div className="invoicesForm__close">
+      <form className="form to-left" onSubmit={handleSubmit}>
+      <div className="form__close">
           <button
             type="button"
             className="btn-close"
@@ -85,7 +85,7 @@ export default function ClientForm({ addClient, handleAddClient }) {
           />
         </div>
 
-        <button type="submit" className="btn btn-success">
+        <button type="submit" className="btn btn-primary">
           Agregar Cliente
         </button>
       </form>

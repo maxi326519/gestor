@@ -105,23 +105,6 @@ function App() {
           }
         />
 
-        {/* FORMS */}
-        <Route
-          path="/dashboard"
-          element={
-            form.addInvoice ? (
-              <AddInvoice handleAddInvoice />
-            ) : null || form.exportInvoice ? (
-              <ExportInvoice handleExportInvoice />
-            ) : null || form.addProduct ? (
-              <AddProduct handleAddProduct />
-            ) : null || form.addClient ? (
-              <AddClient handleAddClient />
-            ) : null
-          }
-        ></Route>
-        {/* FORMS */}
-
         <Route path="/login" element={<Login />} />
         <Route path="/signin" element={<Signin />} />
       </Routes>
