@@ -44,6 +44,26 @@
     filter: invert(100);
 }
 
+.dashboardList__grid{
+    flex-grow: 1;
+    border-radius: 10px;
+    outline: 1px solid #ccc;
+    overflow: hidden;
+}
+
+.contentCard{
+    height: 100%;
+    padding-bottom: 35px;
+    overflow: scroll;
+}
+
+.listEmpty{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
 .rdg {
     flex-grow: 1;
     border-radius: 10px;

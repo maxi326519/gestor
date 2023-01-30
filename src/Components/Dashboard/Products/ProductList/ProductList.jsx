@@ -3,59 +3,77 @@ import { useSelector, useDispatch } from "react-redux";
 import { getProducts } from "../../../../redux/actions";
 import { toast } from "react-toastify";
 
-import DataGrid from 'react-data-grid';
-import addSquare from '../../../../assets/svg/add-square.svg';
+import ProductCard from "./ProductCard/ProductCard";
 
-import 'react-data-grid/lib/styles.css';
-import "./ProductList.css";
+import addSquare from "../../../../assets/svg/add-square.svg";
 
 export default function ProductList({ handleAddProduct }) {
   const dispatch = useDispatch();
-  const rows = useSelector((state) => state.products);
+  const products = useSelector((state) => state.products);
   const userId = useSelector((state) => state.user.id);
-  const [filterRows, setFilters] = useState(null);
-  const columns = [
-    { key: "name", name: "Nombre"},
-    { key: "price", name: "Precio"},
-    { key: "taxes", name: "Impuesto"},
-    { key: "type", name: "tipo"},
-    { key: "code", name: "Codigo"},
-    { key: "stock", name: "Stock"},
-    { key: "state", name: "Estado"},
-    { key: "description", name: "description"}
-  ]
+  const [rows, setRows] = useState([]);
 
-  useEffect(()=>{
-    if(rows.length <= 0){
+  useEffect(() => {
+    if (products.length <= 0) {
       dispatch(getProducts(userId))
-      .catch(e => toast(e.message.split(':')[1]))
+      .catch((e) =>{
+        toast(e.message.split(":")[1])
+      });
     }
-  },[userId])
+  }, [userId]);
 
-  function handleChange(e){
+  useEffect(() => {
+    setRows(products);
+  }, [products]);
+
+  function handleChange(e) {
     const value = e.target.value;
 
-    setFilters(rows.filter(row => {
-      if(value === '') return true;
-      if(row.name.toLowerCase().includes(value.toLowerCase())) return true;
-      if(row.code.toLowerCase().includes(value.toLowerCase())) return true;
-      if(row.taxes.toLowerCase().includes(value.toLowerCase())) return true;
-      if(row.type.toLowerCase().includes(value.toLowerCase())) return true;
-      return false;
-    }));
+    setRows(
+      products.filter((row) => {
+        if (value === "") return true;
+        if (row.code.toLowerCase().includes(value.toLowerCase())) return true;
+        if (row.type.toLowerCase().includes(value.toLowerCase())) return true;
+        if (row.taxes.toLowerCase().includes(value.toLowerCase())) return true;
+        if (row.description.toLowerCase().includes(value.toLowerCase()))
+          return true;
+        return false;
+      })
+    );
   }
 
   return (
     <div className="dashboardList">
       <h3>Listado de Productos</h3>
       <div className="dashboardList__searchBar">
-        <input className="form-control" placeholder="Buscar producto" onChange={handleChange}/>
-        <button className='btn btn-primary' onClick={handleAddProduct}>
-          <img src={addSquare} alt='export'/>
+        <input
+          className="form-control"
+          placeholder="Buscar producto"
+          onChange={handleChange}
+        />
+        <button className="btn btn-primary" onClick={handleAddProduct}>
+          <img src={addSquare} alt="add product" />
           <span>Producto</span>
         </button>
       </div>
-      <DataGrid columns={columns} rows={filterRows ? filterRows : rows}/>
+      <div className="dashboardList__grid">
+        <div className="product-card first-row">
+          <span>Codigo</span>
+          <span>Tipo</span>
+          <span>Precio</span>
+          <span>Impuesto</span>
+          <span>Descripcion</span>
+          <span>Editar</span>
+          <span>Eliminar</span>
+        </div>
+        <div className="contentCard">
+          {rows.length <= 0 ? (
+            <div className="listEmpty"><span>No hay productos</span></div>
+          ) : (
+            rows?.map((p) => <ProductCard product={p} />)
+          )}
+        </div>
+      </div>
     </div>
   );
 }

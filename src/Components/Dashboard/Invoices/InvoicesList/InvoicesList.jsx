@@ -1,40 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getProducts } from "../../../../redux/actions";
 
-import DataGrid from 'react-data-grid';
 import exportIcon from '../../../../assets/svg/export.svg';
 import addSquare from '../../../../assets/svg/add-square.svg';
 
-import 'react-data-grid/lib/styles.css';
 import "./InvoicesList.css";
 
 export default function InvoicesList({ handleAddInvoice, handleExportInvoice }) {
-
+/* 
   const dispatch = useDispatch();
-  const rows = useSelector((state) => state.products);
-  const [filterRows, setFilters] = useState(null);
-  const columns = [
-    { key: "cost", name: "Valor"},
-    { key: "amount", name: "Cantidad"},
-    { key: "discount", name: "Descueto"},
-    { key: "product", name: "Producto"},
-    { key: "client", name: "Cliente"},
-    { key: "date", name: "Fecha"}
-  ]
-
-  useEffect(()=>{
-    if(rows.length <= 0)dispatch(getProducts());
-  })
+  const rows = useSelector((state) => state.products); */
 
   function handleChange(e){
-    const value = e.target.value;
-
-    setFilters(rows.filter(row => {
-      if(value === '') return true;
-      if(row.bars.toLowerCase().includes(value.toLowerCase())) return true;
-      return false;
-    }));
+/*     const value = e.target.value; */
   }
 
   return (
@@ -51,7 +29,15 @@ export default function InvoicesList({ handleAddInvoice, handleExportInvoice }) 
           <span>Excel</span>
         </button>
       </div>
-      <DataGrid columns={columns} rows={filterRows ? filterRows : rows}/>
+      <div className="dashboardList__contentCard">
+        <div>
+          <span>Codigo</span>
+          <span>Codigo</span>
+        </div>
+        {
+
+        }
+      </div>
     </div>
   );
 }

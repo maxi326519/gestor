@@ -1,0 +1,27 @@
+.client-card{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 80px 80px;
+    grid-template-rows: 1fr;
+    gap: 10px;
+    padding: 10px;
+    outline: 1px solid #ccc;
+}
+
+.client-card input{
+    min-width: 150px;
+}
+
+.client-card span{
+    min-width: 80px;
+    padding-left: 10px;
+    border-right: 1px solid #ccc;
+}
+
+.client-card .input-group{
+    margin: 0 !important;
+    min-width: 150px;
+}
+
+.first-row{
+    padding-right: 20px;
+}

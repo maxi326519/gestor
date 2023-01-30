@@ -1,7 +1,13 @@
-:root{
+:root {
   --primary-color: #235;
 }
 
-*{
-  font-family: 'Rubik', sans-serif;
+* {
+  font-family: "Rubik", sans-serif;
+}
+
+.btn img {
+  width: 20px;
+  height: 20px;
+  filter: invert(100);
 }

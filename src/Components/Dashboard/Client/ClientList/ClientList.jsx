@@ -3,56 +3,79 @@ import { useSelector, useDispatch } from "react-redux";
 import { getClients } from "../../../../redux/actions";
 import { toast } from "react-toastify";
 
-import DataGrid from 'react-data-grid';
-import addSquare from '../../../../assets/svg/add-square.svg';
+import ClientCard from "./ClientCard/ClientCard";
 
-import 'react-data-grid/lib/styles.css';
+import addSquare from "../../../../assets/svg/add-square.svg";
 import "./ClientList.css";
 
 export default function ClientList({ handleAddClient }) {
-
   const dispatch = useDispatch();
-  const rows = useSelector((state) => state.clients);
+  const clients = useSelector((state) => state.clients);
   const userId = useSelector((state) => state.user.id);
-  const [filterRows, setFilters] = useState(null);
-  const columns = [
-    { key: "name", name: "Nombre"},
-    { key: "email", name: "Email"},
-    { key: "address", name: "Direccion"},
-    { key: "phone", name: "Telefono"}
-  ]
+  const [rows, setRows] = useState([]);
 
-  useEffect(()=>{
-    if(rows.length <= 0){
-      dispatch(getClients(userId))
-      .catch(e => toast(e.message.split(':')[1]))
+  useEffect(() => {
+    if (clients.length <= 0) {
+      dispatch(getClients(userId)).catch((e) => toast(e.message.split(":")[1]));
     }
-  },[userId])
+  }, [userId]);
 
-  function handleChange(e){
+  useEffect(() => {
+    setRows(clients);
+  }, [clients]);
+
+  function handleChange(e) {
     const value = e.target.value;
 
-    setFilters(rows.filter(row => {
-      if(value === '') return true;
-      if(row.name.toLowerCase().includes(value.toLowerCase())) return true;
-      if(row.email.toLowerCase().includes(value.toLowerCase())) return true;
-      if(row.address.toLowerCase().includes(value.toLowerCase())) return true;
-      if(row.phone.toLowerCase().includes(value.toLowerCase())) return true;
-      return false;
-    }));
+    setRows(
+      clients.filter((row) => {
+        if (value === "") return true;
+        if (row.name.toLowerCase().includes(value.toLowerCase())) return true;
+        if (row.dataType.toLowerCase().includes(value.toLowerCase()))
+          return true;
+        if (row.email.toLowerCase().includes(value.toLowerCase())) return true;
+        if (row.address.toLowerCase().includes(value.toLowerCase()))
+          return true;
+        if (row.phone.toLowerCase().includes(value.toLowerCase())) return true;
+        return false;
+      })
+    );
   }
 
   return (
     <div className="dashboardList">
       <h3>Listado de clientes</h3>
       <div className="dashboardList__searchBar">
-        <input className="form-control" placeholder="Buscar cliente" onChange={handleChange}/>
-        <button className='btn btn-primary' onClick={handleAddClient}>
-          <img src={addSquare} alt='export'/>
+        <input
+          className="form-control"
+          placeholder="Buscar cliente"
+          onChange={handleChange}
+        />
+        <button className="btn btn-primary" onClick={handleAddClient}>
+          <img src={addSquare} alt="export" />
           <span>Cliente</span>
         </button>
       </div>
-      <DataGrid columns={columns} rows={filterRows ? filterRows : rows}/>
+      <div className="dashboardList__grid">
+        <div className="client-card first-row">
+          <span>Nombre</span>
+          <span>Tipo</span>
+          <span>Email</span>
+          <span>Direccion</span>
+          <span>Telefono</span>
+          <span>Editar</span>
+          <span>Eliminar</span>
+        </div>
+        <div className="contentCard">
+          {rows.length <= 0 ? (
+            <div className="listEmpty">
+              <span>No hay productos</span>
+            </div>
+          ) : (
+            rows?.map((c) => <ClientCard client={c} />)
+          )}
+        </div>
+      </div>
     </div>
   );
 }

@@ -14,6 +14,8 @@ export const SIGN_IN = "SIGN_IN";
 export const LOG_IN = "LOG_IN";
 export const LOG_OUT = "LOG_OUT";
 
+export const LOADING = "LOADING";
+
 export const ADD_CLIENT = "ADD_CLIENT";
 export const ADD_PRODUCT = "ADD_PRODUCT";
 export const ADD_INVOICE = "ADD_INVOICE";
@@ -86,12 +88,20 @@ export function login(userData) {
 export function logOut() {
   return (dispatch) => {
     return dispatch({
-      type: LOG_OUT,
+      type: LOG_OUT
     });
   };
 }
 
-export function addClient(userId, client) {
+export function loading(){
+  return (dispatch)=>{
+    return dispatch({
+      type: LOADING
+    })
+  }
+}
+
+export function postClient(userId, client) {
   return async (dispatch) => {
     try {
       if(!userId) throw new Error('Falta el ID de usuario');
@@ -115,7 +125,7 @@ export function addClient(userId, client) {
   };
 }
 
-export function addProduct(userId, product) {
+export function postProduct(userId, product) {
   return async (dispatch) => {
     try {
       if(!userId) throw new Error('Falta el ID de usuario');

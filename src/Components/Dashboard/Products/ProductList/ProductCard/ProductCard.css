@@ -1,0 +1,22 @@
+.product-card{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 2fr 80px 80px;
+    grid-template-rows: 1fr;
+    gap: 10px;
+    padding: 10px;
+    outline: 1px solid #ccc;
+}
+
+.product-card input{
+    min-width: 150px;
+}
+
+.product-card span{
+    min-width: 80px;
+    padding-left: 10px;
+    border-right: 1px solid #ccc;
+}
+
+.first-row{
+    padding-right: 20px;
+}

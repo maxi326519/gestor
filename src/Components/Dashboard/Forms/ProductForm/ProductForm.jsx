@@ -11,7 +11,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const userId = useSelector((state) => state.user.id);
-  const [product, setProduct] = useState({
+  const initialState = useState({
     code: "",
     type: "",
     price: "",
@@ -19,9 +19,9 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
     taxes: "",
     description: "",
   });
+  const [product, setProduct] = useState(initialState);
 
   function handleChange(e) {
-    console.log(product);
     setProduct({ ...product, [e.target.name]: e.target.value });
   }
 
@@ -38,16 +38,22 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
     };
 
     dispatch(postProduct(userId, newProduct))
-    .then(d => {
-      setLoading(false);
+      .then((d) => {
+        setLoading(false);
+        handleClose();
+        toast("¡Producto agregado exitosamente!");
+      })
+      .catch((e) => {
+        toast("Hubo un error al agregar el producto");
+        console.log(e);
+      });
+    }
+    
+    function handleClose(){
+      console.log(initialState);
       handleAddProduct();
-      toast("¡Producto agregado exitosamente!");
-    })
-    .catch(e => {
-      toast("Hubo un error al agregar el producto");
-      console.log(e);
-    })
-  }
+      setProduct(initialState);
+    }
 
   return (
     <div
@@ -61,7 +67,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
             type="button"
             className="btn-close"
             aria-label="Close"
-            onClick={handleAddProduct}
+            onClick={handleClose}
           ></button>
         </div>
 
@@ -71,6 +77,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
             className="form-control"
             id="floatingInput"
             name="code"
+            value={product.code}
             onChange={handleChange}
           />
           <label htmFor="floatingInput">Codigo</label>
@@ -92,6 +99,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
             className="form-control"
             id="floatingInput"
             name="price"
+            value={product.price}
             onChange={handleChange}
           />
           <label htmFor="floatingInput">Precio</label>
@@ -117,6 +125,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
               className="form-control"
               id="floatingInput"
               name="taxes"
+              value={product.taxes}
               onChange={handleChange}
             />
             <label htmFor="floatingInput">Impuesto</label>
@@ -129,7 +138,8 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
             className="form-control"
             id="floatingInput"
             name="description"
-            onChange={handleChange}
+              value={product.description}
+              onChange={handleChange}
           />
           <label htmFor="floatingInput">Descripcion</label>
         </div>

@@ -2,6 +2,7 @@ import {
   SIGN_IN,
   LOG_IN,
   LOG_OUT,
+  LOADING,
   ADD_CLIENT,
   ADD_PRODUCT,
   GET_CLIENTS,
@@ -11,7 +12,8 @@ import {
 const initialState = {
   user: {},
   clients: [],
-  products: []
+  products: [],
+  loading: false
 };
 
 export const Reducer = (state = initialState, action) => {
@@ -35,6 +37,12 @@ export const Reducer = (state = initialState, action) => {
       return {
         ...state,
         user: {}
+      };
+    
+    case LOADING:
+      return{
+        ...state,
+        loading: !state.leading
       };
 
     case ADD_CLIENT:
