@@ -13,6 +13,7 @@
 }
 
 .form{
+    position: absolute;
     displaY: flex;
     flex-direction: column;
     justify-content: center;
@@ -23,11 +24,23 @@
     background-color: white;
 }
 
+.form__close{
+    displaY: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.form__close h2{
+    flex-grow: 1;
+    text-align: left;
+}
+
 .form input{
     min-width: 400px;
 }
 
-.form__close{
-    displaY: flex;
-    justify-content: flex-end;
+.form textarea{
+    resize: none;
+    height: 100px !important;
 }

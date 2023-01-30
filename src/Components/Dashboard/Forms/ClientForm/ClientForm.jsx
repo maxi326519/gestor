@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { addClient } from "../../../../redux/actions";
+import { postClient } from "../../../../redux/actions";
+import { toast } from "react-toastify";
 
-import "./ClientForm.css";
+import Loading from "../../../Loading/Loading";
+
+import "../Form.css";
 
 export default function ClientForm({ addClient, handleAddClient }) {
   const userId = useSelector((state) => state.user.id);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const [client, setclient] = useState({
     name: "",
@@ -20,7 +24,17 @@ export default function ClientForm({ addClient, handleAddClient }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    dispatch(addClient(userId, client));
+    setLoading(true);
+    dispatch(postClient(userId, client))
+      .then((d) => {
+        handleAddClient();
+        setLoading(false);
+        toast("Agregado exitosamente");
+      })
+      .catch(e => {
+        setLoading(false);
+        toast("Hubo un error al agregar al cliente");
+      });
   }
 
   return (
@@ -29,7 +43,7 @@ export default function ClientForm({ addClient, handleAddClient }) {
       style={addClient ? null : { display: "none" }}
     >
       <form className="form to-left" onSubmit={handleSubmit}>
-      <div className="form__close">
+        <div className="form__close">
           <button
             type="button"
             className="btn-close"
@@ -89,6 +103,7 @@ export default function ClientForm({ addClient, handleAddClient }) {
           Agregar Cliente
         </button>
       </form>
+      {loading ? <Loading /> : null}
     </div>
   );
 }

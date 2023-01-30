@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { addProduct } from "../../../../redux/actions";
 
 import "../Form.css";
 
@@ -25,7 +24,7 @@ export default function InvoicesForm({ addInvoice, handleAddInvoice }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    dispatch(addProduct(invoice));
+/*     dispatch(addProduct(invoice)); */
   }
 
   return (
