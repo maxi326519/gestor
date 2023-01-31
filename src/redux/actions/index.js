@@ -16,9 +16,9 @@ export const LOG_OUT = "LOG_OUT";
 
 export const LOADING = "LOADING";
 
-export const ADD_CLIENT = "ADD_CLIENT";
-export const ADD_PRODUCT = "ADD_PRODUCT";
-export const ADD_INVOICE = "ADD_INVOICE";
+export const POST_CLIENT = "ADD_CLIENT";
+export const POST_PRODUCT = "ADD_PRODUCT";
+export const POST_INVOICE = "ADD_INVOICE";
 
 export const GET_CLIENTS = "GET_CLIENTS";
 export const GET_PRODUCTS = "GET_PRODUCTS";
@@ -116,7 +116,7 @@ export function postClient(userId, client) {
       }
 
       return dispatch({
-        type: ADD_CLIENT,
+        type: POST_CLIENT,
         payload: saveCLient,
       });
     } catch (err) {
@@ -135,8 +135,27 @@ export function postProduct(userId, product) {
       console.log(newProduct);
 
       return dispatch({
-        type: ADD_PRODUCT,
+        type: POST_PRODUCT,
         payload: product,
+      });
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
+}
+
+export function postInvoice(userId, invoice) {
+  return async (dispatch) => {
+    try {
+      if(!userId) throw new Error('Falta el ID de usuario');
+      const invoicesColl = collection(db, "users", userId, "invoices");
+      const newProduct = await addDoc(invoicesColl, invoice);
+
+      console.log(newProduct);
+
+      return dispatch({
+        type: POST_PRODUCT,
+        payload: invoice,
       });
     } catch (err) {
       throw new Error(err);

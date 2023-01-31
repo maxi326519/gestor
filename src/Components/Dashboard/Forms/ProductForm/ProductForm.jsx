@@ -12,6 +12,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
   const [loading, setLoading] = useState(false);
   const userId = useSelector((state) => state.user.id);
   const initialState = useState({
+    name: "",
     code: "",
     type: "",
     price: "",
@@ -30,12 +31,15 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
     setLoading(true);
 
     const newProduct = {
+      name: product.name,
       code: product.code,
       type: product.type,
       price: product.price,
       taxes: product.taxes,
       description: product.description,
     };
+
+    console.log(newProduct);
 
     dispatch(postProduct(userId, newProduct))
       .then((d) => {
@@ -44,16 +48,17 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
         toast("¡Producto agregado exitosamente!");
       })
       .catch((e) => {
+        setLoading(false);
         toast("Hubo un error al agregar el producto");
         console.log(e);
       });
-    }
-    
-    function handleClose(){
-      console.log(initialState);
-      handleAddProduct();
-      setProduct(initialState);
-    }
+  }
+
+  function handleClose() {
+    console.log(initialState);
+    handleAddProduct();
+    setProduct(initialState);
+  }
 
   return (
     <div
@@ -69,6 +74,18 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
             aria-label="Close"
             onClick={handleClose}
           ></button>
+        </div>
+
+        {/* Name */}
+        <div className="form-floating mb-3">
+          <input
+            className="form-control"
+            id="floatingInput"
+            name="name"
+            value={product.name}
+            onChange={handleChange}
+          />
+          <label htmFor="floatingInput">Nombre</label>
         </div>
 
         {/* Code */}
@@ -138,8 +155,8 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
             className="form-control"
             id="floatingInput"
             name="description"
-              value={product.description}
-              onChange={handleChange}
+            value={product.description}
+            onChange={handleChange}
           />
           <label htmFor="floatingInput">Descripcion</label>
         </div>

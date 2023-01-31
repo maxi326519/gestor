@@ -3,8 +3,9 @@ import {
   LOG_IN,
   LOG_OUT,
   LOADING,
-  ADD_CLIENT,
-  ADD_PRODUCT,
+  POST_CLIENT,
+  POST_PRODUCT,
+  POST_INVOICE,
   GET_CLIENTS,
   GET_PRODUCTS,
 } from "../actions";
@@ -13,6 +14,7 @@ const initialState = {
   user: {},
   clients: [],
   products: [],
+  invoices: [],
   loading: false
 };
 
@@ -45,7 +47,7 @@ export const Reducer = (state = initialState, action) => {
         loading: !state.leading
       };
 
-    case ADD_CLIENT:
+    case POST_CLIENT:
       return {
         ...state,
         clients: [...state.clients, action.payload]
@@ -57,11 +59,17 @@ export const Reducer = (state = initialState, action) => {
         clients: action.payload
       };
 
-    case ADD_PRODUCT:
+    case POST_PRODUCT:
       return {
         ...state,
         products: [...state.products, action.payload]
       };
+
+    case POST_INVOICE:
+      return {
+        ...state,
+        products: [...state.invoices, action.payload]
+      }
 
     case GET_PRODUCTS:
       return {
