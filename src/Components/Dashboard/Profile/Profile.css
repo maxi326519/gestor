@@ -8,6 +8,7 @@
 .dahsboard__profile form{
     padding: 30px;
     border-radius: 20px;
-    width: 400px;
+    width: 100%;
+    height: 100%;
     background-color: white;
 }

@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import AddProduct from "./AddProduct/AddProduct";
+import AddClient from "./AddClient/AddClient";
+import SideBar from "../SideBar/SideBar";
 
-import addSquare from "../../../../assets/svg/add-square.svg";
+import addSquare from "../../../assets/svg/add-square.svg";
+import arrowChange from "../../../assets/svg/arrow-change.svg";
 import "./InvoicesForm.css";
 
 export default function InvoicesForm({ addInvoice, handleAddInvoice }) {
   const [formProduct, setFormproduct] = useState(false);
-  const [total, setTotal] = useState(0);
+  const [formClient, setFormClient] = useState(false);
   const [newProducts, setNewProduct] = useState([]);
+  const [client, setClient] = useState(null);
+  const [total, setTotal] = useState(0);
+
   const initialState = {
     code: "",
     cost: "",
@@ -35,6 +41,10 @@ export default function InvoicesForm({ addInvoice, handleAddInvoice }) {
     setFormproduct(!formProduct);
   }
 
+  function handleFormClient() {
+    setFormClient(!formClient);
+  }
+
   function handleAdd(p) {
     if (!newProducts.find((pi) => pi.code === p.code)) {
       setNewProduct([
@@ -43,19 +53,25 @@ export default function InvoicesForm({ addInvoice, handleAddInvoice }) {
           code: p.code,
           name: p.name,
           unitPrice: p.price,
-          amount: 0
+          amount: 0,
         },
       ]);
     }
   }
 
-  function setAmount(p, amount){
+  function handleSelect(client) {
+    setClient(client);
+    setFormClient(false);
+  }
+
+  function setAmount(p, amount) {
     setNewProduct([
       ...newProducts,
       {
         ...p,
-        amount: amount
-      }]);
+        amount: amount,
+      },
+    ]);
   }
 
   useEffect(() => {
@@ -69,21 +85,14 @@ export default function InvoicesForm({ addInvoice, handleAddInvoice }) {
   }, [newProducts]);
 
   return (
-    <div
-      className="container__form"
-      style={addInvoice ? null : { display: "none" }}
-    >
-      <form className="form-invoice to-left" onSubmit={handleSubmit}>
-        <div className="form__close">
-          <h2>Nueva Factura</h2>
-          <button
-            type="button"
-            className="btn-close"
-            aria-label="Close"
-            onClick={handleAddInvoice}
-          ></button>
-        </div>
-
+    <div className="dashboard">
+      <SideBar
+      /*         handleAddInvoice={handleAddInvoice}
+        handleAddProduct={handleAddProduct}
+        handleAddClient={handleAddClient} */
+      />
+      <form className="dashboard__invoice to-left" onSubmit={handleSubmit}>
+        <h2>Nueva Factura</h2>
         <div className="invoice-data">
           {/* Date*/}
           <div className="form-floating mb-3">
@@ -95,16 +104,29 @@ export default function InvoicesForm({ addInvoice, handleAddInvoice }) {
             />
             <label for="floatingInput">Fecha</label>
           </div>
-          {/* Client*/}
-          <div className="form-floating mb-3">
-            <select className="form-select" name="pvp" onChange={handleChange}>
-              <option>Seleccionar</option>
-              {/*               {clients.map((c) => (
-                <option>{c.name}</option>
-              ))} */}
-            </select>
-            <label for="floatingInput">Cliente</label>
-          </div>
+
+          {/* Client */}
+          {client ? (
+            <div class="invoice-data__client">
+              <div class="invoice-data__client-data">
+                <span>Nombre</span>
+                <span>{client.name}</span>
+                <span>{client.type}</span>
+                <span>{client.dataType}</span>
+              </div>
+              <button className="btn btn-primary" onClick={handleFormClient}>
+                <img src={arrowChange} alt="change client" />
+                <span>Cambiar</span>
+              </button>
+            </div>
+          ) : (
+            <button className="btn btn-primary" onClick={handleFormClient}>
+              <img src={addSquare} alt="add client" />
+              <span>Cliente</span>
+            </button>
+          )}
+
+          {/* Product */}
           <button className="btn btn-primary" onClick={handleFormProduct}>
             <img src={addSquare} alt="add product" />
             <span>Producto</span>
@@ -122,7 +144,11 @@ export default function InvoicesForm({ addInvoice, handleAddInvoice }) {
             <div className="invoice-row">
               <span>{p.name}</span>
               <span>{p.unitPrice}</span>
-              <input className="amount" value={p.amount} onChange={e => setAmount(p, e.target.value)}/>
+              <input
+                className="amount"
+                value={p.amount}
+                onChange={(e) => setAmount(p, e.target.value)}
+              />
               <span>{p.unitPrice * p.amount}</span>
             </div>
           ))}
@@ -143,8 +169,19 @@ export default function InvoicesForm({ addInvoice, handleAddInvoice }) {
         <button type="submit" className="btn btn-primary">
           Agregar factura
         </button>
+        {/* Add product form */}
         {formProduct ? (
-          <AddProduct handleFormProduct={handleFormProduct} handleAdd={handleAdd}/>
+          <AddProduct
+            handleFormProduct={handleFormProduct}
+            handleAdd={handleAdd}
+          />
+        ) : null}
+        {/* Add client form */}
+        {formClient ? (
+          <AddClient
+            handleFormClient={handleFormClient}
+            handleSelect={handleSelect}
+          />
         ) : null}
       </form>
     </div>

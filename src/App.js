@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { login, logOut } from "./redux/actions";
+import { login, logOut, getProducts, getClients } from "./redux/actions";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -10,8 +10,8 @@ import Profile from "./Components/Dashboard/Profile/Profile";
 import Products from "./Components/Dashboard/Products/Products";
 import Client from "./Components/Dashboard/Client/Client";
 import Invoices from "./Components/Dashboard/Invoices/Invoices";
+import InvoicesForm from "./Components/Dashboard/InvoicesForm/InvoicesForm";
 
-import AddInvoice from "./Components/Dashboard/Forms/InvoicesForm/InvoicesForm";
 import ExportInvoice from "./Components/Dashboard/Forms/ExportForm/ExportForm";
 import AddProduct from "./Components/Dashboard/Forms/ProductForm/ProductForm";
 import AddClient from "./Components/Dashboard/Forms/ClientForm/ClientForm";
@@ -30,7 +30,11 @@ function App() {
     const userData = JSON.parse(localStorage.getItem("user"));
     if (userData) {
       dispatch(login(userData))
-        .then(() => redirect("/dashboard/invoices"))
+        .then(() => {
+          dispatch(getProducts(userData.id))
+          dispatch(getClients(userData.id))
+          redirect("/dashboard/invoices/add")
+        })
         .catch(() => dispatch(logOut()));
     } else {
       redirect("/login");
@@ -104,15 +108,20 @@ function App() {
             />
           }
         />
+        <Route
+          path="/dashboard/invoices/add"
+          element={
+            <InvoicesForm
+              addInvoice={form.addInvoice}
+              handleAddInvoice={handleAddInvoice}
+            />
+          }
+        />
 
         <Route path="/login" element={<Login />} />
         <Route path="/signin" element={<Signin />} />
       </Routes>
 
-      <AddInvoice
-        addInvoice={form.addInvoice}
-        handleAddInvoice={handleAddInvoice}
-      />
       <ExportInvoice
         exportInvoice={form.exportInvoice}
         handleExportInvoice={handleExportInvoice}
@@ -121,10 +130,7 @@ function App() {
         addProduct={form.addProduct}
         handleAddProduct={handleAddProduct}
       />
-      <AddClient
-        addClient={form.addClient}
-        handleAddClient={handleAddClient}
-      />
+      <AddClient addClient={form.addClient} handleAddClient={handleAddClient} />
     </div>
   );
 }

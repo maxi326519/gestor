@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { logOut } from "../../../redux/actions";
 import { Link, useNavigate } from "react-router-dom";
@@ -15,15 +15,19 @@ import list from "../../../assets/svg/list.svg";
 import addSquere from "../../../assets/svg/add-square.svg";
 import "./SideBar.css";
 
-export default function SideBar({ handleAddInvoice, handleAddProduct, handleAddClient }) {
+export default function SideBar({
+  handleAddInvoice,
+  handleAddProduct,
+  handleAddClient,
+}) {
   const dispatch = useDispatch();
   const redirect = useNavigate();
   const initialState = {
     user: false,
     invoices: false,
     products: false,
-    clients: false
-  }
+    clients: false,
+  };
   const [accordion, setAccordion] = useState(initialState);
 
   function handleLogOut() {
@@ -31,12 +35,17 @@ export default function SideBar({ handleAddInvoice, handleAddProduct, handleAddC
     redirect("/login");
   }
 
-  function handleAccordion(name){
-    setAccordion({ ...initialState, [name]: !accordion[name]});
+  function handleAccordion(name) {
+    setAccordion({ ...initialState, [name]: !accordion[name] });
   }
 
   return (
-    <div className="container__sideBar" onMouseLeave={()=>{setAccordion(initialState)}}>
+    <div
+      className="container__sideBar"
+      onMouseLeave={() => {
+        setAccordion(initialState);
+      }}
+    >
       <div className="sideBar">
         <div className="sideBar__title">
           <img src={dashboard} alt="dashboard" />
@@ -44,83 +53,105 @@ export default function SideBar({ handleAddInvoice, handleAddProduct, handleAddC
         </div>
 
         {/* USER */}
-        <button onClick={() => handleAccordion('user')}>
+        <button onClick={() => handleAccordion("user")}>
           <img className="sideBar__icon" src={account} alt="account" />
-          <span name="user" className="sideBar__text">Cuenta</span>
+          <span name="user" className="sideBar__text">
+            Cuenta
+          </span>
           <img className="sideBar__down" src={arrowDown} alt="arrowDown" />
         </button>
 
-        <div className="sideBar__accordion" style={ accordion.user ? { display: "block" } : { display: "none" }}>
+        <div
+          className="sideBar__accordion"
+          style={accordion.user ? { display: "block" } : { display: "none" }}
+        >
           <Link to="/dashboard/profile">
-          <button>
+            <button>
               <img className="sideBar__icon" src={profile} alt="profile" />
               <span className="sideBar__text">Perfil</span>
-          </button>
+            </button>
           </Link>
 
           <button onClick={handleLogOut}>
             <img className="sideBar__icon" src={logout} alt="logout" />
-            <span name="user" className="sideBar__text">Cerrar sesión</span>
+            <span name="user" className="sideBar__text">
+              Cerrar sesión
+            </span>
           </button>
         </div>
 
         {/* INVOICES */}
-        <button onClick={() => handleAccordion('invoices')}>
+        <button onClick={() => handleAccordion("invoices")}>
           <img className="sideBar__icon" src={invoices} alt="invoices" />
           <span className="sideBar__text">Facturas</span>
           <img className="sideBar__down" src={arrowDown} alt="arrowDown" />
         </button>
 
-        <div className="sideBar__accordion" style={ accordion.invoices ? { display: "block" } : { display: "none" }}>
+        <div
+          className="sideBar__accordion"
+          style={
+            accordion.invoices ? { display: "block" } : { display: "none" }
+          }
+        >
           <Link to="/dashboard/invoices">
-          <button>
+            <button>
               <img className="sideBar__icon" src={list} alt="profile" />
               <span className="sideBar__text">Listado</span>
-          </button>
+            </button>
           </Link>
-          <button onClick={handleAddInvoice}>
+          <Link to="/dashboard/invoices/add">
+            <button>
               <img className="sideBar__icon" src={addSquere} alt="addSquere" />
               <span className="sideBar__text">Agregar factura</span>
-          </button>
+            </button>
+          </Link>
         </div>
 
         {/* PRODUCTS */}
-        <button onClick={() => handleAccordion('products')}>
+        <button onClick={() => handleAccordion("products")}>
           <img className="sideBar__icon" src={products} alt="product" />
           <span className="sideBar__text">Productos</span>
           <img className="sideBar__down" src={arrowDown} alt="arrowDown" />
         </button>
 
-        <div className="sideBar__accordion" style={ accordion.products ? { display: "block" } : { display: "none" }}>
+        <div
+          className="sideBar__accordion"
+          style={
+            accordion.products ? { display: "block" } : { display: "none" }
+          }
+        >
           <Link to="/dashboard/products">
             <button>
-                <img className="sideBar__icon" src={list} alt="list" />
-                <span className="sideBar__text">Listado</span>
+              <img className="sideBar__icon" src={list} alt="list" />
+              <span className="sideBar__text">Listado</span>
             </button>
           </Link>
           <button onClick={handleAddProduct}>
-              <img className="sideBar__icon" src={addSquere} alt="addSquere" />
-              <span className="sideBar__text">Agregar producto</span>
+            <img className="sideBar__icon" src={addSquere} alt="addSquere" />
+            <span className="sideBar__text">Agregar producto</span>
           </button>
         </div>
 
         {/* CLIENTS */}
-        <button onClick={() => handleAccordion('clients')}>
+        <button onClick={() => handleAccordion("clients")}>
           <img className="sideBar__icon" src={users} alt="users" />
           <span className="sideBar__text">Clientes</span>
           <img className="sideBar__down" src={arrowDown} alt="arrowDown" />
         </button>
 
-        <div className="sideBar__accordion" style={ accordion.clients ? { display: "block" } : { display: "none" }}>
+        <div
+          className="sideBar__accordion"
+          style={accordion.clients ? { display: "block" } : { display: "none" }}
+        >
           <Link to="/dashboard/clients">
             <button>
-                <img className="sideBar__icon" src={list} alt="list" />
-                <span className="sideBar__text">Listado</span>
+              <img className="sideBar__icon" src={list} alt="list" />
+              <span className="sideBar__text">Listado</span>
             </button>
           </Link>
           <button onClick={handleAddClient}>
-              <img className="sideBar__icon" src={addSquere} alt="addSquere" />
-              <span className="sideBar__text">Agregar cliente</span>
+            <img className="sideBar__icon" src={addSquere} alt="addSquere" />
+            <span className="sideBar__text">Agregar cliente</span>
           </button>
         </div>
       </div>

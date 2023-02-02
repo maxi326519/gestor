@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
-import add from "../../../../../assets/svg/add-square.svg";
+import add from "../../../../assets/svg/add-square.svg";
 import "./AddProduct.css";
 
 export default function AddProduct({ handleFormProduct, handleAdd }) {

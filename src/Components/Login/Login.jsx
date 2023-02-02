@@ -8,12 +8,12 @@ export default function Signin() {
   const redirect = useNavigate();
   const dispatch = useDispatch();
   const [user, setUser] = useState({
-    userName: "",
+    ruc: "",
     password: "",
   });
 
   const [error, setError] = useState({
-    userName: null,
+    ruc: null,
     password: null,
   });
 
@@ -26,7 +26,7 @@ export default function Signin() {
     dispatch(login(user))
     .then(() => redirect('/dashboard/clients'))
     .catch((e) => {
-      if(e.message.includes('usuario')) setError({ ...error, userName: e.message.split(':')[1]})
+      if(e.message.includes('Ruc')) setError({ ...error, ruc: e.message.split(':')[1]})
       else if(e.message.includes('contraseña')) setError({ ...error, password: e.message.split(':')[1]})
       console.log(e);
     })
@@ -46,8 +46,8 @@ export default function Signin() {
             placeholder="name"
             onChange={handleChange}
           />
-          <label htmlFor="floatingInput">Nombre de usuario</label>
-          {!error.userName ? null : <small>{error.userName}</small>}
+          <label htmlFor="floatingInput">Ruc</label>
+          {!error.ruc ? null : <small>{error.ruc}</small>}
         </div>
 
         {/* CONTRASEÑA */}

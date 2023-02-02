@@ -24,11 +24,29 @@ export default function Profile({
               <label className="form-label">RUC</label>
               <input type="number" className="form-control" name="ruc" />
             </div>
+            
+            {/* Nombre */}
+            <div className="mb-3">
+              <label className="form-label">Email</label>
+              <input type="email" className="form-control" name="name" />
+            </div>
 
             {/* Email */}
             <div className="mb-3">
               <label className="form-label">Email</label>
               <input type="email" className="form-control" name="Email" />
+            </div>
+
+            {/* Address */}
+            <div className="mb-3">
+              <label className="form-label">Dirección</label>
+              <input type="email" className="form-control" name="address" />
+            </div>
+
+            {/* Telefono */}
+            <div className="mb-3">
+              <label className="form-label">Telefono</label>
+              <input type="email" className="form-control" name="phone" />
             </div>
 
             {/* Password */}

@@ -1,0 +1,82 @@
+.dashboard__invoice {
+  width: 100%;
+  margin: 20px;
+  padding: 20px;
+  border-radius: 20px;
+  background-color: white;
+}
+
+.dashboard__invoice h2 {
+  margin-bottom: 20px;
+}
+
+.invoice-data {
+  display: flex;
+  align-items: center;
+  padding-bottom: 20px;
+}
+
+.invoice-data .form-floating {
+  margin-bottom: 0px !important;
+}
+
+.invoice-data button {
+  margin-left: 20px;
+  height: 58px;
+}
+
+.invoice-data img {
+  margin-right: 10px;
+}
+
+.invoice-data__client {
+  display: flex;
+}
+
+.invoice-data__client-data {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  grid-template-rows: 1fr 1fr;
+  margin-left: 20px;
+  border-radius: 5px;
+  overflow: hidden;
+  border: 1px solid #ccc;
+}
+
+.invoice-data__client-data span{
+    padding: 0 10px;
+    outline: 1px solid #ccc;
+  }
+
+.invoice-products {
+  display: flex;
+  flex-direction: column;
+}
+
+.invoice-row {
+  display: grid;
+  grid-template-columns: 1fr repeat(3, 150px);
+}
+
+.invoice-first-row {
+  background-color: #0002;
+}
+
+.invoice-row span {
+  padding: 10px 20px;
+  outline: 1px solid #ccc;
+}
+
+.invoice-total {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.invoice-total span {
+  padding: 10px 20px;
+  width: 150px;
+}
+
+.form-invoice button[type="submit"] {
+  margin-top: 30px;
+}
