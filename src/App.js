@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { login, logOut, getProducts, getClients } from "./redux/actions";
+import { login, logOut, getProducts, getClients, getInvoices } from "./redux/actions";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -18,6 +18,7 @@ import AddClient from "./Components/Dashboard/Forms/ClientForm/ClientForm";
 
 import Login from "./Components/Login/Login";
 import Signin from "./Components/Signin/Signin";
+import UserForm from "./Components/Signin/UserForm/UserForm";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -25,17 +26,22 @@ import "./App.css";
 function App() {
   const redirect = useNavigate();
   const dispatch = useDispatch();
+  const loading = useSelector((state) => state.loading);
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
     if (userData) {
       dispatch(login(userData))
         .then(() => {
-          dispatch(getProducts(userData.id))
-          dispatch(getClients(userData.id))
-          redirect("/dashboard/invoices/add")
+          dispatch(getProducts(userData.uid));
+          dispatch(getClients(userData.uid));
+          dispatch(getInvoices(userData.uid));
+          redirect("/dashboard/invoices/add");
         })
-        .catch(() => dispatch(logOut()));
+        .catch((e) => {
+          console.log(e);
+          dispatch(logOut());
+        });
     } else {
       redirect("/login");
     }
@@ -74,8 +80,8 @@ function App() {
   return (
     <div className="App">
       <ToastContainer />
+      {loading ? <Loading /> : null}
       <Routes>
-        <Route path="/" element={<Loading />} />
         <Route path="/dashboard/profile" element={<Profile />} />
         <Route
           path="/dashboard/products"
@@ -120,6 +126,7 @@ function App() {
 
         <Route path="/login" element={<Login />} />
         <Route path="/signin" element={<Signin />} />
+        <Route path="/signin/user" element={<UserForm />} />
       </Routes>
 
       <ExportInvoice

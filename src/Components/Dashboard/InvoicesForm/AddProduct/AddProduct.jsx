@@ -4,18 +4,30 @@ import { useSelector } from "react-redux";
 import add from "../../../../assets/svg/add-square.svg";
 import "./AddProduct.css";
 
-export default function AddProduct({ handleFormProduct, handleAdd }) {
+export default function AddProduct({
+  handleFormProduct,
+  handleAdd,
+  handleRemove,
+}) {
   const products = useSelector((state) => state.products);
   const [productInvoice, setProduct] = useState([]);
+  const [isAdded, setAdded] = useState([]);
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
     setRows(products);
+    setAdded(
+      products.map((p) => {
+        return {
+          code: p.code,
+          added: false,
+        };
+      })
+    );
   }, [products]);
 
   function handleChange(e) {
     const value = e.target.value;
-
     setRows(
       products.filter((row) => {
         if (value === "") return true;
@@ -39,7 +51,11 @@ export default function AddProduct({ handleFormProduct, handleAdd }) {
           ></button>
         </div>
         <div className="Search-product">
-          <input className="form-control" placeholder="Buscar un producto..." onChange={handleChange}/>
+          <input
+            className="form-control"
+            placeholder="Buscar un producto..."
+            onChange={handleChange}
+          />
         </div>
         <div className="product-list">
           <div className="invoice-product-card">
@@ -47,13 +63,31 @@ export default function AddProduct({ handleFormProduct, handleAdd }) {
             <span>Nombre</span>
             <span>Agregar</span>
           </div>
-          {rows?.map((p) => (
+          {rows?.map((p, i) => (
             <div className="invoice-product-card">
               <span>{p.code}</span>
               <span>{p.name}</span>
-              <span className="btn btn-primary"onClick={() => handleAdd(p)}>
-                +
-              </span>
+              {isAdded[i] && isAdded[i].added ? (
+                <span
+                  className="btn btn-danger"
+                  onClick={() => {
+                    isAdded[i].added = false;
+                    handleRemove(p);
+                  }}
+                >
+                  -
+                </span>
+              ) : (
+                <span
+                  className="btn btn-primary"
+                  onClick={() => {
+                    isAdded[i].added = true;
+                    handleAdd(p);
+                  }}
+                >
+                  +
+                </span>
+              )}
             </div>
           ))}
         </div>

@@ -49,6 +49,7 @@
 }
 
 .invoice-row .amount{
+    padding-left: 20px;
     width: 150px;
 }
 

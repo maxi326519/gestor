@@ -35,7 +35,7 @@
 
 .invoice-data__client-data {
   display: grid;
-  grid-template-columns: 80px 1fr;
+  grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
   margin-left: 20px;
   border-radius: 5px;

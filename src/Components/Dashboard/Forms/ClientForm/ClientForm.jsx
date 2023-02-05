@@ -9,7 +9,7 @@ import "../Form.css";
 import { initializeApp } from "firebase/app";
 
 export default function ClientForm({ addClient, handleAddClient }) {
-  const userId = useSelector((state) => state.user.id);
+  const userId = useSelector((state) => state.user.uid);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const initialState = {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { postProduct } from "../../../../redux/actions";
+import { postProduct, openLoading, closeLoading } from "../../../../redux/actions";
 
 import Loading from "../../../Loading/Loading";
 
@@ -10,45 +10,45 @@ import "../Form.css";
 export default function ProductForm({ addProduct, handleAddProduct }) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const userId = useSelector((state) => state.user.id);
+  const userId = useSelector((state) => state.user.uid);
   const initialState = useState({
     name: "",
     code: "",
     type: "",
     price: "",
     taxesBoolean: false,
-    taxes: "",
+    taxes: "0",
     description: "",
   });
   const [product, setProduct] = useState(initialState);
 
   function handleChange(e) {
+    console.log(product);
     setProduct({ ...product, [e.target.name]: e.target.value });
   }
 
   function handleSubmit(e) {
     e.preventDefault();
-    setLoading(true);
+    dispatch(openLoading());
 
     const newProduct = {
       name: product.name,
       code: product.code,
       type: product.type,
       price: product.price,
-      taxes: product.taxes,
       description: product.description,
     };
 
     console.log(newProduct);
 
-    dispatch(postProduct(userId, newProduct))
+    dispatch(postProduct(6, newProduct))
       .then((d) => {
-        setLoading(false);
+        dispatch(closeLoading());
         handleClose();
         toast("¡Producto agregado exitosamente!");
       })
       .catch((e) => {
-        setLoading(false);
+        dispatch(closeLoading());
         toast("Hubo un error al agregar el producto");
         console.log(e);
       });

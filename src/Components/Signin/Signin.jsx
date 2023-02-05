@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { signin } from "../../redux/actions";
+import { signin, GoogleSesion, openLoading, closeLoading } from "../../redux/actions";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
 import "./Signin.css";
 
 export default function Signin() {
@@ -18,24 +20,48 @@ export default function Signin() {
     ruc: null,
     email: null,
     password: null,
-    confirmPassword: null,  
+    confirmPassword: null,
   });
 
-  function handleChange(e){
+  function handleGoogleSesion(e) {
+    e.preventDefault();
+    dispatch(openLoading());
+    dispatch(GoogleSesion())
+      .then(() => {
+        dispatch(closeLoading());
+        redirect("/signin/user");
+      })
+      .catch((e) => {
+        dispatch(closeLoading());
+        console.log(e);
+        toast(e);
+      });
+  }
+
+  function handleChange(e) {
     console.log(user);
     setUser({ ...user, [e.target.name]: e.target.value });
-  };
+  }
 
-  function handleSubmit(e){
+  function handleSubmit(e) {
     e.preventDefault();
-    dispatch(signin({
-      ruc: user.ruc,
-      email: user.email,
-      password: user.password,
-    }))
-    .then(() => redirect('/dashboard/clients'))
-    .catch((e) => setError({ ...error, email: e.message.split(':')[1]}))
-  };
+    dispatch(openLoading());
+    dispatch(
+      signin({
+        ruc: user.ruc,
+        email: user.email,
+        password: user.password,
+      })
+    )
+      .then(() => {
+        dispatch(closeLoading());
+        redirect("/signin/user");
+      })
+      .catch((e) => {
+        dispatch(closeLoading());
+        console.log(e);
+      });
+  }
 
   return (
     <div className="sesion">
@@ -98,10 +124,18 @@ export default function Signin() {
             onChange={handleChange}
           />
           <label htmlFor="floatingInput">Confirmar contraseña</label>
-          {!error.confirmPassword ? null : <small>{error.confirmPassword}</small>}
+          {!error.confirmPassword ? null : (
+            <small>{error.confirmPassword}</small>
+          )}
         </div>
 
-        <button className="btn btn-primary" type="submit">Registrarse</button>
+        <button className="btn btn-primary" type="submit">
+          Registrarse
+        </button>
+
+        <button className="btn btn-primary" onClick={handleGoogleSesion}>
+          Registrase con Google
+        </button>
 
         <p>¿Ya tienes cuenta?</p>
 

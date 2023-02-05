@@ -1,4 +1,4 @@
-import "InvoiceCard.css";
+import "./InvoiceCard.css";
 
 export default function InvoiceCard(){
     return(

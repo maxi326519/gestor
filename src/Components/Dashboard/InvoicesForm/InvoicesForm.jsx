@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  postInvoice,
+  openLoading,
+  closeLoading,
+} from "../../../redux/actions";
 
 import AddProduct from "./AddProduct/AddProduct";
 import AddClient from "./AddClient/AddClient";
@@ -8,8 +13,10 @@ import SideBar from "../SideBar/SideBar";
 import addSquare from "../../../assets/svg/add-square.svg";
 import arrowChange from "../../../assets/svg/arrow-change.svg";
 import "./InvoicesForm.css";
+import { toast } from "react-toastify";
 
-export default function InvoicesForm({ addInvoice, handleAddInvoice }) {
+export default function InvoicesForm({ addInvoice, handleAddInvoice, handleAddProduct, handleAddClient }) {
+  const userId = useSelector((state) => state.user.uid);
   const [formProduct, setFormproduct] = useState(false);
   const [formClient, setFormClient] = useState(false);
   const [newProducts, setNewProduct] = useState([]);
@@ -17,11 +24,8 @@ export default function InvoicesForm({ addInvoice, handleAddInvoice }) {
   const [total, setTotal] = useState(0);
 
   const initialState = {
-    code: "",
-    cost: "",
-    amount: "",
-    product: "",
-    client: "",
+    product: [],
+    client: {},
     date: "",
   };
 
@@ -35,6 +39,26 @@ export default function InvoicesForm({ addInvoice, handleAddInvoice }) {
 
   function handleSubmit(e) {
     e.preventDefault();
+    dispatch(openLoading());
+
+    const newInvoice = {
+      ...invoice,
+      product: newProducts,
+      client: client.id,
+    };
+
+    console.log(newInvoice);
+
+    dispatch(postInvoice(userId, newInvoice))
+      .then((d) => {
+        dispatch(closeLoading());
+        toast("Factura agregada exitosamente!");
+      })
+      .catch((e) => {
+        dispatch(closeLoading());
+        toast("Hubo un error al agregar el producto");
+        console.log(e);
+      });
   }
 
   function handleFormProduct() {
@@ -59,19 +83,27 @@ export default function InvoicesForm({ addInvoice, handleAddInvoice }) {
     }
   }
 
+  function handleRemove(p) {
+    setNewProduct(newProducts.filter((pf) => pf.code !== p.code));
+  }
+
   function handleSelect(client) {
     setClient(client);
     setFormClient(false);
   }
 
-  function setAmount(p, amount) {
-    setNewProduct([
-      ...newProducts,
-      {
-        ...p,
-        amount: amount,
-      },
-    ]);
+  function setAmount(amount, code) {
+    setNewProduct(
+      newProducts.map((p) => {
+        if (p.code === code) {
+          return {
+            ...p,
+            amount: amount,
+          };
+        }
+        return p;
+      })
+    );
   }
 
   useEffect(() => {
@@ -87,11 +119,11 @@ export default function InvoicesForm({ addInvoice, handleAddInvoice }) {
   return (
     <div className="dashboard">
       <SideBar
-      /*         handleAddInvoice={handleAddInvoice}
+        handleAddInvoice={handleAddInvoice}
         handleAddProduct={handleAddProduct}
-        handleAddClient={handleAddClient} */
+        handleAddClient={handleAddClient}
       />
-      <form className="dashboard__invoice to-left" onSubmit={handleSubmit}>
+      <div className="dashboard__invoice to-left">
         <h2>Nueva Factura</h2>
         <div className="invoice-data">
           {/* Date*/}
@@ -99,7 +131,7 @@ export default function InvoicesForm({ addInvoice, handleAddInvoice }) {
             <input
               type="date"
               className="form-control"
-              name="type"
+              name="date"
               onChange={handleChange}
             />
             <label for="floatingInput">Fecha</label>
@@ -146,8 +178,9 @@ export default function InvoicesForm({ addInvoice, handleAddInvoice }) {
               <span>{p.unitPrice}</span>
               <input
                 className="amount"
+                type="number"
                 value={p.amount}
-                onChange={(e) => setAmount(p, e.target.value)}
+                onChange={(e) => setAmount(e.target.value, p.code)}
               />
               <span>{p.unitPrice * p.amount}</span>
             </div>
@@ -166,7 +199,7 @@ export default function InvoicesForm({ addInvoice, handleAddInvoice }) {
           </div>
         </div>
 
-        <button type="submit" className="btn btn-primary">
+        <button className="btn btn-primary" onClick={handleSubmit}>
           Agregar factura
         </button>
         {/* Add product form */}
@@ -174,6 +207,7 @@ export default function InvoicesForm({ addInvoice, handleAddInvoice }) {
           <AddProduct
             handleFormProduct={handleFormProduct}
             handleAdd={handleAdd}
+            handleRemove={handleRemove}
           />
         ) : null}
         {/* Add client form */}
@@ -183,7 +217,7 @@ export default function InvoicesForm({ addInvoice, handleAddInvoice }) {
             handleSelect={handleSelect}
           />
         ) : null}
-      </form>
+      </div>
     </div>
   );
 }

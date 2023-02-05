@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { login } from "../../redux/actions";
-import { Link, useNavigate} from "react-router-dom";
+import { login, GoogleSesion, openLoading, closeLoading } from "../../redux/actions";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
 import "./Login.css";
 
 export default function Signin() {
@@ -17,32 +19,49 @@ export default function Signin() {
     password: null,
   });
 
-  function handleChange(e){
+  function handleChange(e) {
     setUser({ ...user, [e.target.name]: e.target.value });
-  };
+  }
 
-  function handleSubmit(e){
+  function handleGoogleSesion(e) {
     e.preventDefault();
+    dispatch(openLoading());
+    dispatch(GoogleSesion())
+      .then(() => {
+        dispatch(closeLoading());
+        redirect("/dashboard/invoices/add");
+      })
+      .catch((e) => {
+        dispatch(closeLoading());
+        toast(e);
+      });
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    dispatch(openLoading());
     dispatch(login(user))
-    .then(() => redirect('/dashboard/clients'))
-    .catch((e) => {
-      if(e.message.includes('Ruc')) setError({ ...error, ruc: e.message.split(':')[1]})
-      else if(e.message.includes('contraseña')) setError({ ...error, password: e.message.split(':')[1]})
-      console.log(e);
-    })
-  };
+      .then(() => {
+        dispatch(closeLoading());
+        redirect("/dashboard/invoices/add");
+      })
+      .catch((e) => {
+        dispatch(closeLoading());
+        console.log(e);
+      });
+  }
 
   return (
     <div className="sesion">
-      <form onSubmit={handleSubmit} className="to-left">
+      <form className="to-left">
         <h2>Iniciar sesion</h2>
-        {/* USUARIO */}
+        {/* Ruc */}
         <div className="form-floating mb-3">
           <input
             type="text"
-            name="userName"
-            className={`form-control ${!error.userName ? "" : "is-invalid"}`}
-            id={error.userName ? "floatingInputInvalid" : "user"}
+            name="ruc"
+            className={`form-control ${!error.ruc ? "" : "is-invalid"}`}
+            id={error.ruc ? "floatingInputInvalid" : "user"}
             placeholder="name"
             onChange={handleChange}
           />
@@ -65,7 +84,13 @@ export default function Signin() {
         </div>
 
         {/* BOTON DE REGISTRO */}
-        <button className="btn btn-primary" type="submit">Iniciar sesion</button>
+        <button className="btn btn-primary" onClick={handleSubmit}>
+          Iniciar sesion
+        </button>
+
+        <button className="btn btn-primary" onClick={handleGoogleSesion}>
+          Registrase con Google
+        </button>
 
         <p>¿No tienes cuenta?</p>
 

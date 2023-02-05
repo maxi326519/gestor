@@ -14,15 +14,6 @@ export default function ProductList({ handleAddProduct }) {
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
-    if (products.length <= 0) {
-      dispatch(getProducts(userId))
-      .catch((e) =>{
-        toast(e.message.split(":")[1])
-      });
-    }
-  }, [userId]);
-
-  useEffect(() => {
     setRows(products);
   }, [products]);
 

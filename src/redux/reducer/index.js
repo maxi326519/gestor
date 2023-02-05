@@ -2,12 +2,14 @@ import {
   SIGN_IN,
   LOG_IN,
   LOG_OUT,
-  LOADING,
+  OPEN_LOADING,
+  CLOSE_LOADING,
   POST_CLIENT,
   POST_PRODUCT,
   POST_INVOICE,
   GET_CLIENTS,
   GET_PRODUCTS,
+  GET_INVOICES,
 } from "../actions";
 
 const initialState = {
@@ -15,7 +17,7 @@ const initialState = {
   clients: [],
   products: [],
   invoices: [],
-  loading: false
+  loading: false,
 };
 
 export const Reducer = (state = initialState, action) => {
@@ -24,57 +26,69 @@ export const Reducer = (state = initialState, action) => {
       localStorage.setItem("user", JSON.stringify(action.payload));
       return {
         ...state,
-        user: action.payload
+        user: action.payload,
       };
 
     case LOG_IN:
       localStorage.setItem("user", JSON.stringify(action.payload));
       return {
         ...state,
-        user: action.payload
+        user: action.payload,
       };
-    
+
     case LOG_OUT:
       localStorage.removeItem("user");
       return {
         ...state,
-        user: {}
+        user: {},
       };
-    
-    case LOADING:
-      return{
+
+    case OPEN_LOADING:
+      return {
         ...state,
-        loading: !state.leading
+        loading: true,
+      };
+
+    case CLOSE_LOADING:
+      return {
+        ...state,
+        loading: false,
       };
 
     case POST_CLIENT:
       return {
         ...state,
-        clients: [...state.clients, action.payload]
+        clients: [...state.clients, action.payload],
       };
 
     case GET_CLIENTS:
       return {
         ...state,
-        clients: action.payload
+        clients: action.payload,
+      };
+
+    case GET_PRODUCTS:
+      return {
+        ...state,
+        products: action.payload,
+      };
+
+    case GET_INVOICES:
+      return {
+        ...state,
+        invoices: action.payload,
       };
 
     case POST_PRODUCT:
       return {
         ...state,
-        products: [...state.products, action.payload]
+        products: [...state.products, action.payload],
       };
 
     case POST_INVOICE:
       return {
         ...state,
-        products: [...state.invoices, action.payload]
-      }
-
-    case GET_PRODUCTS:
-      return {
-        ...state,
-        products: action.payload
+        invoices: [...state.invoices, action.payload],
       };
 
     default:
