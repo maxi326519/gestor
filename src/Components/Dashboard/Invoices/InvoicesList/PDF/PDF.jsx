@@ -47,6 +47,15 @@ export default function PDF({ invoice }) {
       <PDFViewer style={styles.viewer}>
         <Document>
           <Page size="A4" style={styles.page}>
+            <View>
+              <Text>Nombre de la empresa</Text>
+            </View>
+            <View>
+              <Text>Ruc: </Text>
+              <Text>Dirección: </Text>
+              <Text>Correo: </Text>
+              <Text>Teléfono: </Text>
+            </View>
             <View style={styles.info}>
               <Text>Cliente: {invoice.client}</Text>
               <Text>Fecha: {invoice.date}</Text>
