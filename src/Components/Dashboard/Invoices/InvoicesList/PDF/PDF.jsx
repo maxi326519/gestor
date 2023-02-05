@@ -64,6 +64,11 @@ export default function PDF({ invoice }) {
                   <Text style={styles.text}>{p.amount}</Text>
                 </View>
               ))}
+            <View>
+              <Text>Subtotal: </Text>
+              <Text>Impuestos: </Text>
+              <Text>Total: </Text>
+            </View>
             </View>
           </Page>
         </Document>
