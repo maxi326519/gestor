@@ -1,14 +1,15 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { uploadUser, openLoading, closeLoading } from "../../../redux/actions";
 import { useNavigate } from "react-router-dom";
 
 import "./UserForm.css";
 
 export default function Signin() {
+
   const dispatch = useDispatch();
   const redirect = useNavigate();
-  const userUID = useState((state) => user.uid);
+  const userData = useSelector(state => state.user);
   const [user, setUser] = useState({
     businessName: "",
     address: "",
@@ -23,6 +24,7 @@ export default function Signin() {
     phone: false,
     tradeName: false,
     logo: false,
+    complete: true 
   });
 
   function handleChange(e) {
@@ -33,16 +35,22 @@ export default function Signin() {
   function handleSubmit(e) {
     e.preventDefault();
     dispatch(openLoading());
-    dispatch(uploadUser(userUID, user))
+    dispatch(uploadUser(userData.uid, user))
       .then(() => {
         dispatch(closeLoading());
-        redirect("/signin/user");
+        redirect("/dashboard/invoices/add");
       })
       .catch((e) => {
         dispatch(closeLoading());
         console.log(e);
       });
   }
+
+  useEffect(() => {
+    if(user.complete){
+      redirect("/dashboard/invoices/add");
+    }
+  }, [userData])
 
   return (
     <div className="sesion">
@@ -59,6 +67,7 @@ export default function Signin() {
             id={error.businessName ? "floatingInputInvalid" : "floatingInput"}
             placeholder="name"
             onChange={handleChange}
+            required
           />
           <label htmlFor="floatingInput">Razón Social</label>
           {!error.businessName ? null : <small>{error.businessName}</small>}
@@ -73,6 +82,7 @@ export default function Signin() {
             id={error.address ? "floatingInputInvalid" : "floatingInput"}
             placeholder="name@example.com"
             onChange={handleChange}
+            required
           />
           <label htmlFor="floatingInput">Dirección</label>
           {!error.address ? null : <small>{error.address}</small>}
@@ -87,6 +97,7 @@ export default function Signin() {
             id={error.phone ? "floatingInputInvalid" : "floatingInput"}
             placeholder="Contraseña"
             onChange={handleChange}
+            required
           />
           <label htmlFor="floatingInput">Teléfono</label>
           {!error.phone ? null : <small>{error.phone}</small>}
@@ -101,6 +112,7 @@ export default function Signin() {
             className={`form-control ${!error.tradeName ? "" : "is-invalid"}`}
             id={error.tradeName ? "floatingInputInvalid" : "floatingInput"}
             onChange={handleChange}
+            required
           />
           <label htmlFor="floatingInput">Nombre Comercial</label>
           {!error.tradeName ? null : <small>{error.tradeName}</small>}

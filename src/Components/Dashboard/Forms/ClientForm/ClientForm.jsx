@@ -67,13 +67,14 @@ export default function ClientForm({ addClient, handleAddClient }) {
             value={client.name}
             name="name"
             onChange={handleChange}
+            required
           />
           <label className="form-label">Nombre</label>
         </div>
 
         {/* Type */}
         <div className="form-floating mb-3">
-          <select className="form-select" name="type" onChange={handleChange}>
+          <select className="form-select" name="type" onChange={handleChange} required>
             <option value="">Seleccionar</option>
             <option value="Ruc">Ruc</option>
             <option value="Cedula">Cedula</option>
@@ -89,6 +90,7 @@ export default function ClientForm({ addClient, handleAddClient }) {
             name="dataType"
             value={client.dataType}
             onChange={handleChange}
+            required
           />
           <label className="form-label">{client.type}</label>
         </div>
@@ -100,6 +102,7 @@ export default function ClientForm({ addClient, handleAddClient }) {
             name="email"
             value={client.email}
             onChange={handleChange}
+            required
           />
           <label className="form-label">Email</label>
         </div>
@@ -111,6 +114,7 @@ export default function ClientForm({ addClient, handleAddClient }) {
             name="address"
             value={client.address}
             onChange={handleChange}
+            required
           />
           <label className="form-label">Direccion</label>
         </div>
@@ -122,6 +126,7 @@ export default function ClientForm({ addClient, handleAddClient }) {
             name="phone"
             value={client.phone}
             onChange={handleChange}
+            required
           />
           <label className="form-label">Telefono</label>
         </div>

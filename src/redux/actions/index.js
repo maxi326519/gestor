@@ -4,6 +4,7 @@ import {
   doc,
   addDoc,
   setDoc,
+  getDoc,
   getDocs,
   updateDoc,
   deleteDoc,
@@ -41,6 +42,7 @@ export const SIGN_IN = "SIGN_IN";
 export const UPLOAD_USER = "UPLOAD_USER";
 export const LOG_IN = "LOG_IN";
 export const LOG_OUT = "LOG_OUT";
+export const GET_USER_DATA = "GET_USER_DATA";
 
 export const OPEN_LOADING = "OPEN_LOADING";
 export const CLOSE_LOADING = "CLOSE_LOADING";
@@ -60,7 +62,7 @@ export const UPDATE_PRODUCT = "UPDATE_PRODUCT";
 export const UPDATE_INVOICE = "UPDATE_INVOICE";
 
 export const DELETE_INVOICE = "DELETE_INVOICE";
-export const DELETE_CLIENT  = "DELETE_CLIENT";
+export const DELETE_CLIENT = "DELETE_CLIENT";
 export const DELETE_PRODUCT = "DELETE_PRODUCT";
 
 // POSTS
@@ -75,11 +77,10 @@ export function signin(user) {
       );
       const newUser = userCredential.user;
 
-      console.log(newUser.uid);
-
       await setDoc(doc(db, "users", newUser.uid), {
         ruc: user.ruc,
         email: user.email,
+        complete: false,
       });
 
       return dispatch({
@@ -92,12 +93,18 @@ export function signin(user) {
   };
 }
 
-export function uploadUser(newData) {
+export function uploadUser(userId, newData) {
   return async (dispatch) => {
     try {
-      await setDoc(doc(collection(db, "users"), newData));
+      const response = await updateDoc(doc(db, "users", userId), {
+        ...newData,
+        complete: true,
+      });
+
+      console.log(response);
+
       return dispatch({
-        type: UPLOAD_USER,
+        type: GET_USER_DATA,
         payload: newData,
       });
     } catch (err) {
@@ -125,9 +132,11 @@ export function login(userData) {
         userData.password
       );
 
+      const dataUser = await getDoc(doc(db, "users", userData.uid));
+
       return dispatch({
         type: LOG_IN,
-        payload: { ...userCredential.user, ...userData },
+        payload: { ...userCredential.user, ...userData, ...dataUser.data()},
       });
     } catch (err) {
       throw new Error(err);
@@ -179,24 +188,24 @@ export function closeLoading() {
   };
 }
 
-export function Alert(text, isAcceptFunction){
-  return dispatch => {
+export function Alert(text, isAcceptFunction) {
+  return (dispatch) => {
     return dispatch({
       type: ALERT,
       payload: {
         text,
-        isAcceptFunction
-      }
+        isAcceptFunction,
+      },
     });
-  }
+  };
 }
 
-export function clearAlert(){
-  return dispatch => {
+export function clearAlert() {
+  return (dispatch) => {
     return dispatch({
-      type: CLEAR_ALERT
+      type: CLEAR_ALERT,
     });
-  }
+  };
 }
 
 export function postClient(userId, client) {
@@ -262,6 +271,22 @@ export function postInvoice(userId, invoice) {
 }
 
 // GETERS
+export function getUserData(userId) {
+  return async (dispatch) => {
+    try {
+      const dataUser = await getDoc(doc(db, "users", userId));
+      console.log(dataUser.data());
+
+      return dispatch({
+        type: GET_USER_DATA,
+        payload: dataUser.data(),
+      });
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
+}
+
 export function getClients(userId) {
   return async (dispatch) => {
     try {
@@ -354,14 +379,13 @@ export function deleteClient(userId, id) {
 
       return dispatch({
         type: DELETE_CLIENT,
-        payload: id
-      })
+        payload: id,
+      });
     } catch (err) {
       throw new Error(err);
     }
   };
 }
-
 
 export function deleteProduct(userId, id) {
   return async (dispatch) => {
@@ -371,14 +395,13 @@ export function deleteProduct(userId, id) {
 
       return dispatch({
         type: DELETE_PRODUCT,
-        payload: id
-      })
+        payload: id,
+      });
     } catch (err) {
       throw new Error(err);
     }
   };
 }
-
 
 export function deleteInvoice(userId, id) {
   return async (dispatch) => {
@@ -388,42 +411,42 @@ export function deleteInvoice(userId, id) {
 
       return dispatch({
         type: DELETE_INVOICE,
-        payload: id
-      })
+        payload: id,
+      });
     } catch (err) {
       throw new Error(err);
     }
   };
 }
 
-export function updateClient(userId, id, clientData){
+export function updateClient(userId, id, clientData) {
   return async (dispatch) => {
-    try{
+    try {
       const clienColl = collection(db, "users", userId, "clients");
       await updateDoc(doc(clienColl, id), clientData);
 
       return dispatch({
         type: UPDATE_CLIENT,
-        payload: clientData
-      })
-    }catch(err){
+        payload: clientData,
+      });
+    } catch (err) {
       throw new Error(err);
     }
-  }
+  };
 }
 
-export function updateProduct(userId, productData){
+export function updateProduct(userId, productData) {
   return async (dispatch) => {
-    try{
+    try {
       const productColl = collection(db, "users", userId, "products");
       await updateDoc(doc(productColl, productData.code), productData);
 
       return dispatch({
         type: UPDATE_PRODUCT,
-        payload: productData
-      })
-    }catch(err){
+        payload: productData,
+      });
+    } catch (err) {
       throw new Error(err);
     }
-  }
+  };
 }

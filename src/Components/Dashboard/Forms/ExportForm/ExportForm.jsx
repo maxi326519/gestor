@@ -40,6 +40,7 @@ export default function ExportForm({ exportInvoice, handleExportInvoice }) {
             name="dateFrom"
             className="form-control"
             onChange={handleChange}
+            required
           />
         </div>
 
@@ -51,6 +52,7 @@ export default function ExportForm({ exportInvoice, handleExportInvoice }) {
             name="dateTo"
             className="form-control"
             onChange={handleChange}
+            required
           />
         </div>
 

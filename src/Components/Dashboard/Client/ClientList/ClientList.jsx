@@ -15,12 +15,6 @@ export default function ClientList({ handleAddClient }) {
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
-    if (clients.length <= 0) {
-      dispatch(getClients(userId)).catch((e) => toast(e.message.split(":")[1]));
-    }
-  }, [userId]);
-
-  useEffect(() => {
     setRows(clients);
   }, [clients]);
 

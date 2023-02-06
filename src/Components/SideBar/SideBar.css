@@ -1,0 +1,114 @@
+.container__sideBar {
+  width: 80px;
+  color: white;
+  background-color: white;
+}
+
+.sideBar {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  z-index: 1000;
+  width: max-content;
+  height: 100%;
+
+  background-color: var(--primary-color);
+  transition: 0.2s;
+}
+
+.container__sideBar:hover .sideBar {
+  box-shadow: 0 0 40px 10px #0008;
+  transition: 0.2s;
+}
+
+.container__sideBar:hover .sideBar__title h1,
+.container__sideBar:hover .sideBar__text {
+  width: 150px;
+  margin-left: 15px;
+  opacity: 100%;
+  transition: 0.2s;
+}
+
+.container__sideBar:hover .sideBar__down {
+  width: 20px;
+}
+
+.container__sideBar:hover .sideBar__accordion{
+    display: block;
+}
+
+.sideBar a{
+    text-decoration: none;
+}
+
+.sideBar button{
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  text-decoration: none;
+  border: none;
+  background-color: transparent;
+  color: white;
+}
+
+.sideBar button:hover{
+  font-weight: bold;
+  color: white;
+  background-color: #fff2;
+}
+
+.sideBar button span{
+    text-align: left;
+}
+
+.sideBar__title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: #0001;
+}
+
+.sideBar__title img {
+  width: 40px;
+  height: 40px;
+  filter: invert(90%);
+}
+
+.sideBar__title h1 {
+  width: 0;
+  opacity: 0;
+  margin: 0;
+  font-size: 30px;
+  font-weight: bold;
+  overflow: hidden;
+  transition: 0.2s;
+}
+
+.sideBar__icon {
+  margin-left: 5px;
+  width: 25px;
+  height: 25px;
+  filter: invert(90%);
+}
+
+.sideBar__down {
+  width: 0;
+  height: 20px;
+  filter: invert(90%);
+}
+
+.sideBar__text {
+  width: 0;
+  opacity: 0;
+  overflow: hidden;
+  font-size: 18px;
+  transition: 0.2s;
+}
+
+.sideBar__accordion{
+    overflow: hidden;
+    padding-left: 20px;
+    background-color: #0003;
+    transition: 0.2s;
+}

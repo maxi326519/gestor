@@ -1,7 +1,17 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { login, logOut, getProducts, getClients, getInvoices, clearAlert } from "./redux/actions";
+import {
+  login,
+  logOut,
+  getProducts,
+  getClients,
+  getInvoices,
+  clearAlert,
+  getUserData,
+  openLoading,
+  closeLoading
+} from "./redux/actions";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -34,12 +44,22 @@ function App() {
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
     if (userData) {
+      dispatch(openLoading());
       dispatch(login(userData))
         .then(() => {
           dispatch(getProducts(userData.uid));
           dispatch(getClients(userData.uid));
           dispatch(getInvoices(userData.uid));
-          redirect("/dashboard/invoices/add");
+          dispatch(getUserData(userData.uid))
+          .then(() => {
+            dispatch(closeLoading());
+            console.log(userData);
+            if(userData.complete === true){
+              redirect("/dashboard/invoices/add");
+            }else{
+              redirect("/signin/user");
+            }
+          })
         })
         .catch((e) => {
           console.log(e);
@@ -83,7 +103,11 @@ function App() {
   return (
     <div className="App">
       <ToastContainer />
-      <Alert text={alert.text} isAccept={alert.isAcceptFunction} isCanceled={() => dispatch(clearAlert())}/>
+      <Alert
+        text={alert.text}
+        isAccept={alert.isAcceptFunction}
+        isCanceled={() => dispatch(clearAlert())}
+      />
       {loading ? <Loading /> : null}
       <Routes>
         <Route path="/dashboard/profile" element={<Profile />} />

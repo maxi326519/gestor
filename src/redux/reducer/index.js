@@ -2,6 +2,8 @@ import {
   SIGN_IN,
   LOG_IN,
   LOG_OUT,
+  UPLOAD_USER,
+  GET_USER_DATA,
   OPEN_LOADING,
   CLOSE_LOADING,
   ALERT,
@@ -53,6 +55,12 @@ export const Reducer = (state = initialState, action) => {
         ...state,
         user: {},
       };
+
+    case GET_USER_DATA:
+      return{
+        ...state,
+        user: { ...state.user, ...action.payload }
+      }
 
     case OPEN_LOADING:
       return {

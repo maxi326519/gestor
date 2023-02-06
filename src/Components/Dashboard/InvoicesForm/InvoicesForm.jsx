@@ -133,6 +133,7 @@ export default function InvoicesForm({ addInvoice, handleAddInvoice, handleAddPr
               className="form-control"
               name="date"
               onChange={handleChange}
+              required
             />
             <label for="floatingInput">Fecha</label>
           </div>

@@ -76,6 +76,7 @@ export default function Signin() {
             id={error.ruc ? "floatingInputInvalid" : "floatingInput"}
             placeholder="name"
             onChange={handleChange}
+            required
           />
           <label htmlFor="floatingInput">Ruc</label>
           {!error.ruc ? null : <small>{error.ruc}</small>}
@@ -90,6 +91,7 @@ export default function Signin() {
             id={error.email ? "floatingInputInvalid" : "floatingInput"}
             placeholder="name@example.com"
             onChange={handleChange}
+            required
           />
           <label htmlFor="floatingInput">Email address</label>
           {!error.email ? null : <small>{error.email}</small>}
@@ -104,6 +106,7 @@ export default function Signin() {
             id={error.password ? "floatingInputInvalid" : "floatingInput"}
             placeholder="Contraseña"
             onChange={handleChange}
+            required
           />
           <label htmlFor="floatingInput">Contraseña</label>
           {!error.password ? null : <small>{error.password}</small>}
@@ -122,6 +125,7 @@ export default function Signin() {
               error.confirmPassword ? "floatingInputInvalid" : "floatingInput"
             }
             onChange={handleChange}
+            required
           />
           <label htmlFor="floatingInput">Confirmar contraseña</label>
           {!error.confirmPassword ? null : (

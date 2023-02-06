@@ -64,6 +64,7 @@ export default function Signin() {
             id={error.ruc ? "floatingInputInvalid" : "user"}
             placeholder="name"
             onChange={handleChange}
+            required
           />
           <label htmlFor="floatingInput">Ruc</label>
           {!error.ruc ? null : <small>{error.ruc}</small>}
@@ -78,6 +79,7 @@ export default function Signin() {
             id={error.password ? "floatingInputInvalid" : "pass"}
             placeholder="Contraseña"
             onChange={handleChange}
+            required
           />
           <label htmlFor="floatingInput">Contraseña</label>
           {!error.password ? null : <small>{error.password}</small>}

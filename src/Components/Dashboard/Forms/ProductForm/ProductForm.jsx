@@ -79,6 +79,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
             name="name"
             value={product.name}
             onChange={handleChange}
+            required
           />
           <label htmFor="floatingInput">Nombre</label>
         </div>
@@ -91,13 +92,14 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
             name="code"
             value={product.code}
             onChange={handleChange}
+            required
           />
           <label htmFor="floatingInput">Codigo</label>
         </div>
 
         {/* Type */}
         <div className="form-floating mb-3">
-          <select className="form-select" name="type" value={product.type} onChange={handleChange}>
+          <select className="form-select" name="type" value={product.type} onChange={handleChange} required>
             <option value="">Seleccione un tipo</option>
             <option value="Producto">Producto</option>
             <option value="Servicio">Servicio</option>
@@ -113,6 +115,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
             name="price"
             value={product.price}
             onChange={handleChange}
+            required
           />
           <label htmFor="floatingInput">Precio</label>
         </div>
@@ -125,6 +128,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
             name="taxesBoolean"
             value={product.taxesBoolean}
             onChange={handleChange}
+            required
           >
             <option value={false}>No</option>
             <option value={true}>Si</option>
@@ -140,6 +144,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
               name="taxes"
               value={product.taxes}
               onChange={handleChange}
+            required
             />
             <label htmFor="floatingInput">Impuesto</label>
           </div>
@@ -153,6 +158,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
             name="description"
             value={product.description}
             onChange={handleChange}
+            required
           />
           <label htmFor="floatingInput">Descripcion</label>
         </div>
