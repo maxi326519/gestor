@@ -1,21 +1,17 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { postClient } from "../../../../redux/actions";
+import { postClient, openLoading, closeLoading } from "../../../../redux/actions";
 import { toast } from "react-toastify";
 
-import Loading from "../../../Loading/Loading";
-
 import "../Form.css";
-import { initializeApp } from "firebase/app";
 
 export default function ClientForm({ addClient, handleAddClient }) {
   const userId = useSelector((state) => state.user.uid);
-  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const initialState = {
     name: "",
     email: "",
-    type: "Tipo",
+    type: "",
     dataType: "",
     address: "",
     phone: "",
@@ -28,16 +24,17 @@ export default function ClientForm({ addClient, handleAddClient }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    setLoading(true);
+    dispatch(openLoading());
     dispatch(postClient(userId, client))
       .then((d) => {
         hanldeClose();
-        setLoading(false);
-        toast("Cliente agregado exitosamente");
+        dispatch(closeLoading());
+        toast("¡Cliente agregado exitosamente!");
       })
       .catch((e) => {
-        setLoading(false);
-        toast("Hubo un error al agregar al cliente");
+        dispatch(closeLoading());
+        toast("Error al agregar el cliente");
+        console.log(e);
       });
   }
 
@@ -77,7 +74,7 @@ export default function ClientForm({ addClient, handleAddClient }) {
         {/* Type */}
         <div className="form-floating mb-3">
           <select className="form-select" name="type" onChange={handleChange}>
-            <option value="Tipo">Seleccionar</option>
+            <option value="">Seleccionar</option>
             <option value="Ruc">Ruc</option>
             <option value="Cedula">Cedula</option>
             <option value="Pasaporte">Pasaporte</option>
@@ -133,7 +130,6 @@ export default function ClientForm({ addClient, handleAddClient }) {
           Agregar Cliente
         </button>
       </form>
-      {loading ? <Loading /> : null}
     </div>
   );
 }

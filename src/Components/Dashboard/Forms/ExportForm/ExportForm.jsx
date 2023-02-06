@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-/* import "../InvoicesForm.css";
- */
+import Excel from "./Excel/Excel";
+
 export default function ExportForm({ exportInvoice, handleExportInvoice }) {
   const [exportData, setInvoice] = useState({
     dateFrom: "",
@@ -54,9 +54,7 @@ export default function ExportForm({ exportInvoice, handleExportInvoice }) {
           />
         </div>
 
-        <button type="submit" className="btn btn-primary">
-          Exportar facturas
-        </button>
+        <Excel/>
       </form>
     </div>
   );

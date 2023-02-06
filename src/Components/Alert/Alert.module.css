@@ -1,0 +1,28 @@
+.container{
+    position: absolute;
+    z-index: 10000;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    background-color: #0008;
+}
+
+.window{
+    max-width: 400px;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    background-color: white;
+}
+
+.btnContainer{
+    margin-top: 20px;
+}
+
+.btnContainer button:first-child{
+    margin-right: 20px;
+}

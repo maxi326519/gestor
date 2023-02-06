@@ -5,7 +5,8 @@ import {
   addDoc,
   setDoc,
   getDocs,
-  getDoc,
+  updateDoc,
+  deleteDoc,
   query,
   where,
 } from "firebase/firestore";
@@ -43,6 +44,8 @@ export const LOG_OUT = "LOG_OUT";
 
 export const OPEN_LOADING = "OPEN_LOADING";
 export const CLOSE_LOADING = "CLOSE_LOADING";
+export const ALERT = "ALERT";
+export const CLEAR_ALERT = "CLEAR_ALERT";
 
 export const POST_CLIENT = "ADD_CLIENT";
 export const POST_PRODUCT = "ADD_PRODUCT";
@@ -51,6 +54,14 @@ export const POST_INVOICE = "ADD_INVOICE";
 export const GET_CLIENTS = "GET_CLIENTS";
 export const GET_PRODUCTS = "GET_PRODUCTS";
 export const GET_INVOICES = "GET_INVOICES";
+
+export const UPDATE_CLIENT = "UPDATE_CLIENT";
+export const UPDATE_PRODUCT = "UPDATE_PRODUCT";
+export const UPDATE_INVOICE = "UPDATE_INVOICE";
+
+export const DELETE_INVOICE = "DELETE_INVOICE";
+export const DELETE_CLIENT  = "DELETE_CLIENT";
+export const DELETE_PRODUCT = "DELETE_PRODUCT";
 
 // POSTS
 export function signin(user) {
@@ -116,7 +127,7 @@ export function login(userData) {
 
       return dispatch({
         type: LOG_IN,
-        payload: {...userCredential.user, ...userData},
+        payload: { ...userCredential.user, ...userData },
       });
     } catch (err) {
       throw new Error(err);
@@ -168,6 +179,26 @@ export function closeLoading() {
   };
 }
 
+export function Alert(text, isAcceptFunction){
+  return dispatch => {
+    return dispatch({
+      type: ALERT,
+      payload: {
+        text,
+        isAcceptFunction
+      }
+    });
+  }
+}
+
+export function clearAlert(){
+  return dispatch => {
+    return dispatch({
+      type: CLEAR_ALERT
+    });
+  }
+}
+
 export function postClient(userId, client) {
   return async (dispatch) => {
     try {
@@ -195,15 +226,12 @@ export function postClient(userId, client) {
 export function postProduct(userId, product) {
   return async (dispatch) => {
     try {
-      console.log(product);
       if (!userId) throw new Error("Falta el ID de usuario");
       const productColl = collection(db, "users", userId, "products");
-      const newProduct = await setDoc(doc(productColl, product.code), {
+
+      await setDoc(doc(productColl, product.code), {
         ...product,
       });
-
-      console.log(newProduct);
-
       return dispatch({
         type: POST_PRODUCT,
         payload: product,
@@ -224,7 +252,7 @@ export function postInvoice(userId, invoice) {
       console.log(newProduct);
 
       return dispatch({
-        type: POST_PRODUCT,
+        type: POST_INVOICE,
         payload: invoice,
       });
     } catch (err) {
@@ -290,8 +318,7 @@ export function getProducts(userId) {
   };
 }
 
-
-export function getInvoices(userId){
+export function getInvoices(userId) {
   return async (dispatch) => {
     try {
       if (!userId) throw new Error("Falta ID de usuario");
@@ -317,4 +344,86 @@ export function getInvoices(userId){
       throw new Error(err);
     }
   };
+}
+
+export function deleteClient(userId, id) {
+  return async (dispatch) => {
+    try {
+      const clienColl = collection(db, "users", userId, "clients");
+      await deleteDoc(doc(clienColl, id));
+
+      return dispatch({
+        type: DELETE_CLIENT,
+        payload: id
+      })
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
+}
+
+
+export function deleteProduct(userId, id) {
+  return async (dispatch) => {
+    try {
+      const productColl = collection(db, "users", userId, "products");
+      await deleteDoc(doc(productColl, id));
+
+      return dispatch({
+        type: DELETE_PRODUCT,
+        payload: id
+      })
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
+}
+
+
+export function deleteInvoice(userId, id) {
+  return async (dispatch) => {
+    try {
+      const invoiceColl = collection(db, "users", userId, "invoices");
+      await deleteDoc(doc(invoiceColl, id));
+
+      return dispatch({
+        type: DELETE_INVOICE,
+        payload: id
+      })
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
+}
+
+export function updateClient(userId, id, clientData){
+  return async (dispatch) => {
+    try{
+      const clienColl = collection(db, "users", userId, "clients");
+      await updateDoc(doc(clienColl, id), clientData);
+
+      return dispatch({
+        type: UPDATE_CLIENT,
+        payload: clientData
+      })
+    }catch(err){
+      throw new Error(err);
+    }
+  }
+}
+
+export function updateProduct(userId, productData){
+  return async (dispatch) => {
+    try{
+      const productColl = collection(db, "users", userId, "products");
+      await updateDoc(doc(productColl, productData.code), productData);
+
+      return dispatch({
+        type: UPDATE_PRODUCT,
+        payload: productData
+      })
+    }catch(err){
+      throw new Error(err);
+    }
+  }
 }

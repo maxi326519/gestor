@@ -1,6 +1,6 @@
 .product-card{
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 2fr 80px 80px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 2fr 80px 80px;
     grid-template-rows: 1fr;
     gap: 10px;
     padding: 10px;
@@ -8,11 +8,11 @@
 }
 
 .product-card input{
-    min-width: 150px;
+    min-width: 100px;
 }
 
 .product-card span{
-    min-width: 80px;
+    min-width: 100px;
     padding-left: 10px;
     border-right: 1px solid #ccc;
 }

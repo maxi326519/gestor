@@ -16,17 +16,16 @@ export default function ProductList({ handleAddProduct }) {
   useEffect(() => {
     setRows(products);
   }, [products]);
-
+  
   function handleChange(e) {
     const value = e.target.value;
 
     setRows(
-      products.filter((row) => {
+      products.filter((p) => {
         if (value === "") return true;
-        if (row.code.toLowerCase().includes(value.toLowerCase())) return true;
-        if (row.type.toLowerCase().includes(value.toLowerCase())) return true;
-        if (row.taxes.toLowerCase().includes(value.toLowerCase())) return true;
-        if (row.description.toLowerCase().includes(value.toLowerCase()))
+        if (p.code.toLowerCase().includes(value.toLowerCase())) return true;
+        if (p.name.toLowerCase().includes(value.toLowerCase())) return true;
+        if (p.description.toLowerCase().includes(value.toLowerCase()))
           return true;
         return false;
       })
@@ -50,6 +49,7 @@ export default function ProductList({ handleAddProduct }) {
       <div className="dashboardList__grid">
         <div className="product-card first-row">
           <span>Codigo</span>
+          <span>Nombre</span>
           <span>Tipo</span>
           <span>Precio</span>
           <span>Impuesto</span>

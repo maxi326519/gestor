@@ -8,11 +8,11 @@
 }
 
 .client-card input{
-    min-width: 150px;
+    min-width: 100px;
 }
 
 .client-card span{
-    min-width: 80px;
+    min-width: 100px;
     padding-left: 10px;
     border-right: 1px solid #ccc;
 }

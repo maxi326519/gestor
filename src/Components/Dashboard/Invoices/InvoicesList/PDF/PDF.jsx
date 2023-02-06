@@ -38,12 +38,12 @@ const styles = StyleSheet.create({
 });
 
 // Create Document Component
-export default function PDF({ invoice }) {
+export default function PDF({ invoice, handleClosePDF }) {
   return (
     <div className="pdf-container">
       {console.log(invoice)}
       {console.log(invoice.client)}
-      <button>X</button>
+      <button onClick={handleClosePDF}>X</button>
       <PDFViewer style={styles.viewer}>
         <Document>
           <Page size="A4" style={styles.page}>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { login, logOut, getProducts, getClients, getInvoices } from "./redux/actions";
+import { login, logOut, getProducts, getClients, getInvoices, clearAlert } from "./redux/actions";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -11,6 +11,8 @@ import Products from "./Components/Dashboard/Products/Products";
 import Client from "./Components/Dashboard/Client/Client";
 import Invoices from "./Components/Dashboard/Invoices/Invoices";
 import InvoicesForm from "./Components/Dashboard/InvoicesForm/InvoicesForm";
+
+import Alert from "./Components/Alert/Alert";
 
 import ExportInvoice from "./Components/Dashboard/Forms/ExportForm/ExportForm";
 import AddProduct from "./Components/Dashboard/Forms/ProductForm/ProductForm";
@@ -27,6 +29,7 @@ function App() {
   const redirect = useNavigate();
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.loading);
+  const alert = useSelector((state) => state.alert);
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
@@ -80,6 +83,7 @@ function App() {
   return (
     <div className="App">
       <ToastContainer />
+      <Alert text={alert.text} isAccept={alert.isAcceptFunction} isCanceled={() => dispatch(clearAlert())}/>
       {loading ? <Loading /> : null}
       <Routes>
         <Route path="/dashboard/profile" element={<Profile />} />

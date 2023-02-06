@@ -3,15 +3,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { postProduct, openLoading, closeLoading } from "../../../../redux/actions";
 
-import Loading from "../../../Loading/Loading";
-
 import "../Form.css";
 
 export default function ProductForm({ addProduct, handleAddProduct }) {
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
   const userId = useSelector((state) => state.user.uid);
-  const initialState = useState({
+  const initialState = {
     name: "",
     code: "",
     type: "",
@@ -19,8 +16,9 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
     taxesBoolean: false,
     taxes: "0",
     description: "",
-  });
+  }
   const [product, setProduct] = useState(initialState);
+
 
   function handleChange(e) {
     console.log(product);
@@ -39,9 +37,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
       description: product.description,
     };
 
-    console.log(newProduct);
-
-    dispatch(postProduct(6, newProduct))
+    dispatch(postProduct(userId, newProduct))
       .then((d) => {
         dispatch(closeLoading());
         handleClose();
@@ -49,13 +45,12 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
       })
       .catch((e) => {
         dispatch(closeLoading());
-        toast("Hubo un error al agregar el producto");
+        toast("Error al agregar el producto");
         console.log(e);
       });
   }
 
   function handleClose() {
-    console.log(initialState);
     handleAddProduct();
     setProduct(initialState);
   }
@@ -102,10 +97,10 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
 
         {/* Type */}
         <div className="form-floating mb-3">
-          <select className="form-select" name="type" onChange={handleChange}>
-            <option>Seleccione un tipo</option>
-            <option>Producto</option>
-            <option>Servicio</option>
+          <select className="form-select" name="type" value={product.type} onChange={handleChange}>
+            <option value="">Seleccione un tipo</option>
+            <option value="Producto">Producto</option>
+            <option value="Servicio">Servicio</option>
           </select>
           <label htmFor="floatingInput">Tipo</label>
         </div>
@@ -128,6 +123,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
             className="form-select select-input"
             id="floatingInput"
             name="taxesBoolean"
+            value={product.taxesBoolean}
             onChange={handleChange}
           >
             <option value={false}>No</option>
@@ -165,7 +161,6 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
           Agregar producto
         </button>
       </form>
-      {loading ? <Loading /> : null}
     </div>
   );
 }

@@ -31,11 +31,9 @@ export default function ClientList({ handleAddClient }) {
       clients.filter((row) => {
         if (value === "") return true;
         if (row.name.toLowerCase().includes(value.toLowerCase())) return true;
-        if (row.dataType.toLowerCase().includes(value.toLowerCase()))
-          return true;
+        if (row.dataType.toLowerCase().includes(value.toLowerCase())) return true;
         if (row.email.toLowerCase().includes(value.toLowerCase())) return true;
-        if (row.address.toLowerCase().includes(value.toLowerCase()))
-          return true;
+        if (row.address.toLowerCase().includes(value.toLowerCase())) return true;
         if (row.phone.toLowerCase().includes(value.toLowerCase())) return true;
         return false;
       })
