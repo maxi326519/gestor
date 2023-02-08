@@ -13,7 +13,8 @@ import {
 } from "firebase/firestore";
 
 /* Firebase */
-/* import { setStorage, ref, uploadBytes } from "firebase/storage"; */
+import { getStorage, ref, uploadBytes } from "firebase/storage";
+
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
@@ -23,7 +24,7 @@ import {
   GoogleAuthProvider,
   sendPasswordResetEmail,
   updateProfile,
-  updateEmail
+  updateEmail,
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -208,7 +209,7 @@ export function confirmRegister(newData) {
     try {
       await updateDoc(doc(db, "users", auth.currentUser.uid), {
         ...newData,
-        complete: true
+        complete: true,
       });
 
       return dispatch({
@@ -221,13 +222,13 @@ export function confirmRegister(newData) {
   };
 }
 
-export function updateUserData(newData){
+export function updateUserData(newData) {
   return async (dispatch) => {
     try {
-      if(newData.email !== auth.currentUser.email)
+      if (newData.email !== auth.currentUser.email)
         await updateEmail(auth.currentUser, newData.email);
       await updateDoc(doc(db, "users", auth.currentUser.uid), {
-        ...newData
+        ...newData,
       });
 
       return dispatch({
@@ -240,24 +241,15 @@ export function updateUserData(newData){
   };
 }
 
-export function uploadLogo(userId, logo) {
-  /*   return async (dispatch) => {
-    try {
-      const storage = setStorage();
-      const storageRef = ref(storage, "some-child");
+export function uploadLogo(logo) {
 
-      const urlLogo = await uploadBytes(storageRef, logo);
+  console.log(logo);
+  const storage = getStorage();
+  const storageRef = ref(storage, 'logo');
 
-      console.log(urlLogo);
-
-      return dispatch({
-        type: UPLOAD_LOGO,
-        payload: urlLogo,
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  }; */
+  uploadBytes(storageRef, logo).then((snapshot) => {
+    console.log('Uploaded a blob or file!');
+  });
 }
 
 export function changePassword() {

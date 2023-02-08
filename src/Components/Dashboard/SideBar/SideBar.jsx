@@ -29,6 +29,7 @@ export default function SideBar({
     clients: false,
   };
   const [accordion, setAccordion] = useState(initialState);
+  const [isOpen, setOpen] = useState(false)
 
   function handleLogOut() {
     dispatch(logOut());
@@ -41,13 +42,13 @@ export default function SideBar({
 
   return (
     <div
-      className="container__sideBar"
+      className={`container__sideBar ${ isOpen ? "open__sidebar" : ""}`}
       onMouseLeave={() => {
         setAccordion(initialState);
       }}
     >
       <div className="sideBar">
-        <div className="sideBar__title">
+        <div className="sideBar__title" onClick={() => setOpen(!isOpen)}>
           <img src={dashboard} alt="dashboard" />
           <h1>Dashboard</h1>
         </div>

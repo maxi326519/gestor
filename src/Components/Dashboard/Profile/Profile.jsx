@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { updateUserData, changePassword, openLoading, closeLoading } from "../../../redux/actions";
+import { updateUserData, uploadLogo, changePassword, openLoading, closeLoading, Alert } from "../../../redux/actions";
 
 import SideBar from "../SideBar/SideBar";
 
@@ -41,6 +41,8 @@ export default function Profile({
 
   function handleSubmit(e) {
     e.preventDefault();
+/*     dispatch(uploadLogo(file)); */
+
     dispatch(openLoading())
     dispatch(updateUserData(userData))
     .then(() => {
@@ -56,7 +58,7 @@ export default function Profile({
 
   function handleChangePassword() {
     dispatch(changePassword()).then(() => {
-      toast("Se envio a tu correo un link para cambiar la contraseña");
+      toast.info("Se envio a tu correo un link para cambiar la contraseña");
     });
   }
 
@@ -65,7 +67,7 @@ export default function Profile({
   }
 
   return (
-    <div className="dashboard">
+    <div className="dashboard perfil">
       <SideBar
         handleAddInvoice={handleAddInvoice}
         handleAddProduct={handleAddProduct}
@@ -188,7 +190,9 @@ export default function Profile({
               {disabled ? null : (
                 <button
                   className="btn btn-outline-success"
-                  onClick={handleChangePassword}
+                  onClick={() =>{
+                    dispatch(Alert("¿Seguro que quiere cambiar la contraseña?", handleChangePassword))
+                  }}
                 >
                   Cambiar contraseña
                 </button>
