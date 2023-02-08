@@ -51,8 +51,8 @@ export default function Signin() {
       })
       .catch((e) => {
         dispatch(closeLoading());
-        console.log(e);
         toast(e);
+        console.log(e);
       });
   }
 
@@ -143,9 +143,17 @@ export default function Signin() {
       })
       .catch((e) => {
         dispatch(closeLoading());
-        toast(e.message);
         if (e.message.includes("email-already-in-use")) {
           setError({ ...error, email: "El correo ya esta en uso" });
+        }else{
+          toast(e.message);
+          console.log(e.message);
+        }
+        if (e.message.includes("ruc")) {
+          setError({ ...error, ruc: "El ruc ya esta en uso" });
+        }else{
+          toast(e.message);
+          console.log(e.message);
         }
       });
   }
@@ -184,7 +192,7 @@ export default function Signin() {
             onChange={handleChange}
             required
           />
-          <label htmlFor="floatingInput">Email address</label>
+          <label htmlFor="floatingInput">Correo electronico</label>
           {!error.email ? null : <small>{error.email}</small>}
         </div>
 

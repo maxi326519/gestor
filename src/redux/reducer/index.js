@@ -2,8 +2,10 @@ import {
   SIGN_IN,
   LOG_IN,
   LOG_OUT,
-  UPLOAD_USER,
+  CONFIRM_REGISTER,
+  PERSISTENCE,
   GET_USER_DATA,
+  UPDATE_PROFILE,
   OPEN_LOADING,
   CLOSE_LOADING,
   ALERT,
@@ -27,40 +29,55 @@ const initialState = {
   products: [],
   invoices: [],
   loading: false,
-  alert:{
+  alert: {
     text: null,
-    isAcceptFunction: null
-  }
+    isAcceptFunction: null,
+  },
 };
 
 export const Reducer = (state = initialState, action) => {
   switch (action.type) {
     case SIGN_IN:
-      localStorage.setItem("user", JSON.stringify(action.payload));
       return {
         ...state,
         user: action.payload,
       };
 
     case LOG_IN:
-      localStorage.setItem("user", JSON.stringify(action.payload));
+      return {
+        ...state,
+        user: action.payload,
+      };
+
+    case PERSISTENCE:
       return {
         ...state,
         user: action.payload,
       };
 
     case LOG_OUT:
-      localStorage.removeItem("user");
       return {
         ...state,
         user: {},
       };
 
-    case GET_USER_DATA:
-      return{
+    case CONFIRM_REGISTER:
+      return {
         ...state,
-        user: { ...state.user, ...action.payload }
-      }
+        user: { ...state.user, ...action.payload },
+      };
+
+    case GET_USER_DATA:
+      return {
+        ...state,
+        user: { ...state.user, ...action.payload },
+      };
+
+    case  UPDATE_PROFILE:
+      return {
+        ...state,
+        user: { ...state.user, ...action.payload },
+      };
 
     case OPEN_LOADING:
       return {
@@ -77,17 +94,17 @@ export const Reducer = (state = initialState, action) => {
     case ALERT:
       return {
         ...state,
-        alert: action.payload
-      }
+        alert: action.payload,
+      };
 
     case CLEAR_ALERT:
       return {
         ...state,
-        alert:{
+        alert: {
           text: null,
-          isAcceptFunction: null
-        }
-      }
+          isAcceptFunction: null,
+        },
+      };
 
     case POST_CLIENT:
       return {

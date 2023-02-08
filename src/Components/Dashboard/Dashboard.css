@@ -11,6 +11,7 @@
     flex-grow: 1;
     display: flex;
     margin: 20px;
+    height: 100%;
 }
 
 .dashboardList{

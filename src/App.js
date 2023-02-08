@@ -2,17 +2,18 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import {
-  login,
-  logOut,
+  persistence,
+  getUserData,
   getProducts,
   getClients,
   getInvoices,
   clearAlert,
-  getUserData,
   openLoading,
-  closeLoading
+  closeLoading,
 } from "./redux/actions";
-import { ToastContainer } from "react-toastify";
+import { getAuth } from "firebase/auth";
+
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import Loading from "./Components/Loading/Loading";
@@ -40,34 +41,32 @@ function App() {
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.loading);
   const alert = useSelector((state) => state.alert);
+  const auth = getAuth();
 
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("user"));
-    if (userData) {
-      dispatch(openLoading());
-      dispatch(login(userData))
-        .then(() => {
-          dispatch(getProducts(userData.uid));
-          dispatch(getClients(userData.uid));
-          dispatch(getInvoices(userData.uid));
-          dispatch(getUserData(userData.uid))
-          .then(() => {
+    dispatch(openLoading());
+    setTimeout(() => {
+      console.log(auth);
+      if (auth.currentUser) {
+        const user = auth.currentUser;
+        dispatch(persistence(user));
+        dispatch(getUserData()).then((d) => {
+          if (d.payload.complete) {
+            redirect("/dashboard/invoices/add");
+            dispatch(getProducts(user.uid));
+            dispatch(getClients(user.uid));
+            dispatch(getInvoices(user.uid));
             dispatch(closeLoading());
-            console.log(userData);
-            if(userData.complete === true){
-              redirect("/dashboard/invoices/add");
-            }else{
-              redirect("/signin/user");
-            }
-          })
-        })
-        .catch((e) => {
-          console.log(e);
-          dispatch(logOut());
+          } else {
+            dispatch(closeLoading());
+            redirect("/signin/user");
+          }
         });
-    } else {
-      redirect("/login");
-    }
+      } else {
+        dispatch(closeLoading());
+        redirect("/login");
+      }
+    }, 1000);
   }, [dispatch]);
 
   /* FORMS */

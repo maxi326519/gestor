@@ -33,12 +33,12 @@ export default function ProductCard({ product }) {
     dispatch(deleteProduct(userId, product.code))
       .then(() => {
         dispatch(closeLoading());
-        toast("¡Producto eliminado exitosamente!");
+        toast.success("¡Producto eliminado exitosamente!");
       })
       .catch((e) => {
         dispatch(closeLoading());
-        toast("Error al eliminar el producto");
-        console.log(e);
+        toast.error("Error al eliminar el producto");
+        console.log(e.message);
       });
   }
 
@@ -47,13 +47,13 @@ export default function ProductCard({ product }) {
     dispatch(updateProduct(userId, editProduct))
       .then(() => {
         dispatch(closeLoading());
-        toast("¡Producto actualizado exitosamente!");
+        toast.success("¡Producto actualizado exitosamente!");
         setDisabled(true);
       })
       .catch((e) => {
         dispatch(closeLoading());
-        toast("Error al actualizar el producto");
-        console.log(e);
+        toast.error("Error al actualizar el producto");
+        console.log(e.message);
       });
   }
 

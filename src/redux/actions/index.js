@@ -11,7 +11,9 @@ import {
   query,
   where,
 } from "firebase/firestore";
+
 /* Firebase */
+/* import { setStorage, ref, uploadBytes } from "firebase/storage"; */
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
@@ -19,6 +21,9 @@ import {
   createUserWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
+  sendPasswordResetEmail,
+  updateProfile,
+  updateEmail
 } from "firebase/auth";
 
 const firebaseConfig = {
@@ -39,15 +44,19 @@ const auth = getAuth(fe);
 /* Firebase */
 
 export const SIGN_IN = "SIGN_IN";
-export const UPLOAD_USER = "UPLOAD_USER";
 export const LOG_IN = "LOG_IN";
 export const LOG_OUT = "LOG_OUT";
-export const GET_USER_DATA = "GET_USER_DATA";
+export const CONFIRM_REGISTER = "CONFIRM_REGISTER";
+export const PERSISTENCE = "PERSISTENCE";
 
 export const OPEN_LOADING = "OPEN_LOADING";
 export const CLOSE_LOADING = "CLOSE_LOADING";
 export const ALERT = "ALERT";
 export const CLEAR_ALERT = "CLEAR_ALERT";
+
+export const UPLOAD_LOGO = "UPLOAD_LOGO";
+export const GET_USER_DATA = "GET_USER_DATA";
+export const UPDATE_PROFILE = "UPDATE_PROFILE";
 
 export const POST_CLIENT = "ADD_CLIENT";
 export const POST_PRODUCT = "ADD_PRODUCT";
@@ -65,19 +74,28 @@ export const DELETE_INVOICE = "DELETE_INVOICE";
 export const DELETE_CLIENT = "DELETE_CLIENT";
 export const DELETE_PRODUCT = "DELETE_PRODUCT";
 
-// POSTS
+/* SESION */
 export function signin(user) {
   return async (dispatch) => {
     try {
-      const auth = getAuth();
+      // Verificamos que no exista otro usuario con ese ruc
+      const queryInstance = query(
+        collection(db, "users"),
+        where("ruc", "==", user.ruc)
+      );
+      const dbUser = await getDocs(queryInstance);
+      if (!dbUser.empty) throw new Error("El ruc ya existe");
+
+      // Creamos el nuevo usuario
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         user.email,
         user.password
       );
-      const newUser = userCredential.user;
 
-      await setDoc(doc(db, "users", newUser.uid), {
+      // Almacenamos los primeros datos sobre el usuario,
+      // y le indicamos que el perfil todavia no esta completo
+      await setDoc(doc(db, "users", userCredential.user.uid), {
         ruc: user.ruc,
         email: user.email,
         complete: false,
@@ -85,27 +103,7 @@ export function signin(user) {
 
       return dispatch({
         type: SIGN_IN,
-        payload: { ...newUser, ...user },
-      });
-    } catch (err) {
-      throw new Error(err);
-    }
-  };
-}
-
-export function uploadUser(userId, newData) {
-  return async (dispatch) => {
-    try {
-      const response = await updateDoc(doc(db, "users", userId), {
-        ...newData,
-        complete: true,
-      });
-
-      console.log(response);
-
-      return dispatch({
-        type: GET_USER_DATA,
-        payload: newData,
+        payload: userCredential.user,
       });
     } catch (err) {
       throw new Error(err);
@@ -116,31 +114,48 @@ export function uploadUser(userId, newData) {
 export function login(userData) {
   return async (dispatch) => {
     try {
+      // Verificamo que exista un usuario con ese ruc
       const queryInstance = query(
         collection(db, "users"),
         where("ruc", "==", userData.ruc)
       );
       const dbUser = await getDocs(queryInstance);
-      if (dbUser.empty) throw new Error("El usuario no existe");
+      if (dbUser.empty) throw new Error("El ruc no existe");
 
+      // Si existe nos traemos el email y hacemos la Auth
       const email = dbUser.docs[0].data().email;
 
-      const auth = getAuth();
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
         userData.password
       );
 
-      const dataUser = await getDoc(doc(db, "users", userData.uid));
+      // Por ultimo nos traemos toda la informacion restante del usuario
+      const dataUser = await getDoc(doc(db, "users", userCredential.user.uid));
+
+      // Agregamos toda la informacion en un mismo objeto
+      const currentUser = {
+        ...dataUser.data(),
+        ...userCredential.user,
+      };
 
       return dispatch({
         type: LOG_IN,
-        payload: { ...userCredential.user, ...userData, ...dataUser.data()},
+        payload: currentUser,
       });
     } catch (err) {
       throw new Error(err);
     }
+  };
+}
+
+export function persistence(userData) {
+  return async (dispatch) => {
+    return dispatch({
+      type: PERSISTENCE,
+      payload: userData,
+    });
   };
 }
 
@@ -171,6 +186,91 @@ export function logOut() {
     });
   };
 }
+/* SESION */
+
+/* USER DATA */
+export function getUserData() {
+  return async (dispatch) => {
+    try {
+      const dataUser = await getDoc(doc(db, "users", auth.currentUser.uid));
+      return dispatch({
+        type: GET_USER_DATA,
+        payload: dataUser.data(),
+      });
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
+}
+
+export function confirmRegister(newData) {
+  return async (dispatch) => {
+    try {
+      await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        ...newData,
+        complete: true
+      });
+
+      return dispatch({
+        type: CONFIRM_REGISTER,
+        payload: newData,
+      });
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
+}
+
+export function updateUserData(newData){
+  return async (dispatch) => {
+    try {
+      if(newData.email !== auth.currentUser.email)
+        await updateEmail(auth.currentUser, newData.email);
+      await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        ...newData
+      });
+
+      return dispatch({
+        type: UPDATE_PROFILE,
+        payload: newData,
+      });
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
+}
+
+export function uploadLogo(userId, logo) {
+  /*   return async (dispatch) => {
+    try {
+      const storage = setStorage();
+      const storageRef = ref(storage, "some-child");
+
+      const urlLogo = await uploadBytes(storageRef, logo);
+
+      console.log(urlLogo);
+
+      return dispatch({
+        type: UPLOAD_LOGO,
+        payload: urlLogo,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }; */
+}
+
+export function changePassword() {
+  return async (dispatch) => {
+    try {
+      const auth = getAuth();
+      sendPasswordResetEmail(auth, auth.currentUser.email);
+    } catch (err) {
+      throw new Error(err.message);
+    }
+  };
+}
+/* USER DATA */
 
 export function openLoading() {
   return (dispatch) => {
@@ -270,23 +370,6 @@ export function postInvoice(userId, invoice) {
   };
 }
 
-// GETERS
-export function getUserData(userId) {
-  return async (dispatch) => {
-    try {
-      const dataUser = await getDoc(doc(db, "users", userId));
-      console.log(dataUser.data());
-
-      return dispatch({
-        type: GET_USER_DATA,
-        payload: dataUser.data(),
-      });
-    } catch (err) {
-      throw new Error(err);
-    }
-  };
-}
-
 export function getClients(userId) {
   return async (dispatch) => {
     try {
@@ -294,16 +377,16 @@ export function getClients(userId) {
       const clientColl = collection(db, "users", userId, "clients");
       const query = await getDocs(clientColl);
 
-      if (query.empty) throw new Error("No tiene clientes");
-
       let clients = [];
 
-      query.forEach((doc) => {
-        clients.push({
-          id: doc.id,
-          ...doc.data(),
+      if (!query.empty) {
+        query.forEach((doc) => {
+          clients.push({
+            id: doc.id,
+            ...doc.data(),
+          });
         });
-      });
+      }
 
       return dispatch({
         type: GET_CLIENTS,
@@ -322,16 +405,16 @@ export function getProducts(userId) {
       const productColl = collection(db, "users", userId, "products");
       const query = await getDocs(productColl);
 
-      if (query.empty) throw new Error("No tiene productos");
-
       let products = [];
 
-      query.forEach((doc) => {
-        products.push({
-          name: doc.id,
-          ...doc.data(),
+      if (!query.empty) {
+        query.forEach((doc) => {
+          products.push({
+            name: doc.id,
+            ...doc.data(),
+          });
         });
-      });
+      }
 
       return dispatch({
         type: GET_PRODUCTS,
@@ -350,21 +433,21 @@ export function getInvoices(userId) {
       const invoiceColl = collection(db, "users", userId, "invoices");
       const query = await getDocs(invoiceColl);
 
-      if (query.empty) throw new Error("No tiene productos");
-
       let invoices = [];
 
-      query.forEach((doc) => {
-        invoices.push({
-          id: doc.id,
-          ...doc.data(),
+      if (!query.empty) {
+        query.forEach((doc) => {
+          invoices.push({
+            id: doc.id,
+            ...doc.data(),
+          });
         });
-      });
 
-      return dispatch({
-        type: GET_INVOICES,
-        payload: invoices,
-      });
+        return dispatch({
+          type: GET_INVOICES,
+          payload: invoices,
+        });
+      }
     } catch (err) {
       throw new Error(err);
     }

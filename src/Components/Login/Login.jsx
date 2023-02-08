@@ -21,6 +21,7 @@ export default function Signin() {
 
   function handleChange(e) {
     setUser({ ...user, [e.target.name]: e.target.value });
+    handleValidation(e.target.name, e.target.value);
   }
 
   function handleGoogleSesion(e) {
@@ -33,13 +34,14 @@ export default function Signin() {
       })
       .catch((e) => {
         dispatch(closeLoading());
-        toast(e);
+        console.log(e.message);
       });
   }
 
   function handleSubmit(e) {
     e.preventDefault();
     dispatch(openLoading());
+    console.log(user.ruc);
     dispatch(login(user))
       .then(() => {
         dispatch(closeLoading());
@@ -47,8 +49,33 @@ export default function Signin() {
       })
       .catch((e) => {
         dispatch(closeLoading());
-        console.log(e);
+        if(e.message.includes("ruc")){
+          setError({ ...error, ruc: "No existe ningun usuario con ese ruc" });
+        }else if(e.message.includes("password")){
+          setError({ ...error, password: "La contraseña es incorrecta" });
+        }else{
+          toast(e.message);
+          console.log(e.message);
+        }
       });
+  }
+
+  function handleValidation(name, value) {
+    if(name === "ruc"){
+      if(value === ""){
+        setError({ ...error, ruc: "Debes completar el campo"});
+      } else{
+        setError({ ...error, ruc: null});
+      }
+    }
+
+    if(name === "password"){
+      if(value === ""){
+        setError({ ...error, password: "Debes completar el campo"});
+      } else{
+        setError({ ...error, password: null});
+      }
+    }
   }
 
   return (

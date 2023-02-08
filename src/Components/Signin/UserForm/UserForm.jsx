@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { uploadUser, openLoading, closeLoading } from "../../../redux/actions";
+import {
+  openLoading,
+  closeLoading,
+  confirmRegister,
+  uploadLogo,
+} from "../../../redux/actions";
 import { useNavigate } from "react-router-dom";
 
 import "./UserForm.css";
+import { toast } from "react-toastify";
 
 export default function Signin() {
-
   const dispatch = useDispatch();
   const redirect = useNavigate();
-  const userData = useSelector(state => state.user);
+  const userData = useSelector((state) => state.user);
+  const [imageUrl, setImageUrl] = useState("");
+  const [file, setFile] = useState(null);
   const [user, setUser] = useState({
     businessName: "",
     address: "",
@@ -19,55 +26,132 @@ export default function Signin() {
   });
 
   const [error, setError] = useState({
-    businessName: false,
-    address: false,
-    phone: false,
-    tradeName: false,
-    logo: false,
-    complete: true 
+    businessName: null,
+    address: null,
+    phone: null,
+    tradeName: null,
+    logo: null,
+    complete: true,
+  });
+
+  const [isValid, setIsValid] = useState({
+    businessName: "",
+    address: "",
+    phone: "",
+    tradeName: "",
+    logo: "",
+    complete: "",
   });
 
   function handleChange(e) {
-    console.log(user);
     setUser({ ...user, [e.target.name]: e.target.value });
+    handleValidation(e.target.name, e.target.value);
+  }
+
+  function handleFile(e) {
+    if (e.target.files.length > 0) {
+      setFile(e.target.files[0]);
+      const url = URL.createObjectURL(e.target.files[0]);
+      setImageUrl(url);
+    }
+  }
+
+  function handleValidation(name, value) {
+    if (value === "") {
+      setError({ ...error, [name]: "Debes completar este campo" });
+      setIsValid({ ...isValid, [name]: "" });
+    } else {
+      setError({ ...error, [name]: null });
+      setIsValid({ ...isValid, [name]: "is-valid" });
+    }
   }
 
   function handleSubmit(e) {
     e.preventDefault();
-    dispatch(openLoading());
-    dispatch(uploadUser(userData.uid, user))
-      .then(() => {
-        dispatch(closeLoading());
-        redirect("/dashboard/invoices/add");
-      })
-      .catch((e) => {
-        dispatch(closeLoading());
-        console.log(e);
-      });
+
+    for (const data in user) {
+      if (data === "logo") continue;
+      handleValidation(data, user[data]);
+    }
+
+    if (
+      !error.businessName &&
+      !error.address &&
+      !error.phone &&
+      !error.tradeName
+    ) {
+/*       dispatch(uploadLogo(userData.uid, file)).then(() => { */
+        dispatch(openLoading());
+        dispatch(confirmRegister(user))
+          .then(() => {
+            dispatch(closeLoading());
+            redirect("/dashboard/invoices/add");
+            toast.success("Registro exitoso");
+          })
+          .catch((e) => {
+            dispatch(closeLoading());
+            toast.error(e.message);
+            console.log(e);
+          });
+/*       }); */
+    }
   }
 
   useEffect(() => {
-    if(user.complete){
+    if (user.complete) {
       redirect("/dashboard/invoices/add");
     }
-  }, [userData])
+  }, [userData]);
 
   return (
     <div className="sesion">
       <form onSubmit={handleSubmit} className="to-left">
-        <h2>Registrate</h2>
+        <h4>Complete sus datos personales</h4>
+        <div className="logo-container">
+          {file ? (
+            <img src={imageUrl} alt="your-logo" />
+          ) : (
+            <span>Seleccione una imagen</span>
+          )}
+        </div>
+        <input
+          type="file"
+          name="file"
+          accept="image/*"
+          className={`form-control ${
+            !error.logo ? isValid.logo : "is-invalid"
+          }`}
+          id={
+            error.logo
+              ? `floatingInputInvalid ${
+                  isValid.logo.length > 0 ? "validationServer01" : null
+                }`
+              : "floatingInput"
+          }
+          onChange={handleFile}
+          require
+        />
+        <hr></hr>
         {/* BUSINESS NAME */}
         <div className="form-floating mb-3 ">
           <input
             type="text"
             name="businessName"
             className={`form-control ${
-              !error.businessName ? "" : "is-invalid"
+              !error.businessName ? isValid.businessName : "is-invalid"
             }`}
-            id={error.businessName ? "floatingInputInvalid" : "floatingInput"}
+            id={
+              error.businessName
+                ? `floatingInputInvalid ${
+                    isValid.businessName.length > 0
+                      ? "validationServer01"
+                      : null
+                  }`
+                : "floatingInput"
+            }
             placeholder="name"
             onChange={handleChange}
-            required
+            require
           />
           <label htmlFor="floatingInput">Razón Social</label>
           {!error.businessName ? null : <small>{error.businessName}</small>}
@@ -78,11 +162,19 @@ export default function Signin() {
           <input
             type="text"
             name="address"
-            className={`form-control ${!error.address ? "" : "is-invalid"}`}
-            id={error.address ? "floatingInputInvalid" : "floatingInput"}
+            className={`form-control ${
+              !error.address ? isValid.address : "is-invalid"
+            }`}
+            id={
+              error.address
+                ? `floatingInputInvalid ${
+                    isValid.address.length > 0 ? "validationServer01" : null
+                  }`
+                : "floatingInput"
+            }
             placeholder="name@example.com"
             onChange={handleChange}
-            required
+            require
           />
           <label htmlFor="floatingInput">Dirección</label>
           {!error.address ? null : <small>{error.address}</small>}
@@ -93,11 +185,19 @@ export default function Signin() {
           <input
             type="tel"
             name="phone"
-            className={`form-control ${!error.phone ? "" : "is-invalid"}`}
-            id={error.phone ? "floatingInputInvalid" : "floatingInput"}
+            className={`form-control ${
+              !error.phone ? isValid.phone : "is-invalid"
+            }`}
+            id={
+              error.phone
+                ? `floatingInputInvalid ${
+                    isValid.phone.length > 0 ? "validationServer01" : null
+                  }`
+                : "floatingInput"
+            }
             placeholder="Contraseña"
             onChange={handleChange}
-            required
+            require
           />
           <label htmlFor="floatingInput">Teléfono</label>
           {!error.phone ? null : <small>{error.phone}</small>}
@@ -109,17 +209,27 @@ export default function Signin() {
             type="text"
             name="tradeName"
             placeholder="Confirmar Contraseña"
-            className={`form-control ${!error.tradeName ? "" : "is-invalid"}`}
-            id={error.tradeName ? "floatingInputInvalid" : "floatingInput"}
+            className={`form-control ${
+              !error.tradeName ? isValid.tradeName : "is-invalid"
+            }`}
+            id={
+              error.tradeName
+                ? `floatingInputInvalid ${
+                    isValid.tradeName.length > 0
+                      ? "validationServer010-9"
+                      : null
+                  }`
+                : "floatingInput"
+            }
             onChange={handleChange}
-            required
+            require
           />
           <label htmlFor="floatingInput">Nombre Comercial</label>
           {!error.tradeName ? null : <small>{error.tradeName}</small>}
         </div>
 
         <button className="btn btn-primary" type="submit">
-          Agregar datos
+          Terminar registro
         </button>
       </form>
     </div>

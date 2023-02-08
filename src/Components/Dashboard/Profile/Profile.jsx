@@ -1,11 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { uploadUser } from "../../../redux/actions";
+import { updateUserData, changePassword, openLoading, closeLoading } from "../../../redux/actions";
 
 import SideBar from "../SideBar/SideBar";
 
 import "../Dashboard.css";
 import "./Profile.css";
+import { toast } from "react-toastify";
 
 export default function Profile({
   handleAddInvoice,
@@ -13,36 +14,54 @@ export default function Profile({
   handleAddClient,
 }) {
   const dispatch = useDispatch();
+  const [file, setFile] = useState(null);
+  const [disabled, setDisabled] = useState(true);
   const user = useSelector((state) => state.user);
-  const [userData, setUser] = useState({
-    ruc: "",
-    name: "",
-    email: "",
-    address: "",
-    phone: "",
-    password: "",
-  });
+  const initialState = {
+    ruc: user.ruc,
+    businessName: user.businessName,
+    address: user.address,
+    phone: user.phone,
+    tradeName: user.tradeName,
+    email: user.email,
+  }
+  const [userData, setUser] = useState(initialState);
 
-  useEffect(() => {
-    setUser({
-      ruc: user.ruc,
-      name: user.name,
-      email: user.email,
-      address: user.address,
-      phone: user.phone,
-      password: user.password,
-    });
-  }, [user]);
+  function handleFile(e) {
+    if (e.target.files.length > 0) {
+      setFile(e.target.files[0]);
+      const url = URL.createObjectURL(e.target.files[0]);
+      setUser({ ...userData, logo: url });
+    }
+  }
 
   function handleChange(e) {
     setUser({ ...userData, [e.target.name]: e.target.value });
   }
 
   function handleSubmit(e) {
-    console.log(user.uid);
-    console.log(userData);
     e.preventDefault();
-    dispatch(uploadUser(user.uid, userData));
+    dispatch(openLoading())
+    dispatch(updateUserData(userData))
+    .then(() => {
+      dispatch(closeLoading())
+      toast.success("¡Perfil actualizado exitosamente!");
+    })
+    .catch((e) => {
+      dispatch(closeLoading())
+      toast.error(e.message);
+      console.log(e.message);
+    })
+  }
+
+  function handleChangePassword() {
+    dispatch(changePassword()).then(() => {
+      toast("Se envio a tu correo un link para cambiar la contraseña");
+    });
+  }
+
+  function handleDisabled() {
+    setDisabled(!disabled);
   }
 
   return (
@@ -52,104 +71,152 @@ export default function Profile({
         handleAddProduct={handleAddProduct}
         handleAddClient={handleAddClient}
       />
-      <div className="dashboard__container">
-        <div className="dahsboard__profile">
-          <div className="to-left">
+      <form onSubmit={handleSubmit} className="dashboard__container_profile">
+        <div className="dahsboard__profile to-left">
+          <div className="dahsboard__logo">
             <h2>Mi perfil</h2>
-
-            {/* RUC */}
-            <div className="mb-3">
-              <label className="form-label">RUC</label>
-              <input
-                type="number"
-                className="form-control"
-                name="ruc"
-                value={userData.ruc}
-                onChange={handleChange}
-              />
+            <div className="logo_flex">
+              <div className="logo-container">
+                {userData.logo ? (
+                  <img src={userData.logo} alt="your-logo" />
+                ) : (
+                  <span>Seleccione una imagen</span>
+                )}
+              </div>
             </div>
-
-            {/* Nombre */}
-            <div className="mb-3">
-              <label className="form-label">Nombre</label>
+            {disabled ? null : (
               <input
-                type="text"
+                type="file"
+                name="file"
+                accept="image/*"
                 className="form-control"
-                name="name"
-                value={userData.name}
-                onChange={handleChange}
+                onChange={handleFile}
+                required
               />
-            </div>
+            )}
+            <hr className="bar"></hr>
+          </div>
 
-            {/* Email */}
-            <div className="mb-3">
-              <label className="form-label">Email</label>
-              <input
-                type="email"
-                className="form-control"
-                name="email"
-                value={userData.email}
-                onChange={handleChange}
-              />
-            </div>
+          <div>
+            <div className="profile_form">
+              {/* RUC */}
+              <div className="form-floating mb-3 ">
+                <input
+                  type="number"
+                  className="form-control"
+                  name="ruc"
+                  disabled={disabled}
+                  value={userData.ruc}
+                  onChange={handleChange}
+                required
+                />
+                <label className="floatingInput">RUC</label>
+              </div>
 
-            {/* Address */}
-            <div className="mb-3">
-              <label className="form-label">Dirección</label>
-              <input
-                type="text"
-                className="form-control"
-                name="address"
-                value={userData.address}
-                onChange={handleChange}
-              />
-            </div>
+              {/* BUSINESS NAME */}
+              <div className="form-floating mb-3 ">
+                <input
+                  type="text"
+                  className="form-control"
+                  name="businessName"
+                  disabled={disabled}
+                  value={userData.businessName}
+                  onChange={handleChange}
+                required
+                />
+                <label htmlFor="floatingInput">Razón Social</label>
+              </div>
 
-            {/* Telefono */}
-            <div className="mb-3">
-              <label className="form-label">Telefono</label>
-              <input
-                type="tel"
-                className="form-control"
-                name="phone"
-                value={userData.phone}
-                onChange={handleChange}
-              />
-            </div>
+              {/* ADDRESS */}
+              <div className="form-floating mb-3 ">
+                <input
+                  type="text"
+                  className="form-control"
+                  name="address"
+                  disabled={disabled}
+                  value={userData.address}
+                  onChange={handleChange}
+                required
+                />
+                <label htmlFor="floatingInput">Dirección</label>
+              </div>
 
-            {/* Password */}
-            <div className="mb-3">
-              <label className="form-label">Contraseña</label>
-              <input
-                type="password"
-                className="form-control"
-                name="password"
-                value={userData.password}
-                onChange={handleChange}
-              />
-            </div>
+              {/* PHONE */}
+              <div className="form-floating mb-3 ">
+                <input
+                  type="tel"
+                  className="form-control"
+                  name="phone"
+                  disabled={disabled}
+                  value={userData.phone}
+                  onChange={handleChange}
+                required
+                />
+                <label htmlFor="floatingInput">Telefono</label>
+              </div>
 
-            {true ? (
-              <div>
+              {/* TRADE NAME */}
+              <div className="form-floating mb-3 ">
+                <input
+                  type="tel"
+                  className="form-control"
+                  name="tradeName"
+                  disabled={disabled}
+                  value={userData.tradeName}
+                  onChange={handleChange}
+                required
+                />
+                <label htmlFor="floatingInput">Nombre comercial</label>
+              </div>
+
+              {/* EMAIL */}
+              <div className="form-floating mb-3 ">
+                <input
+                  type="email"
+                  className="form-control"
+                  name="email"
+                  disabled={disabled}
+                  value={userData.email}
+                  onChange={handleChange}
+                required
+                />
+                <label htmlFor="floatingInput">Correo electronico</label>
+              </div>
+
+            </div>
+              {/* PASSWORD */}
+              {disabled ? null : (
                 <button
-                  type="submit"
-                  className="btn btn-primary"
-                  onClick={handleSubmit}
+                  className="btn btn-outline-success"
+                  onClick={handleChangePassword}
                 >
-                  Modificar
+                  Cambiar contraseña
+                </button>
+              )}
+            {disabled ? (
+              <div className="profile-btn-container">
+                <button
+                  className="btn btn-primary"
+                  onClick={handleDisabled}
+                >
+                  Modificar perfil
                 </button>
               </div>
             ) : (
-              <div>
-                <button type="submit" className="btn btn-primary">
+              <div className="profile-btn-container">
+                <button
+                  id="submit"
+                  type="submit"
+                  className="btn btn-success"
+                  onClick={handleDisabled}
+                >
                   Guardar
                 </button>
 
                 <button
-                  type="submit"
-                  className="btn btn-primary"
+                  className="btn btn-danger"
                   style={{ marginLeft: "20px" }}
-                  onChange={handleChange}
+                  onClick={() => {handleDisabled(); setUser(initialState)}}
                 >
                   Cancelar
                 </button>
@@ -157,7 +224,7 @@ export default function Profile({
             )}
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
