@@ -1,0 +1,23 @@
+.search-container {
+  width: 500px;
+}
+
+.search-container:hover .product-name {
+  display: flex;
+}
+
+.product-name {
+  position: absolute;
+  z-index: 1000;
+  display: none;
+  flex-direction: column;
+  width: 500px;
+  height: 100px;
+  overflow-y: scroll;
+  border: 1px solid grey;
+  background-color: white;
+}
+
+.product-name span:hover {
+  background-color: #3332;
+}

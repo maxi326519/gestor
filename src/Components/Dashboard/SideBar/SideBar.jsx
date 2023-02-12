@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { logOut } from "../../../redux/actions";
 import { Link, useNavigate } from "react-router-dom";
@@ -13,7 +13,9 @@ import products from "../../../assets/svg/products.svg";
 import invoices from "../../../assets/svg/invoices.svg";
 import list from "../../../assets/svg/list.svg";
 import addSquere from "../../../assets/svg/add-square.svg";
+import options from "../../../assets/svg/options.svg";
 import "./SideBar.css";
+import { toast } from "react-toastify";
 
 export default function SideBar({
   handleAddInvoice,
@@ -29,28 +31,45 @@ export default function SideBar({
     clients: false,
   };
   const [accordion, setAccordion] = useState(initialState);
-  const [isOpen, setOpen] = useState(false)
+  const [isOpen, setOpen] = useState(false);
 
   function handleLogOut() {
-    dispatch(logOut());
-    redirect("/login");
+    dispatch(logOut())
+    .then(() => {
+      redirect("/login");
+    })
+    .catch((e) => {
+      toast.error(e.message);
+      console.log(e.message);
+    })
   }
 
   function handleAccordion(name) {
     setAccordion({ ...initialState, [name]: !accordion[name] });
   }
 
+  function handleOpen(){
+    setOpen(!isOpen);
+  }
+
   return (
     <div
-      className={`container__sideBar ${ isOpen ? "open__sidebar" : ""}`}
+      className={`container__sideBar ${isOpen ? "open__sidebar" : ""}`}
       onMouseLeave={() => {
         setAccordion(initialState);
       }}
     >
       <div className="sideBar">
-        <div className="sideBar__title" onClick={() => setOpen(!isOpen)}>
+        <div className="sideBar__title">
           <img src={dashboard} alt="dashboard" />
           <h1>Dashboard</h1>
+          <div className="options">
+            <img
+              src={options}
+              alt="options"
+              onClick={handleOpen}
+            />
+          </div>
         </div>
 
         {/* USER */}
@@ -100,7 +119,7 @@ export default function SideBar({
               <span className="sideBar__text">Listado</span>
             </button>
           </Link>
-          <Link to="/dashboard/invoices/add">
+          <Link to="/dashboard/invoices/add" onClick={handleOpen}>
             <button>
               <img className="sideBar__icon" src={addSquere} alt="addSquere" />
               <span className="sideBar__text">Agregar factura</span>
@@ -127,7 +146,7 @@ export default function SideBar({
               <span className="sideBar__text">Listado</span>
             </button>
           </Link>
-          <button onClick={handleAddProduct}>
+          <button onClick={() => {handleAddProduct(); handleOpen()}}>
             <img className="sideBar__icon" src={addSquere} alt="addSquere" />
             <span className="sideBar__text">Agregar producto</span>
           </button>
@@ -150,7 +169,7 @@ export default function SideBar({
               <span className="sideBar__text">Listado</span>
             </button>
           </Link>
-          <button onClick={handleAddClient}>
+          <button onClick={() => {handleAddClient(); handleOpen()}}>
             <img className="sideBar__icon" src={addSquere} alt="addSquere" />
             <span className="sideBar__text">Agregar cliente</span>
           </button>

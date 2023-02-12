@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import {
   signin,
@@ -41,20 +41,9 @@ export default function Signin() {
     confirmPassword: "",
   });
 
-  function handleGoogleSesion(e) {
-    e.preventDefault();
-    dispatch(openLoading());
-    dispatch(GoogleSesion())
-      .then(() => {
-        dispatch(closeLoading());
-        redirect("/signin/user");
-      })
-      .catch((e) => {
-        dispatch(closeLoading());
-        toast(e);
-        console.log(e);
-      });
-  }
+  useEffect(() => {
+    handleVerification();
+  }, [user]);
 
   function handleChange(e) {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -122,6 +111,21 @@ export default function Signin() {
     }
   }
 
+  function handleGoogleSesion(e) {
+    e.preventDefault();
+    dispatch(openLoading());
+    dispatch(GoogleSesion())
+      .then(() => {
+        dispatch(closeLoading());
+        redirect("/signin/user");
+      })
+      .catch((e) => {
+        dispatch(closeLoading());
+        toast(e);
+        console.log(e);
+      });
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
 
@@ -145,13 +149,13 @@ export default function Signin() {
         dispatch(closeLoading());
         if (e.message.includes("email-already-in-use")) {
           setError({ ...error, email: "El correo ya esta en uso" });
-        }else{
+        } else {
           toast(e.message);
           console.log(e.message);
         }
         if (e.message.includes("ruc")) {
           setError({ ...error, ruc: "El ruc ya esta en uso" });
-        }else{
+        } else {
           toast(e.message);
           console.log(e.message);
         }

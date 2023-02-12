@@ -1,33 +1,49 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  postInvoice,
-  openLoading,
-  closeLoading,
-} from "../../../redux/actions";
+import { postInvoice, openLoading, closeLoading } from "../../../redux/actions";
 
 import AddProduct from "./AddProduct/AddProduct";
 import AddClient from "./AddClient/AddClient";
 import SideBar from "../SideBar/SideBar";
+import SearchProduct from "./SearchProduct/SearchProduct";
+import SearchClient from "./SearchClient/SearchClient";
 
 import addSquare from "../../../assets/svg/add-square.svg";
 import arrowChange from "../../../assets/svg/arrow-change.svg";
 import "./InvoicesForm.css";
 import { toast } from "react-toastify";
 
-export default function InvoicesForm({ addInvoice, handleAddInvoice, handleAddProduct, handleAddClient }) {
+export default function InvoicesForm({
+  addInvoice,
+  handleAddInvoice,
+  handleAddProduct,
+  handleAddClient,
+}) {
   const userId = useSelector((state) => state.user.uid);
   const [formProduct, setFormproduct] = useState(false);
   const [formClient, setFormClient] = useState(false);
   const [newProducts, setNewProduct] = useState([]);
   const [client, setClient] = useState(null);
   const [total, setTotal] = useState(0);
-
+  //
   const initialState = {
     product: [],
     client: {},
     date: "",
+    numeroDeFactura: "",
+    formadDePago: "",
   };
+
+  const formasDePago = [
+    { value: "01", name: "SIN UTILIZACION DEL SISTEMA FINANCIERO" },
+    { value: "15", name: "COMPENSACIÓN DE DEUDAS" },
+    { value: "16", name: "TARJETA DE DÉBITO" },
+    { value: "17", name: "DINERO ELECTRÓNICO" },
+    { value: "18", name: "TARJETA PREPAGO" },
+    { value: "19", name: "TARJETA DE CRÉDITO" },
+    { value: "20", name: "OTROS CON UTILIZACIÓN DEL SISTEMA FINANCIERO" },
+    { value: "21", name: "ENDOSO DE TÍTULOS" },
+  ];
 
   const dispatch = useDispatch();
   const [invoice, setInvoice] = useState(initialState);
@@ -135,31 +151,82 @@ export default function InvoicesForm({ addInvoice, handleAddInvoice, handleAddPr
               onChange={handleChange}
               required
             />
-            <label for="floatingInput">Fecha</label>
+            <label for="floatingInput">Fecha de emisión</label>
           </div>
 
-          {/* Client */}
-          {client ? (
-            <div class="invoice-data__client">
-              <div class="invoice-data__client-data">
-                <span>Nombre</span>
-                <span>{client.name}</span>
-                <span>{client.type}</span>
-                <span>{client.dataType}</span>
-              </div>
-              <button className="btn btn-primary" onClick={handleFormClient}>
-                <img src={arrowChange} alt="change client" />
-                <span>Cambiar</span>
-              </button>
+          {/* FORMAS DE PAGO */}
+          <div className="form-floating mb-3">
+            <select
+              className="form-select"
+              name="type"
+              onChange={handleChange}
+              required
+            >
+              <option value="">Seleccionar</option>
+              {formasDePago.map((f) => (
+                <option value={f.value}>{f.name}</option>
+              ))}
+            </select>
+            <label>Forma de pago</label>
+          </div>
+        </div>
+        {client ? (
+          <div class="invoice-data__client">
+            <div class="invoice-data__client-data">
+              <span>name</span>
+              <span>{client.name}</span>
+              <span>{client.type}</span>
+              <span>{client.dataType}</span>
             </div>
-          ) : (
             <button className="btn btn-primary" onClick={handleFormClient}>
-              <img src={addSquare} alt="add client" />
-              <span>Cliente</span>
+              <img src={arrowChange} alt="change client" />
+              <span>Cambiar</span>
             </button>
-          )}
+          </div>
+        ) : null}
 
-          {/* Product */}
+        <div className="formas-de-pago">
+          {/* Numero de la factura*/}
+          <input
+            type="text"
+            className="form-control"
+            name="numeroDeFactura"
+            value="011"
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="text"
+            className="form-control"
+            name="numeroDeFactura"
+            value="011"
+            onChange={handleChange}
+            required
+          />
+          <div className="form-floating mb-3">
+            <input
+              type="text"
+              className="form-control"
+              name="numeroDeFactura"
+              onChange={handleChange}
+              required
+            />
+            <label for="floatingInput">Numero de Factura</label>
+          </div>
+        </div>
+
+        {/* Client */}
+        <div className="search-container-btn">
+          <SearchClient handleSelect={handleSelect} />
+          <button className="btn btn-primary" onClick={handleFormClient}>
+            <img src={addSquare} alt="add client" />
+            <span>Cliente</span>
+          </button>
+        </div>
+
+        {/* Product */}
+        <div className="search-container-btn">
+          <SearchProduct handleSelect={handleAdd} />
           <button className="btn btn-primary" onClick={handleFormProduct}>
             <img src={addSquare} alt="add product" />
             <span>Producto</span>
@@ -169,6 +236,7 @@ export default function InvoicesForm({ addInvoice, handleAddInvoice, handleAddPr
         <div className="invoice-products">
           <div className="invoice-row invoice-first-row">
             <span>Producto/Servicio</span>
+            <span>Precio unitario + IVA</span>
             <span>Precio unitario</span>
             <span>Cantidad</span>
             <span>Monto</span>
@@ -176,6 +244,7 @@ export default function InvoicesForm({ addInvoice, handleAddInvoice, handleAddPr
           {newProducts?.map((p) => (
             <div className="invoice-row">
               <span>{p.name}</span>
+              <span>{p.unitPrice}</span>
               <span>{p.unitPrice}</span>
               <input
                 className="amount"
@@ -192,7 +261,7 @@ export default function InvoicesForm({ addInvoice, handleAddInvoice, handleAddPr
           </div>
           <div className="invoice-total">
             <span>Impuesto</span>
-            <span className="total">0</span>
+            <span className="total">1</span>
           </div>
           <div className="invoice-total">
             <span>Total</span>

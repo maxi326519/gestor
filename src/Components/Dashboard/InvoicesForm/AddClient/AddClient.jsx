@@ -46,8 +46,8 @@ export default function AddClient({ handleFormClient, handleSelect }) {
             <span>Nombre</span>
             <span>Agregar</span>
           </div>
-          {rows?.map((c) => (
-            <div className="invoice-product-card">
+          {rows?.map((c, i) => (
+            <div key={i} className="invoice-product-card">
               <span>{`${c.type}: ${c.dataType}`}</span>
               <span>{c.name}</span>
               <span className="btn btn-primary"onClick={() => handleSelect(c)}>

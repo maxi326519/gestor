@@ -37,16 +37,39 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  margin-left: 20px;
+  margin-bottom: 20px;
   border-radius: 5px;
   overflow: hidden;
   border: 1px solid #ccc;
 }
 
-.invoice-data__client-data span{
-    padding: 0 10px;
-    outline: 1px solid #ccc;
-  }
+.formas-de-pago {
+  display: flex;
+}
+
+.formas-de-pago input {
+  width: 60px;
+  margin-bottom: 20px;
+}
+
+.formas-de-pago .form-floating {
+  width: 300px;
+}
+
+.formas-de-pago .form-floating input{
+  margin-bottom: 0px;
+  width: 100%;
+}
+
+.invoice-data__client-data span {
+  padding: 0 10px;
+  outline: 1px solid #ccc;
+}
+
+.invoice-data__client button {
+  margin-bottom: 20px;
+  margin-left: 20px;
+}
 
 .invoice-products {
   display: flex;
@@ -55,7 +78,7 @@
 
 .invoice-row {
   display: grid;
-  grid-template-columns: 1fr repeat(3, 150px);
+  grid-template-columns: 1fr 200px repeat(3, 150px);
 }
 
 .invoice-first-row {
@@ -79,4 +102,14 @@
 
 .form-invoice button[type="submit"] {
   margin-top: 30px;
+}
+
+.search-container-btn {
+  display: flex;
+}
+
+.search-container-btn button {
+  width: 120px;
+  margin-bottom: 1rem;
+  margin-left: 20px;
 }

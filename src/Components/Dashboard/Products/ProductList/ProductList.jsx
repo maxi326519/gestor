@@ -10,13 +10,13 @@ import addSquare from "../../../../assets/svg/add-square.svg";
 export default function ProductList({ handleAddProduct }) {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products);
-  const userId = useSelector((state) => state.user.id);
+  const userId = useSelector((state) => state.user.uid);
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
     setRows(products);
   }, [products]);
-  
+
   function handleChange(e) {
     const value = e.target.value;
 
@@ -46,6 +46,10 @@ export default function ProductList({ handleAddProduct }) {
           <span>Producto</span>
         </button>
       </div>
+      <div className="form-floating mb-3" style={{ width: "300px"}}>
+        <input className="form-control" value={userId} />
+        <label for="floatingInput">Id usuario</label>
+      </div>
       <div className="dashboardList__grid">
         <div className="product-card first-row">
           <span>Codigo</span>
@@ -59,7 +63,9 @@ export default function ProductList({ handleAddProduct }) {
         </div>
         <div className="contentCard">
           {rows.length <= 0 ? (
-            <div className="listEmpty"><span>No hay productos</span></div>
+            <div className="listEmpty">
+              <span>No hay productos</span>
+            </div>
           ) : (
             rows?.map((p) => <ProductCard product={p} />)
           )}

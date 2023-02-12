@@ -64,11 +64,12 @@ export default function AddProduct({
             <span>Agregar</span>
           </div>
           {rows?.map((p, i) => (
-            <div className="invoice-product-card">
+            <div key={i} className="invoice-product-card">
               <span>{p.code}</span>
               <span>{p.name}</span>
               {isAdded[i] && isAdded[i].added ? (
                 <span
+                  key={i}
                   className="btn btn-danger"
                   onClick={() => {
                     isAdded[i].added = false;
@@ -79,6 +80,7 @@ export default function AddProduct({
                 </span>
               ) : (
                 <span
+                  key={i}
                   className="btn btn-primary"
                   onClick={() => {
                     isAdded[i].added = true;

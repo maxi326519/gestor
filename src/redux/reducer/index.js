@@ -1,7 +1,7 @@
 import {
   SIGN_IN,
   LOG_IN,
-  LOG_OUT,
+  SIGN_OUT,
   CONFIRM_REGISTER,
   PERSISTENCE,
   GET_USER_DATA,
@@ -24,7 +24,11 @@ import {
 } from "../actions";
 
 const initialState = {
-  user: {},
+  user: {
+    userDB: {
+      EMP_PERFIL: {}
+    }
+  },
   clients: [],
   products: [],
   invoices: [],
@@ -52,10 +56,10 @@ export const Reducer = (state = initialState, action) => {
     case PERSISTENCE:
       return {
         ...state,
-        user: action.payload,
+        user: { ...state.user, ...action.payload},
       };
 
-    case LOG_OUT:
+    case SIGN_OUT:
       return {
         ...state,
         user: {},
@@ -70,13 +74,13 @@ export const Reducer = (state = initialState, action) => {
     case GET_USER_DATA:
       return {
         ...state,
-        user: { ...state.user, ...action.payload },
+        user: { ...state.user, userDB: action.payload },
       };
 
     case  UPDATE_PROFILE:
       return {
         ...state,
-        user: { ...state.user, ...action.payload },
+        user: { ...state.user, userDB: action.payload },
       };
 
     case OPEN_LOADING:

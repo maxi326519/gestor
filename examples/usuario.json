@@ -1,34 +1,34 @@
 {
   "EMP_AGENTERETENCION": 0,
-  "EMP_ARCHIVO": "1016532555296402617475543767.txt",
-  "EMP_AUTOMATICO": 1,
-  "EMP_CODIGO": 1,
-  "EMP_COMPROBANTES": 1,
-  "EMP_DADICIONAL": 0,
+  "EMP_ARCHIVO": "1016532555296402617475543767.txt", /* archivo firma electronica */
+  "EMP_AUTOMATICO": 1,   /* default */
+  "EMP_CODIGO": 1, /* default */
+  "EMP_COMPROBANTES": 1, /* default */
+  "EMP_DADICIONAL": 0,  /* default */
   "EMP_DIRECCION": "Ciudad Azul",
   "EMP_EMAIL": "ciudadazul@gmail.com",
   "EMP_ESTABLECIMIENTO": "001",
-  "EMP_ESTADO": 1,
+  "EMP_ESTADO": 1,  /* default */
   "EMP_FECHA": "2022-10-19 at 02:43:22PM",
-  "EMP_GUIAREMISION": 29,
+  "EMP_GUIAREMISION": 1, /* default */
   "EMP_IMPUESTO": 0,
   "EMP_INCLUYEIVA": 0,
-  "EMP_KEY": "cazul2022",
+  "EMP_KEY": "cazul2022", /* Clave de la factura electronica */
   "EMP_LICENCIA": "NORMAL",
   "EMP_LOGO": "",
-  "EMP_MENSAJE": "",
-  "EMP_MULTILOCAL": 1,
-  "EMP_MULTIUSUARIO": 0,
-  "EMP_NCE": 200,
-  "EMP_NOMBRE": "ADMINFAC",
-  "EMP_NOTIFICACION": 0,
-  "EMP_NUMERO": 86,
-  "EMP_PRECISION": 2,
-  "EMP_PTOEMISION": "001",
+  "EMP_MENSAJE": "",  /* default */
+  "EMP_MULTILOCAL": 1,  /* default */
+  "EMP_MULTIUSUARIO": 0,  /* default */
+  "EMP_NCE": 100, /* Limite de factura */
+  "EMP_NOMBRE": "ADMINFAC",/*  razon social */
+  "EMP_NOTIFICACION": 0,  /* default */
+  "EMP_NUMERO": 86, /* Secuelcial del perfil */
+  "EMP_PRECISION": 2, /* Decimales */
+  "EMP_PTOEMISION": "001", /* emision */
   "EMP_REGIMEN": 0,
   "EMP_RUC": "2222222222001",
-  "EMP_SECUENCIAL": 179,
-  "EMP_SOCIEDAD": 0,
+  "EMP_SECUENCIAL": 179, /* NUmero de facturas */
+  "EMP_SOCIEDAD": 0,  /* oblicado a llevar contabilidad */
   "EMP_TELEFONO": "123123",
-  "EMP_USUKEY": "clave_Authentification"
+  "EMP_USUKEY": "clave_Authentification" /* id */
 }

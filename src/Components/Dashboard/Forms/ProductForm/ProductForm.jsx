@@ -41,11 +41,11 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
       .then((d) => {
         dispatch(closeLoading());
         handleClose();
-        toast("¡Producto agregado exitosamente!");
+        toast.success("¡Producto agregado exitosamente!");
       })
       .catch((e) => {
         dispatch(closeLoading());
-        toast("Error al agregar el producto");
+        toast.error("Error al agregar el producto");
         console.log(e);
       });
   }
@@ -142,7 +142,8 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
               className="form-control"
               id="floatingInput"
               name="taxes"
-              value={product.taxes}
+              value="12%"
+              disabled={true}
               onChange={handleChange}
             required
             />

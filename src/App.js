@@ -46,12 +46,13 @@ function App() {
   useEffect(() => {
     dispatch(openLoading());
     setTimeout(() => {
-      console.log(auth);
       if (auth.currentUser) {
         const user = auth.currentUser;
         dispatch(persistence(user));
         dispatch(getUserData()).then((d) => {
-          if (d.payload.complete) {
+          if (d.payload.EMP_PERFIL.DATOS_PERSONALES &&
+            d.payload.EMP_PERFIL.OBLIGACIONES &&
+            d.payload.EMP_PERFIL.FACTURA_ELECTRONICA) {
             redirect("/dashboard/invoices/add");
             dispatch(getProducts(user.uid));
             dispatch(getClients(user.uid));

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { login, GoogleSesion, openLoading, closeLoading } from "../../redux/actions";
+import { login, GoogleSesion, openLoading, closeLoading, getUserData } from "../../redux/actions";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -29,8 +29,7 @@ export default function Signin() {
     dispatch(openLoading());
     dispatch(GoogleSesion())
       .then(() => {
-        dispatch(closeLoading());
-        redirect("/dashboard/invoices/add");
+        handlVerifyRegister();
       })
       .catch((e) => {
         dispatch(closeLoading());
@@ -41,11 +40,9 @@ export default function Signin() {
   function handleSubmit(e) {
     e.preventDefault();
     dispatch(openLoading());
-    console.log(user.ruc);
     dispatch(login(user))
       .then(() => {
-        dispatch(closeLoading());
-        redirect("/dashboard/invoices/add");
+        handlVerifyRegister();
       })
       .catch((e) => {
         dispatch(closeLoading());
@@ -58,6 +55,18 @@ export default function Signin() {
           console.log(e.message);
         }
       });
+  }
+
+  function handlVerifyRegister(){
+    dispatch(getUserData()).then((d) => {
+    if (!d.payload.complete) {
+      dispatch(closeLoading());
+      redirect("/signin/user");
+    } else {
+      dispatch(closeLoading());
+      redirect("/dashboard/invoices/add");
+    }
+    });
   }
 
   function handleValidation(name, value) {

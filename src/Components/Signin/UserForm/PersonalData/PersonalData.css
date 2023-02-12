@@ -1,0 +1,41 @@
+.signin form {
+  display: flex;
+  flex-direction: column;
+}
+
+.signin form h2 {
+  margin-bottom: 30px;
+}
+
+.signin form h3 {
+  color: #444;
+}
+
+.signin form h4 {
+  margin-bottom: 20px;
+}
+
+.signin .logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
+  height: 150px;
+  margin-bottom: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+}
+
+.signin .logo-container img {
+  width: 80%;
+}
+
+.signin form p {
+  margin-top: 30px;
+}
+
+.signin form small {
+  color: red;
+}

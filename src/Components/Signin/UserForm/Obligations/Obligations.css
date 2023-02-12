@@ -1,0 +1,10 @@
+.check-container{
+    display: flex;
+    align-items: start;
+    flex-direction: column;
+    padding: 10px 20px 20px 30px;
+}
+
+.check-container input{
+    margin-right: 10px;
+}

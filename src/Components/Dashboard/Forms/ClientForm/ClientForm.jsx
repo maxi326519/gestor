@@ -29,11 +29,11 @@ export default function ClientForm({ addClient, handleAddClient }) {
       .then((d) => {
         hanldeClose();
         dispatch(closeLoading());
-        toast("¡Cliente agregado exitosamente!");
+        toast.success("¡Cliente agregado exitosamente!");
       })
       .catch((e) => {
         dispatch(closeLoading());
-        toast("Error al agregar el cliente");
+        toast.error("Error al agregar el cliente");
         console.log(e);
       });
   }
