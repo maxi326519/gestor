@@ -25,7 +25,7 @@ export default function Obligations() {
   }
 
   function handleSubmit(){
-    
+
   }
 
   return (
@@ -50,7 +50,6 @@ export default function Obligations() {
             name="EMP_SOCIEDAD"
             type="checkbox"
             onChange={handleChange}
-            required
           />
           Obligado a llevar contabilidad
         </label>
@@ -67,7 +66,6 @@ export default function Obligations() {
             name="EMP_INCLUYEIVA"
             type="checkbox"
             onChange={handleChange}
-            required
           />
           Incluir IVA
         </label>
