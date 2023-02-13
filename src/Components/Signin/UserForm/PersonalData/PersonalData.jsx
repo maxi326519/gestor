@@ -6,14 +6,12 @@ import {
   confirmDatosPersonales,
   uploadLogo,
 } from "../../../../redux/actions";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import "./PersonalData.css";
 
 export default function PersonalData() {
   const dispatch = useDispatch();
-  const redirect = useNavigate();
   const userData = useSelector((state) => state.user.userDB);
   const [imageUrl, setImageUrl] = useState("");
   const [file, setFile] = useState(null);
@@ -84,7 +82,6 @@ export default function PersonalData() {
       dispatch(confirmDatosPersonales(user))
       .then(() => {
         dispatch(closeLoading());
-        redirect("/dashboard/invoices/add");
         toast.success("Registro exitoso");
       })
       .catch((e) => {
@@ -118,6 +115,7 @@ export default function PersonalData() {
 
   return (
       <form onSubmit={handleSubmit} className="to-left">
+      <hr></hr>
         <h4>Complete sus datos personales</h4>
         <div className="logo-container">
           {file ? (

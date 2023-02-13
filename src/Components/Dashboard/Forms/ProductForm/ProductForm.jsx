@@ -14,7 +14,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
     type: "",
     price: "",
     taxesBoolean: false,
-    taxes: "0",
+    taxes: 12,
     description: "",
   }
   const [product, setProduct] = useState(initialState);
@@ -29,15 +29,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
     e.preventDefault();
     dispatch(openLoading());
 
-    const newProduct = {
-      name: product.name,
-      code: product.code,
-      type: product.type,
-      price: product.price,
-      description: product.description,
-    };
-
-    dispatch(postProduct(userId, newProduct))
+    dispatch(postProduct(userId, product))
       .then((d) => {
         dispatch(closeLoading());
         handleClose();

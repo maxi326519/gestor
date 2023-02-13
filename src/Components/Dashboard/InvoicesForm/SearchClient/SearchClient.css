@@ -18,6 +18,17 @@
   background-color: white;
 }
 
-.client-name span:hover {
+
+.search-client-row{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.search-client-row:hover {
   background-color: #3332;
+}
+
+.search-client-row span{
+  text-align: center;
+  outline: 1px solid grey;
 }

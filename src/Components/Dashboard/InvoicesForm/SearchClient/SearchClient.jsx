@@ -33,8 +33,11 @@ export default function SearchClient({ handleSelect }) {
         <label for="floatingInput">Buscar cliente</label>
       </div>
       <div className="client-name">
-        {rows?.map(c => (
-          <span onClick={() => handleSelect(c)}>{c.name}</span>
+        {rows?.map((c) => (
+          <div className="search-client-row" onClick={() => handleSelect(c)}>
+            <span>{`${c.type}: ${c.dataType}`}</span>
+            <span>{c.name}</span>
+          </div>
         ))}
       </div>
     </div>

@@ -10,12 +10,12 @@ export default function Signin() {
   const redirect = useNavigate();
   const dispatch = useDispatch();
   const [user, setUser] = useState({
-    ruc: "",
+    EMP_RUC: "",
     password: "",
   });
 
   const [error, setError] = useState({
-    ruc: null,
+    EMP_RUC: null,
     password: null,
   });
 
@@ -39,6 +39,9 @@ export default function Signin() {
 
   function handleSubmit(e) {
     e.preventDefault();
+
+    console.log(user);
+
     dispatch(openLoading());
     dispatch(login(user))
       .then(() => {
@@ -46,8 +49,8 @@ export default function Signin() {
       })
       .catch((e) => {
         dispatch(closeLoading());
-        if(e.message.includes("ruc")){
-          setError({ ...error, ruc: "No existe ningun usuario con ese ruc" });
+        if(e.message.includes("EMP_RUC")){
+          setError({ ...error, EMP_RUC: "No existe ningun usuario con ese EMP_RUC" });
         }else if(e.message.includes("password")){
           setError({ ...error, password: "La contraseña es incorrecta" });
         }else{
@@ -70,11 +73,11 @@ export default function Signin() {
   }
 
   function handleValidation(name, value) {
-    if(name === "ruc"){
+    if(name === "EMP_RUC"){
       if(value === ""){
-        setError({ ...error, ruc: "Debes completar el campo"});
+        setError({ ...error, EMP_RUC: "Debes completar el campo"});
       } else{
-        setError({ ...error, ruc: null});
+        setError({ ...error, EMP_RUC: null});
       }
     }
 
@@ -95,15 +98,15 @@ export default function Signin() {
         <div className="form-floating mb-3">
           <input
             type="text"
-            name="ruc"
-            className={`form-control ${!error.ruc ? "" : "is-invalid"}`}
-            id={error.ruc ? "floatingInputInvalid" : "user"}
+            name="EMP_RUC"
+            className={`form-control ${!error.EMP_RUC ? "" : "is-invalid"}`}
+            id={error.EMP_RUC ? "floatingInputInvalid" : "user"}
             placeholder="name"
             onChange={handleChange}
             required
           />
           <label htmlFor="floatingInput">Ruc</label>
-          {!error.ruc ? null : <small>{error.ruc}</small>}
+          {!error.EMP_RUC ? null : <small>{error.EMP_RUC}</small>}
         </div>
 
         {/* CONTRASEÑA */}

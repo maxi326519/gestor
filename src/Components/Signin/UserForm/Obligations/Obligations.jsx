@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { confirmObligaciones } from "../../../../redux/actions";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { confirmObligaciones, openLoading, closeLoading } from "../../../../redux/actions";
 
 import "./Obligations.css";
 
 export default function Obligations() {
+  const dispatch = useDispatch();
   const initialState = {
     EMP_REGIMEN: 0,
     EMP_SOCIEDAD: false,
@@ -14,22 +17,34 @@ export default function Obligations() {
   const [obligaciones, setObligaciones] = useState(initialState);
 
   function handleChange(e) {
-    console.log(initialState);
-    console.log(e.target.name);
-    console.log(e.target.value);
-    console.log(e.target.checked);
     setObligaciones({
       ...obligaciones,
       [e.target.name]: e.target.value,
     });
   }
 
-  function handleSubmit(){
+  function handleCheck(e) {
+    setObligaciones({
+      ...obligaciones,
+      [e.target.name]: e.target.checked,
+    });
+  }
 
+  function handleSubmit(e) {
+    e.preventDefault();
+    dispatch(openLoading());
+    dispatch(confirmObligaciones(obligaciones))
+    .then(() => dispatch(closeLoading()))
+    .catch((e) => {
+      dispatch(closeLoading());
+      toast(e.message);
+      console.log(e.message);
+    })
   }
 
   return (
-    <form className="obligations">
+    <form className="obligations" onSubmit={handleSubmit}>
+      <hr></hr>
       <h5>Obligaciones</h5>
       <div className="form-floating mb-3">
         <select
@@ -39,6 +54,7 @@ export default function Obligations() {
           onChange={handleChange}
           required
         >
+          <option value="0">Seleccionar</option>
           <option value="1">General</option>
           <option value="2">Emprendedor</option>
         </select>
@@ -46,18 +62,14 @@ export default function Obligations() {
       </div>
       <div className="check-container">
         <label>
-          <input
-            name="EMP_SOCIEDAD"
-            type="checkbox"
-            onChange={handleChange}
-          />
+          <input name="EMP_SOCIEDAD" type="checkbox" onChange={handleCheck} />
           Obligado a llevar contabilidad
         </label>
         <label>
           <input
             name="EMP_AGENTE_RETENCION"
             type="checkbox"
-            onChange={handleChange}
+            onChange={handleCheck}
           />
           Agente de retención
         </label>
@@ -65,12 +77,14 @@ export default function Obligations() {
           <input
             name="EMP_INCLUYEIVA"
             type="checkbox"
-            onChange={handleChange}
+            onChange={handleCheck}
           />
           Incluir IVA
         </label>
       </div>
-      <button className="btn btn-primary" onSubmit={handleSubmit}>Guardar datos</button>
+      <button className="btn btn-primary" onSubmit={handleSubmit}>
+        Guardar datos
+      </button>
     </form>
   );
 }

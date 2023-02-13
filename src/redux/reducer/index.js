@@ -68,19 +68,28 @@ export const Reducer = (state = initialState, action) => {
     case CONFIRM_REGISTER:
       return {
         ...state,
-        user: { ...state.user, ...action.payload },
+        user: {
+          ...state.user,
+          userDB: { ...state.user.userDB, ...action.payload },
+        }
       };
 
     case GET_USER_DATA:
       return {
         ...state,
-        user: { ...state.user, userDB: action.payload },
+        user: { 
+          ...state.user,
+          userDB: { ...state.user.userDB, ...action.payload },
+        },
       };
 
     case  UPDATE_PROFILE:
       return {
         ...state,
-        user: { ...state.user, userDB: action.payload },
+        user: {
+          ...state.user,
+          userDB: { ...state.user.userDB, ...action.payload },
+        },
       };
 
     case OPEN_LOADING:
@@ -143,6 +152,13 @@ export const Reducer = (state = initialState, action) => {
     case POST_INVOICE:
       return {
         ...state,
+        user:{
+          ...state.user,
+          userDB: {
+            ...state.user.userDB,
+            EMP_NUMERO: state.user.userDB.EMP_NUMERO + 1,
+          }
+        },
         invoices: [...state.invoices, action.payload],
       };
 

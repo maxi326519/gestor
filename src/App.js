@@ -147,7 +147,10 @@ function App() {
           element={
             <InvoicesForm
               addInvoice={form.addInvoice}
+              handleExportInvoice={handleExportInvoice}
               handleAddInvoice={handleAddInvoice}
+              handleAddProduct={handleAddProduct}
+              handleAddClient={handleAddClient}
             />
           }
         />

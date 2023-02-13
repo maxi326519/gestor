@@ -86,13 +86,13 @@ export function signin(user) {
       );
       const dbUser = await getDocs(queryInstance);
       if (!dbUser.empty) throw new Error("El ruc ya existe");
-      
+
       // Creamos el nuevo usuario
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         user.email,
         user.password
-        );
+      );
 
       const userDB = {
         EMP_RUC: user.ruc,
@@ -110,17 +110,14 @@ export function signin(user) {
         EMP_MULTIUSUARIO: 0 /* default */,
         EMP_NCE: 100 /* Limite de factura */,
         EMP_NOTIFICACION: 0 /* default */,
-        EMP_USUKEY: userCredential.user.uid   /* Id del usuarios */,
-        EMP_SECUENCIAL: 1,                    /* Numero de facturas en DB */
-        EMP_NUMERO: 1,                        /* Secuelcial de facturas del perfil */
+        EMP_USUKEY: userCredential.user.uid /* Id del usuarios */,
+        EMP_SECUENCIAL: 1 /* Numero de facturas en DB */,
         EMP_IMPUESTO: 0,
-        EMP_ESTABLECIMIENTO: "001",
-        EMP_PTOEMISION: "001",                /* Punto de emision */
         EMP_PERFIL: {
           DATOS_PERSONALES: false,
           OBLIGACIONES: false,
           FACTURA_ELECTRONICA: false,
-        }
+        },
       };
       
       // Almacenamos los primeros datos sobre el usuario,
@@ -150,29 +147,27 @@ export function confirmDatosPersonales(newData) {
           where("ruc", "==", newData.EMP_RUC)
           );
           const dbUser = await getDocs(queryInstance);
-        if (!dbUser.empty) throw new Error("El ruc ya existe");
-      }
-
-      const updateData = {
-        EMP_NOMBRE: newData.EMP_NOMBRE, /* Razon social */
-        EMP_NOMBRE_COMERCIAL: newData.EMP_NOMBRE_COMERCIAL,
-        EMP_DIRECCION: newData.EMP_DIRECCION,
-        EMP_TELEFONO: newData.EMP_TELEFONO,
-        EMP_LOGO: newData.EMP_LOGO,
+          if (!dbUser.empty) throw new Error("El ruc ya existe");
+        }
+        
+        const updateData = {
+          EMP_NOMBRE: newData.EMP_NOMBRE /* Razon social */,
+          EMP_NOMBRE_COMERCIAL: newData.EMP_NOMBRE_COMERCIAL,
+          EMP_DIRECCION: newData.EMP_DIRECCION,
+          EMP_TELEFONO: newData.EMP_TELEFONO,
+          EMP_LOGO: newData.EMP_LOGO,
+          EMP_PERFIL: {
+            DATOS_PERSONALES: true,
+            OBLIGACIONES: false,
+            FACTURA_ELECTRONICA: false,
+        },
       };
 
-      await updateDoc(doc(db, "users", auth.currentUser.uid), {
-        updateData,
-        EMP_PERFIL: {
-          DATOS_PERSONALES: true,
-          OBLIGACIONES: false,
-          FACTURA_ELECTRONICA: false,
-        },
-      });
-
+      await updateDoc(doc(db, "users", auth.currentUser.uid), updateData);
+      
       return dispatch({
         type: CONFIRM_REGISTER,
-        payload: newData,
+        payload: updateData,
       });
     } catch (err) {
       throw new Error(err);
@@ -184,24 +179,22 @@ export function confirmObligaciones(newData) {
   return async (dispatch) => {
     try {
       const updateData = {
-        EMP_REGIMEN: newData.regimen,
-        EMP_SOCIEDAD: newData.sociedad,                  /* Obligado a llevar contabilidad */
-        EMP_AGENTE_RETENCION: newData.agenteRetencion,
-        EMP_INCLUYEIVA: newData.iva,
-      };
-      
-      await updateDoc(doc(db, "users", auth.currentUser.uid), {
-        updateData,
+        EMP_REGIMEN: newData.EMP_REGIMEN,
+        EMP_SOCIEDAD: newData.EMP_SOCIEDAD /* Obligado a llevar contabilidad */,
+        EMP_AGENTE_RETENCION: newData.EMP_AGENTE_RETENCION,
+        EMP_INCLUYEIVA: newData.EMP_INCLUYEIVA,
         EMP_PERFIL: {
           DATOS_PERSONALES: true,
           OBLIGACIONES: true,
           FACTURA_ELECTRONICA: false,
         },
-      });
-
+      };
+      
+      await updateDoc(doc(db, "users", auth.currentUser.uid), updateData);
+      
       return dispatch({
         type: CONFIRM_REGISTER,
-        payload: newData,
+        payload: updateData,
       });
     } catch (err) {
       throw new Error(err);
@@ -213,25 +206,24 @@ export function confirmFacturaElectronica(newData) {
   return async (dispatch) => {
     try {
       const updateData = {
-        EMP_ARCHIVO: newData.firmaElectronica,          /* Archivo firma electronica */
-        EMP_IMPUESTO: newData.impuesto,
-        EMP_INCLUYEIVA: newData.iva,
-        EMP_KEY: newData.claveFactura,                   /* Clave de la factura electronica */
-        EMP_PRECISION: newData.decimales,                /* Cantidad de decimales */
-      };
-
-      await updateDoc(doc(db, "users", auth.currentUser.uid), {
-        updateData,
+        EMP_ESTABLECIMIENTO: newData.EMP_ESTABLECIMIENTO,
+        EMP_PTOEMISION: newData.EMP_PTOEMISION,
+        EMP_NUMERO: newData.EMP_NUMERO,
+        EMP_ARCHIVO: newData.EMP_ARCHIVO,
+        EMP_KEY: newData.EMP_KEY,
+        EMP_PRECISION: newData.EMP_PRECISION,
         EMP_PERFIL: {
           DATOS_PERSONALES: true,
-          OBLIGACIONES: false,
-          FACTURA_ELECTRONICA: false,
+          OBLIGACIONES: true,
+          FACTURA_ELECTRONICA: true,
         },
-      });
+      };
+      
+      await updateDoc(doc(db, "users", auth.currentUser.uid), updateData,);
 
       return dispatch({
         type: CONFIRM_REGISTER,
-        payload: newData,
+        payload: updateData,
       });
     } catch (err) {
       throw new Error(err);
@@ -245,7 +237,7 @@ export function login(userData) {
       // Verificamo que exista un usuario con ese ruc
       const queryInstance = query(
         collection(db, "users"),
-        where("ruc", "==", userData.ruc)
+        where("EMP_RUC", "==", userData.EMP_RUC)
       );
       const dbUser = await getDocs(queryInstance);
       if (dbUser.empty) throw new Error("El ruc no existe");
@@ -330,7 +322,7 @@ export function getUserData() {
     try {
       const dataUser = await getDoc(doc(db, "users", auth.currentUser.uid));
       const userDB = dataUser.data();
-      
+
       return dispatch({
         type: GET_USER_DATA,
         payload: userDB,
@@ -440,12 +432,17 @@ export function postProduct(userId, product) {
       if (!userId) throw new Error("Falta el ID de usuario");
       const productColl = collection(db, "users", userId, "products");
 
-      await setDoc(doc(productColl, product.code), {
+      const newProduct = {
         ...product,
+        USU_KEY: userId
+      }
+
+      await setDoc(doc(productColl, product.code), {
+        ...newProduct,
       });
       return dispatch({
         type: POST_PRODUCT,
-        payload: product,
+        payload: newProduct,
       });
     } catch (err) {
       throw new Error(err);

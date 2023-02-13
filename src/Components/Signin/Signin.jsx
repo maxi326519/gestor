@@ -15,28 +15,28 @@ export default function Signin() {
   const dispatch = useDispatch();
   const redirect = useNavigate();
   const [user, setUser] = useState({
-    ruc: "",
-    email: "",
+    EMP_RUC: "",
+    EMP_EMAIL: "",
     password: "",
     confirmPassword: "",
   });
 
   const expressions = {
     password: /^[\s\S]{8,18}$/, // 8 a 18 digitos.
-    email: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-    phone: /^[+]{0,1}[0-9]{0,}$/,
+    EMP_EMAIL: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+    EMP_TELEFONO: /^[+]{0,1}[0-9]{0,}$/,
   };
 
   const [error, setError] = useState({
-    ruc: null,
-    email: null,
+    EMP_RUC: null,
+    EMP_EMAIL: null,
     password: null,
     confirmPassword: null,
   });
 
   const [isValid, setIsValid] = useState({
-    ruc: "",
-    email: "",
+    EMP_RUC: "",
+    EMP_EMAIL: "",
     password: "",
     confirmPassword: "",
   });
@@ -51,26 +51,26 @@ export default function Signin() {
   }
 
   function handleVerification(name, value) {
-    if (name === "ruc") {
+    if (name === "EMP_RUC") {
       if (value !== "") {
-        setIsValid({ ...isValid, ruc: "is-valid" });
+        setIsValid({ ...isValid, EMP_RUC: "is-valid" });
       } else {
-        setIsValid({ ...isValid, ruc: "" });
+        setIsValid({ ...isValid, EMP_RUC: "" });
       }
     }
 
-    if (name === "email") {
+    if (name === "EMP_EMAIL") {
       if (value !== "") {
-        if (!expressions.email.test(value.trim())) {
-          setError({ ...error, email: "El correo no es valido" });
-          setIsValid({ ...isValid, email: "" });
+        if (!expressions.EMP_EMAIL.test(value.trim())) {
+          setError({ ...error, EMP_EMAIL: "El correo no es valido" });
+          setIsValid({ ...isValid, EMP_EMAIL: "" });
         } else {
-          setError({ ...error, email: null });
-          setIsValid({ ...isValid, email: "is-valid" });
+          setError({ ...error, EMP_EMAIL: null });
+          setIsValid({ ...isValid, EMP_EMAIL: "is-valid" });
         }
       } else {
-        setError({ ...error, email: null });
-        setIsValid({ ...isValid, email: "" });
+        setError({ ...error, EMP_EMAIL: null });
+        setIsValid({ ...isValid, EMP_EMAIL: "" });
       }
     }
 
@@ -129,6 +129,9 @@ export default function Signin() {
   function handleSubmit(e) {
     e.preventDefault();
 
+    console.log('submit');
+    console.log(user);
+
     for (const data in user) {
       handleVerification(data, user[data]);
     }
@@ -136,8 +139,8 @@ export default function Signin() {
     dispatch(openLoading());
     dispatch(
       signin({
-        ruc: user.ruc,
-        email: user.email,
+        EMP_RUC: user.EMP_RUC,
+        EMP_EMAIL: user.EMP_EMAIL,
         password: user.password,
       })
     )
@@ -147,14 +150,14 @@ export default function Signin() {
       })
       .catch((e) => {
         dispatch(closeLoading());
-        if (e.message.includes("email-already-in-use")) {
-          setError({ ...error, email: "El correo ya esta en uso" });
+        if (e.message.includes("EMP_EMAIL-already-in-use")) {
+          setError({ ...error, EMP_EMAIL: "El correo ya esta en uso" });
         } else {
           toast(e.message);
           console.log(e.message);
         }
-        if (e.message.includes("ruc")) {
-          setError({ ...error, ruc: "El ruc ya esta en uso" });
+        if (e.message.includes("EMP_RUC")) {
+          setError({ ...error, EMP_RUC: "El ruc ya esta en uso" });
         } else {
           toast(e.message);
           console.log(e.message);
@@ -170,34 +173,34 @@ export default function Signin() {
         <div className="form-floating mb-3 ">
           <input
             type="text"
-            name="ruc"
+            name="EMP_RUC"
             className={`form-control ${
-              !error.ruc ? isValid.ruc : "is-invalid"
+              !error.EMP_RUC ? isValid.EMP_RUC : "is-invalid"
             }`}
-            id={error.ruc ? "floatingInputInvalid" : "floatingInput"}
+            id={error.EMP_RUC ? "floatingInputInvalid" : "floatingInput"}
             placeholder="name"
             onChange={handleChange}
             required
           />
           <label htmlFor="floatingInput">Ruc</label>
-          {!error.ruc ? null : <small>{error.ruc}</small>}
+          {!error.EMP_RUC ? null : <small>{error.EMP_RUC}</small>}
         </div>
 
         {/* EMAIL */}
         <div className="form-floating mb-3">
           <input
-            type="email"
-            name="email"
+            type="EMP_EMAIL"
+            name="EMP_EMAIL"
             className={`form-control ${
-              !error.email ? isValid.email : "is-invalid"
+              !error.EMP_EMAIL ? isValid.EMP_EMAIL : "is-invalid"
             }`}
-            id={error.email ? "floatingInputInvalid" : "floatingInput"}
+            id={error.EMP_EMAIL ? "floatingInputInvalid" : "floatingInput"}
             placeholder="name@example.com"
             onChange={handleChange}
             required
           />
           <label htmlFor="floatingInput">Correo electronico</label>
-          {!error.email ? null : <small>{error.email}</small>}
+          {!error.EMP_EMAIL ? null : <small>{error.EMP_EMAIL}</small>}
         </div>
 
         {/* CONTRASEÑA */}
