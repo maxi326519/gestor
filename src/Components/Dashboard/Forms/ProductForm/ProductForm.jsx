@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { postProduct, openLoading, closeLoading } from "../../../../redux/actions";
+import {
+  postProduct,
+  openLoading,
+  closeLoading,
+} from "../../../../redux/actions";
 
 import "../Form.css";
 
@@ -16,9 +20,8 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
     taxesBoolean: false,
     taxes: 12,
     description: "",
-  }
+  };
   const [product, setProduct] = useState(initialState);
-
 
   function handleChange(e) {
     console.log(product);
@@ -63,17 +66,17 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
           ></button>
         </div>
 
-        {/* Name */}
+        {/* Description */}
         <div className="form-floating mb-3">
-          <input
+          <textarea
             className="form-control"
             id="floatingInput"
-            name="name"
-            value={product.name}
+            name="description"
+            value={product.description}
             onChange={handleChange}
             required
           />
-          <label htmFor="floatingInput">Nombre</label>
+          <label htmFor="floatingInput">Descripcion</label>
         </div>
 
         {/* Code */}
@@ -91,7 +94,13 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
 
         {/* Type */}
         <div className="form-floating mb-3">
-          <select className="form-select" name="type" value={product.type} onChange={handleChange} required>
+          <select
+            className="form-select"
+            name="type"
+            value={product.type}
+            onChange={handleChange}
+            required
+          >
             <option value="">Seleccione un tipo</option>
             <option value="Producto">Producto</option>
             <option value="Servicio">Servicio</option>
@@ -137,24 +146,11 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
               value="12%"
               disabled={true}
               onChange={handleChange}
-            required
+              required
             />
             <label htmFor="floatingInput">Impuesto</label>
           </div>
         ) : null}
-
-        {/* Description */}
-        <div className="form-floating mb-3">
-          <textarea
-            className="form-control"
-            id="floatingInput"
-            name="description"
-            value={product.description}
-            onChange={handleChange}
-            required
-          />
-          <label htmFor="floatingInput">Descripcion</label>
-        </div>
 
         <button type="submit" className="btn btn-primary">
           Agregar producto

@@ -3,6 +3,7 @@
   margin: 20px;
   padding: 20px;
   border-radius: 20px;
+  overflow-y: scroll;
   background-color: white;
 }
 
@@ -35,12 +36,12 @@
 
 .invoice-data__client-data {
   display: grid;
+  gap: 10px;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
   margin-bottom: 20px;
   border-radius: 5px;
   overflow: hidden;
-  border: 1px solid #ccc;
 }
 
 .formas-de-pago {
@@ -61,7 +62,7 @@
   width: 100%;
 }
 
-.invoice-data__client-data span {
+.invoice-data__client-data div span {
   padding: 0 10px;
   outline: 1px solid #ccc;
 }
@@ -78,7 +79,7 @@
 
 .invoice-row {
   display: grid;
-  grid-template-columns: 1fr 200px repeat(3, 150px);
+  grid-template-columns: 200px 1fr repeat(6, 150px);
 }
 
 .invoice-first-row {
@@ -90,12 +91,12 @@
   outline: 1px solid #ccc;
 }
 
-.invoice-total {
+.invoice-totals {
   display: flex;
   justify-content: flex-end;
 }
 
-.invoice-total span {
+.invoice-totals span {
   padding: 10px 20px;
   width: 150px;
 }

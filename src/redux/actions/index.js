@@ -82,7 +82,7 @@ export function signin(user) {
       // Verificamos que no exista otro usuario con ese ruc
       const queryInstance = query(
         collection(db, "users"),
-        where("ruc", "==", user.ruc)
+        where("EMP_RUC", "==", user.EMP_RUC)
       );
       const dbUser = await getDocs(queryInstance);
       if (!dbUser.empty) throw new Error("El ruc ya existe");
@@ -90,13 +90,13 @@ export function signin(user) {
       // Creamos el nuevo usuario
       const userCredential = await createUserWithEmailAndPassword(
         auth,
-        user.email,
+        user.EMP_EMAIL,
         user.password
       );
 
       const userDB = {
-        EMP_RUC: user.ruc,
-        EMP_EMAIL: user.email,
+        EMP_RUC: user.EMP_RUC,
+        EMP_EMAIL: user.EMP_EMAIL,
         EMP_AUTOMATICO: 1 /* default */,
         EMP_CODIGO: 1 /* default */,
         EMP_COMPROBANTES: 1 /* default */,
