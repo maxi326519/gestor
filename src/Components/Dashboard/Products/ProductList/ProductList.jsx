@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { getProducts } from "../../../../redux/actions";
-import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 import ProductCard from "./ProductCard/ProductCard";
 
 import addSquare from "../../../../assets/svg/add-square.svg";
 
 export default function ProductList({ handleAddProduct }) {
-  const dispatch = useDispatch();
   const products = useSelector((state) => state.products);
-  const userId = useSelector((state) => state.user.uid);
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
@@ -23,10 +19,14 @@ export default function ProductList({ handleAddProduct }) {
     setRows(
       products.filter((p) => {
         if (value === "") return true;
-        if (p.code.toLowerCase().includes(value.toLowerCase())) return true;
-        if (p.name.toLowerCase().includes(value.toLowerCase())) return true;
-        if (p.description.toLowerCase().includes(value.toLowerCase()))
+        if (p.ITE_CODIGO.toLowerCase().includes(value.toLowerCase())) {
+          console.log("Code", p.ITE_CODIGO);
           return true;
+        }
+        if (p.ITE_DESCRIPCION.toLowerCase().includes(value.toLowerCase())) {
+          console.log("Description", p.ITE_DESCRIPCION);
+          return true;
+        }
         return false;
       })
     );
@@ -46,18 +46,13 @@ export default function ProductList({ handleAddProduct }) {
           <span>Producto</span>
         </button>
       </div>
-      <div className="form-floating mb-3" style={{ width: "300px"}}>
-        <input className="form-control" value={userId} />
-        <label for="floatingInput">Id usuario</label>
-      </div>
       <div className="dashboardList__grid">
         <div className="product-card first-row">
           <span>Codigo</span>
-          <span>Nombre</span>
+          <span>Descripcion</span>
           <span>Tipo</span>
           <span>Precio</span>
           <span>Impuesto</span>
-          <span>Descripcion</span>
           <span>Editar</span>
           <span>Eliminar</span>
         </div>
@@ -67,7 +62,7 @@ export default function ProductList({ handleAddProduct }) {
               <span>No hay productos</span>
             </div>
           ) : (
-            rows?.map((p) => <ProductCard product={p} />)
+            rows?.map(p => <ProductCard key={p.ITE_CODIGO} product={p} />)
           )}
         </div>
       </div>

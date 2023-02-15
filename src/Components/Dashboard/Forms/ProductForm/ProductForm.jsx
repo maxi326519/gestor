@@ -13,13 +13,11 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
   const dispatch = useDispatch();
   const userId = useSelector((state) => state.user.uid);
   const initialState = {
-    name: "",
-    code: "",
-    type: "",
-    price: "",
-    taxesBoolean: false,
-    taxes: 12,
-    description: "",
+    ITE_CODIGO: "",
+    ITE_DESCRIPCION: "",
+    ITE_TIPO: "",
+    ITE_IMPUESTO: false,
+    ITE_PVP: "",
   };
   const [product, setProduct] = useState(initialState);
 
@@ -32,7 +30,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
     e.preventDefault();
     dispatch(openLoading());
 
-    dispatch(postProduct(userId, product))
+    dispatch(postProduct(product))
       .then((d) => {
         dispatch(closeLoading());
         handleClose();
@@ -66,13 +64,13 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
           ></button>
         </div>
 
-        {/* Description */}
+        {/* DESCRIPCION */}
         <div className="form-floating mb-3">
           <textarea
             className="form-control"
             id="floatingInput"
-            name="description"
-            value={product.description}
+            name="ITE_DESCRIPCION"
+            value={product.ITE_DESCRIPCION}
             onChange={handleChange}
             required
           />
@@ -84,8 +82,8 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
           <input
             className="form-control"
             id="floatingInput"
-            name="code"
-            value={product.code}
+            name="ITE_CODIGO"
+            value={product.ITE_CODIGO}
             onChange={handleChange}
             required
           />
@@ -96,14 +94,14 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
         <div className="form-floating mb-3">
           <select
             className="form-select"
-            name="type"
-            value={product.type}
+            name="ITE_TIPO"
+            value={product.ITE_TIPO}
             onChange={handleChange}
             required
           >
             <option value="">Seleccione un tipo</option>
-            <option value="Producto">Producto</option>
-            <option value="Servicio">Servicio</option>
+            <option value={1}>Producto</option>
+            <option value={2}>Servicio</option>
           </select>
           <label htmFor="floatingInput">Tipo</label>
         </div>
@@ -113,8 +111,8 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
           <input
             className="form-control"
             id="floatingInput"
-            name="price"
-            value={product.price}
+            name="ITE_PVP"
+            value={product.ITE_PVP}
             onChange={handleChange}
             required
           />
@@ -126,8 +124,8 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
           <select
             className="form-select select-input"
             id="floatingInput"
-            name="taxesBoolean"
-            value={product.taxesBoolean}
+            name="ITE_IMPUESTO"
+            value={product.ITE_IMPUESTO}
             onChange={handleChange}
             required
           >
@@ -137,12 +135,11 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
           <label htmFor="floatingInput">Seleccione si paga inpuestos</label>
         </div>
 
-        {product.taxesBoolean === "true" ? (
+        {product.ITE_IMPUESTO === "true" ? (
           <div className="form-floating mb-3">
             <input
               className="form-control"
               id="floatingInput"
-              name="taxes"
               value="12%"
               disabled={true}
               onChange={handleChange}

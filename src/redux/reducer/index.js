@@ -173,8 +173,8 @@ export const Reducer = (state = initialState, action) => {
     case UPDATE_PRODUCT:
       return {
         ...state,
-        products: state.products.map((c) =>
-          c.code === action.payload.code ? action.payload : c
+        products: state.products.map(p =>
+          p.ITE_CODIGO === action.payload.ITE_CODIGO ? action.payload : p
         ),
       };
 
@@ -187,7 +187,7 @@ export const Reducer = (state = initialState, action) => {
     case DELETE_PRODUCT:
       return {
         ...state,
-        products: state.products.filter((p) => p.code !== action.payload),
+        products: state.products.filter((p) => p.ITE_CODIGO !== action.payload),
       };
 
     case DELETE_INVOICE:

@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { getClients } from "../../../../redux/actions";
-import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 import ClientCard from "./ClientCard/ClientCard";
 
@@ -9,9 +7,7 @@ import addSquare from "../../../../assets/svg/add-square.svg";
 import "./ClientList.css";
 
 export default function ClientList({ handleAddClient }) {
-  const dispatch = useDispatch();
   const clients = useSelector((state) => state.clients);
-  const userId = useSelector((state) => state.user.id);
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
@@ -24,11 +20,16 @@ export default function ClientList({ handleAddClient }) {
     setRows(
       clients.filter((row) => {
         if (value === "") return true;
-        if (row.name.toLowerCase().includes(value.toLowerCase())) return true;
-        if (row.dataType.toLowerCase().includes(value.toLowerCase())) return true;
-        if (row.email.toLowerCase().includes(value.toLowerCase())) return true;
-        if (row.address.toLowerCase().includes(value.toLowerCase())) return true;
-        if (row.phone.toLowerCase().includes(value.toLowerCase())) return true;
+        if (row.CLI_IDENTIFICACION.toLowerCase().includes(value.toLowerCase()))
+          return true;
+        if (row.CLI_NOMBRE.toLowerCase().includes(value.toLowerCase()))
+          return true;
+        if (row.CLI_EMAIL.toLowerCase().includes(value.toLowerCase()))
+          return true;
+        if (row.CLI_DIRECCION.toLowerCase().includes(value.toLowerCase()))
+          return true;
+        if (row.CLI_TELEFONO.toLowerCase().includes(value.toLowerCase()))
+          return true;
         return false;
       })
     );
@@ -50,8 +51,8 @@ export default function ClientList({ handleAddClient }) {
       </div>
       <div className="dashboardList__grid">
         <div className="client-card first-row">
-          <span>Nombre</span>
           <span>Tipo</span>
+          <span>Nombre</span>
           <span>Email</span>
           <span>Direccion</span>
           <span>Telefono</span>
@@ -64,7 +65,7 @@ export default function ClientList({ handleAddClient }) {
               <span>No hay productos</span>
             </div>
           ) : (
-            rows?.map((c) => <ClientCard client={c} />)
+            rows?.map((c) => <ClientCard key={c.id} client={c} />)
           )}
         </div>
       </div>

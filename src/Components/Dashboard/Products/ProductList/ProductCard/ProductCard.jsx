@@ -19,6 +19,10 @@ export default function ProductCard({ product }) {
   const userId = useSelector((state) => state.user.uid);
   const [editProduct, setProduct] = useState(product);
   const [disabled, setDisabled] = useState(true);
+  const type = [
+    { value: 1, name: "Producto" },
+    { value: 2, name: "Servicio" },
+  ];
 
   function handleEdit() {
     setDisabled(!disabled);
@@ -30,7 +34,7 @@ export default function ProductCard({ product }) {
 
   function handleRemove() {
     dispatch(openLoading());
-    dispatch(deleteProduct(userId, product.code))
+    dispatch(deleteProduct(product.ITE_CODIGO))
       .then(() => {
         dispatch(closeLoading());
         toast.success("¡Producto eliminado exitosamente!");
@@ -44,7 +48,7 @@ export default function ProductCard({ product }) {
 
   function handleUpdate() {
     dispatch(openLoading());
-    dispatch(updateProduct(userId, editProduct))
+    dispatch(updateProduct(editProduct))
       .then(() => {
         dispatch(closeLoading());
         toast.success("¡Producto actualizado exitosamente!");
@@ -61,45 +65,52 @@ export default function ProductCard({ product }) {
     <div key={product.code} className="product-card">
       <input
         className={`form-control ${disabled ? "input-disabled" : ""}`}
+        value={editProduct.ITE_CODIGO}
+        onChange={handleChange}
         disabled={true}
-        value={editProduct.code}
-        onChange={handleChange}
+        required
       />
       <input
         className={`form-control ${disabled ? "input-disabled" : ""}`}
-        name="name"
-        disabled={disabled}
-        value={editProduct.name}
+        name="ITE_DESCRIPCION"
+        value={editProduct.ITE_DESCRIPCION}
         onChange={handleChange}
-      />
+        disabled={disabled}
+        required
+        />
+      <select
+        className={disabled ? "form-control input-disabled " : "form-select"}
+        name="ITE_TIPO"
+        value={editProduct.ITE_TIPO}
+        onChange={handleChange}
+        disabled={disabled}
+        required
+        >
+        {type.map((t, i) => (
+          <option key={i} value={t.value}>
+            {t.name}
+          </option>
+        ))}
+      </select>
       <input
         className={`form-control ${disabled ? "input-disabled" : ""}`}
-        name="type"
-        disabled={disabled}
-        value={editProduct.type}
+        name="ITE_PVP"
+        value={editProduct.ITE_PVP}
         onChange={handleChange}
-      />
-      <input
-        className={`form-control ${disabled ? "input-disabled" : ""}`}
-        name="price"
         disabled={disabled}
-        value={editProduct.price}
-        onChange={handleChange}
+        required
       />
-      <input
-        className={`form-control ${disabled ? "input-disabled" : ""}`}
-        name="taxes"
+      <select
+        className={disabled ? "form-control input-disabled " : "form-select"}
+        name="ITE_IMPUESTO"
+        value={editProduct.ITE_IMPUESTO}
+        onChange={handleChange}
+        required
         disabled={disabled}
-        value={editProduct.taxes}
-        onChange={handleChange}
-      />
-      <input
-        className={`form-control ${disabled ? "input-disabled" : ""}`}
-        name="description"
-        disabled={disabled}
-        value={editProduct.description}
-        onChange={handleChange}
-      />
+      >
+        <option value={true}>Si</option>
+        <option value={false}>No</option>
+      </select>
       <button
         className={`btn ${disabled ? "btn-primary" : "btn-success"}`}
         onClick={
@@ -118,10 +129,7 @@ export default function ProductCard({ product }) {
         className="btn btn-danger"
         onClick={() => {
           dispatch(
-            Alert(
-            `Si elimina un producto tenga en cuanta que ciertos detalles de las facturas se elimina tambien`,
-              handleRemove
-            )
+            Alert(`¿Seguro que quiere eliminar el producto?`, handleRemove)
           );
         }}
       >

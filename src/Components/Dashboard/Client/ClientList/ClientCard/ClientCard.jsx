@@ -17,100 +17,102 @@ import "./ClientCard.css";
 
 export default function ClientCard({ client }) {
   const dispatch = useDispatch();
-  const userId = useSelector((state) => state.user.uid);
   const [editClient, setProduct] = useState(client);
   const [disabled, setDisabled] = useState(true);
-
+  
   function handleEdit() {
     setDisabled(!disabled);
   }
 
   function handleChange(e) {
-    console.log(e.target);
-    console.log(e.target.name);
-    console.log(e.target.value);
+    console.log(editClient);
     setProduct({ ...editClient, [e.target.name]: e.target.value });
   }
 
   function handleRemove() {
     dispatch(openLoading());
-    dispatch(deleteClient(userId, client.id))
+    dispatch(deleteClient(client.id))
       .then(() => {
         dispatch(closeLoading());
-        toast("¡Cliente eliminado exitosamente!");
+        toast.success("¡Cliente eliminado exitosamente!");
       })
       .catch((e) => {
-        toast("Error al eliminar el cliente");
+        toast.error("Error al eliminar el cliente");
         console.log(e);
       });
   }
 
   function handleUpdate() {
     dispatch(openLoading());
-    dispatch(updateClient(userId, client.id, editClient))
+    dispatch(updateClient(client.id, editClient))
       .then(() => {
         dispatch(closeLoading());
-        toast("¡Cliente actualizado exitosamente!");
+        toast.success("¡Cliente actualizado exitosamente!");
         setDisabled(true);
       })
       .catch((e) => {
         dispatch(closeLoading());
-        toast("Error al actualizar el cliente");
+        toast.error("Error al actualizar el cliente");
         console.log(e);
       });
   }
 
   return (
     <div key={client.id} className="client-card">
-      {console.log(client)}
-      <input
-        className={`form-control ${disabled ? "input-disabled" : ""}`}
-        name="name"
-        disabled={disabled}
-        value={editClient.name}
-        onChange={handleChange}
-      />
       <div className="input-group mb-3">
         <select
-          class="input-group-text"
-          name="type"
-          value={editClient.type}
-          disabled={disabled}
+          className="form-control"
+          name="CLI_TIPOIDE"
+          value={editClient.CLI_TIPOIDE}
           onChange={handleChange}
+          disabled={true}
+          required
         >
-          <option value="Ruc">Ruc</option>
-          <option value="Cedula">Cedula</option>
-          <option value="Pasaporte">Pasaporte</option>
+          <option value="4">Ruc</option>
+          <option value="5">Cedula</option>
+          <option value="6">Pasaporte</option>
         </select>
         <input
           className={`form-control ${disabled ? "input-disabled" : ""}`}
-          name="dataType"
-          disabled={disabled}
-          value={editClient.dataType}
+          name="CLI_IDENTIFICACION"
+          value={editClient.CLI_IDENTIFICACION}
           onChange={handleChange}
+          disabled={true}
+          required
         />
       </div>
       <input
         className={`form-control ${disabled ? "input-disabled" : ""}`}
-        name="email"
-        disabled={disabled}
-        value={editClient.email}
+        name="CLI_NOMBRE"
+        value={editClient.CLI_NOMBRE}
         onChange={handleChange}
-      />
+        disabled={disabled}
+        required
+        />
       <input
         className={`form-control ${disabled ? "input-disabled" : ""}`}
-        name="address"
-        disabled={disabled}
-        value={editClient.address}
+        name="CLI_EMAIL"
+        value={editClient.CLI_EMAIL}
         onChange={handleChange}
-      />
+        disabled={disabled}
+        required
+        />
       <input
         className={`form-control ${disabled ? "input-disabled" : ""}`}
-        name="phone"
-        disabled={disabled}
-        value={editClient.phone}
+        name="CLI_DIRECCION"
+        value={editClient.CLI_DIRECCION}
         onChange={handleChange}
-      />
+        disabled={disabled}
+        required
+        />
+      <input
+        className={`form-control ${disabled ? "input-disabled" : ""}`}
+        name="CLI_TELEFONO"
+        value={editClient.CLI_TELEFONO}
+        onChange={handleChange}
+        disabled={disabled}
+        required
+        />
       <button
         className={`btn ${disabled ? "btn-primary" : "btn-success"}`}
         onClick={
@@ -130,7 +132,7 @@ export default function ClientCard({ client }) {
         onClick={() => {
           dispatch(
             Alert(
-              `Si elimina un cliente tenga en cuanta que ciertos detalles de las facturas se eliminaran tambien`,
+              `¿Seguro que quiere eliminar este cliente?`,
               handleRemove
             )
           );

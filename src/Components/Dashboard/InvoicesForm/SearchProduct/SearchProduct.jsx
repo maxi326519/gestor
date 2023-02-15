@@ -12,11 +12,10 @@ export default function SearchProduct({ handleSelect }) {
 
   function handleSearch(e) {
     const value = e.target.value;
-    console.log(value);
     setRows(
       products.filter((p) => {
         if (p.code.toLowerCase().includes(value.toLowerCase())) return true;
-        if (p.name.toLowerCase().includes(value.toLowerCase())) return true;
+        if (p.description.toLowerCase().includes(value.toLowerCase())) return true;
         return false;
       })
     );

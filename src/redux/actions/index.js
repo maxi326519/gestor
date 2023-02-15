@@ -119,11 +119,11 @@ export function signin(user) {
           FACTURA_ELECTRONICA: false,
         },
       };
-      
+
       // Almacenamos los primeros datos sobre el usuario,
       // y le indicamos que el perfil todavia no esta completo
       await setDoc(doc(db, "users", userCredential.user.uid), userDB);
-      
+
       return dispatch({
         type: SIGN_IN,
         payload: {
@@ -145,26 +145,22 @@ export function confirmDatosPersonales(newData) {
         const queryInstance = query(
           collection(db, "users"),
           where("ruc", "==", newData.EMP_RUC)
-          );
-          const dbUser = await getDocs(queryInstance);
-          if (!dbUser.empty) throw new Error("El ruc ya existe");
-        }
-        
-        const updateData = {
-          EMP_NOMBRE: newData.EMP_NOMBRE /* Razon social */,
-          EMP_NOMBRE_COMERCIAL: newData.EMP_NOMBRE_COMERCIAL,
-          EMP_DIRECCION: newData.EMP_DIRECCION,
-          EMP_TELEFONO: newData.EMP_TELEFONO,
-          EMP_LOGO: newData.EMP_LOGO,
-          EMP_PERFIL: {
-            DATOS_PERSONALES: true,
-            OBLIGACIONES: false,
-            FACTURA_ELECTRONICA: false,
+        );
+        const dbUser = await getDocs(queryInstance);
+        if (!dbUser.empty) throw new Error("El ruc ya existe");
+      }
+
+      const updateData = {
+        ...newData,
+        EMP_PERFIL: {
+          DATOS_PERSONALES: true,
+          OBLIGACIONES: false,
+          FACTURA_ELECTRONICA: false,
         },
       };
 
       await updateDoc(doc(db, "users", auth.currentUser.uid), updateData);
-      
+
       return dispatch({
         type: CONFIRM_REGISTER,
         payload: updateData,
@@ -179,19 +175,16 @@ export function confirmObligaciones(newData) {
   return async (dispatch) => {
     try {
       const updateData = {
-        EMP_REGIMEN: newData.EMP_REGIMEN,
-        EMP_SOCIEDAD: newData.EMP_SOCIEDAD /* Obligado a llevar contabilidad */,
-        EMP_AGENTE_RETENCION: newData.EMP_AGENTE_RETENCION,
-        EMP_INCLUYEIVA: newData.EMP_INCLUYEIVA,
+        ...newData,
         EMP_PERFIL: {
           DATOS_PERSONALES: true,
           OBLIGACIONES: true,
           FACTURA_ELECTRONICA: false,
         },
       };
-      
+
       await updateDoc(doc(db, "users", auth.currentUser.uid), updateData);
-      
+
       return dispatch({
         type: CONFIRM_REGISTER,
         payload: updateData,
@@ -206,20 +199,15 @@ export function confirmFacturaElectronica(newData) {
   return async (dispatch) => {
     try {
       const updateData = {
-        EMP_ESTABLECIMIENTO: newData.EMP_ESTABLECIMIENTO,
-        EMP_PTOEMISION: newData.EMP_PTOEMISION,
-        EMP_NUMERO: newData.EMP_NUMERO,
-        EMP_ARCHIVO: newData.EMP_ARCHIVO,
-        EMP_KEY: newData.EMP_KEY,
-        EMP_PRECISION: newData.EMP_PRECISION,
+        ...newData,
         EMP_PERFIL: {
           DATOS_PERSONALES: true,
           OBLIGACIONES: true,
           FACTURA_ELECTRONICA: true,
         },
       };
-      
-      await updateDoc(doc(db, "users", auth.currentUser.uid), updateData,);
+
+      await updateDoc(doc(db, "users", auth.currentUser.uid), updateData);
 
       return dispatch({
         type: CONFIRM_REGISTER,
@@ -402,12 +390,17 @@ export function clearAlert() {
   };
 }
 
-export function postClient(userId, client) {
+export function postClient(client) {
   return async (dispatch) => {
     try {
-      if (!userId) throw new Error("Falta el ID de usuario");
-      const clients = collection(db, "users", userId, "clients");
-      const newCLient = await addDoc(clients, client);
+      const clients = collection(db, "users", auth.currentUser.uid, "clients");
+      const newCLient = await addDoc(clients, {
+        ...client,
+        CLI_CODIGO: 0,
+        CLI_ESTADO: 1,
+        LOC_CODIGO: 0,
+        USU_KEY: auth.currentUser.uid,
+      });
 
       if (!newCLient) throw new Error("Error al agregar el cliente");
 
@@ -426,20 +419,30 @@ export function postClient(userId, client) {
   };
 }
 
-export function postProduct(userId, product) {
+export function postProduct(product) {
   return async (dispatch) => {
     try {
-      if (!userId) throw new Error("Falta el ID de usuario");
-      const productColl = collection(db, "users", userId, "products");
+      const productColl = collection(
+        db,
+        "users",
+        auth.currentUser.uid,
+        "products"
+      );
 
       const newProduct = {
         ...product,
-        USU_KEY: userId
-      }
+        ITE_BARRAS: "CLI20",
+        ITE_ESTADO: 1,
+        ITE_ICE: 0,
+        LOC_CODIGO: 0,
+        USU_KEY: auth.currentUser.uid,
+        VED_CANTIDAD: 0,
+      };
 
-      await setDoc(doc(productColl, product.code), {
+      await setDoc(doc(productColl, product.ITE_CODIGO), {
         ...newProduct,
       });
+
       return dispatch({
         type: POST_PRODUCT,
         payload: newProduct,
@@ -453,7 +456,6 @@ export function postProduct(userId, product) {
 export function postInvoice(userId, invoice) {
   return async (dispatch) => {
     try {
-      if (!userId) throw new Error("Falta el ID de usuario");
       const invoicesColl = collection(db, "users", userId, "invoices");
       const newProduct = await addDoc(invoicesColl, invoice);
 
@@ -500,8 +502,12 @@ export function getClients(userId) {
 export function getProducts(userId) {
   return async (dispatch) => {
     try {
-      if (!userId) throw new Error("Falta ID de usuario");
-      const productColl = collection(db, "users", userId, "products");
+      const productColl = collection(
+        db,
+        "users",
+        auth.currentUser.uid,
+        "products"
+      );
       const query = await getDocs(productColl);
 
       let products = [];
@@ -509,7 +515,6 @@ export function getProducts(userId) {
       if (!query.empty) {
         query.forEach((doc) => {
           products.push({
-            name: doc.id,
             ...doc.data(),
           });
         });
@@ -525,11 +530,15 @@ export function getProducts(userId) {
   };
 }
 
-export function getInvoices(userId) {
+export function getInvoices() {
   return async (dispatch) => {
     try {
-      if (!userId) throw new Error("Falta ID de usuario");
-      const invoiceColl = collection(db, "users", userId, "invoices");
+      const invoiceColl = collection(
+        db,
+        "users",
+        auth.currentUser.uid,
+        "invoices"
+      );
       const query = await getDocs(invoiceColl);
 
       let invoices = [];
@@ -553,58 +562,15 @@ export function getInvoices(userId) {
   };
 }
 
-export function deleteClient(userId, id) {
+export function updateClient(id, clientData) {
   return async (dispatch) => {
     try {
-      const clienColl = collection(db, "users", userId, "clients");
-      await deleteDoc(doc(clienColl, id));
-
-      return dispatch({
-        type: DELETE_CLIENT,
-        payload: id,
-      });
-    } catch (err) {
-      throw new Error(err);
-    }
-  };
-}
-
-export function deleteProduct(userId, id) {
-  return async (dispatch) => {
-    try {
-      const productColl = collection(db, "users", userId, "products");
-      await deleteDoc(doc(productColl, id));
-
-      return dispatch({
-        type: DELETE_PRODUCT,
-        payload: id,
-      });
-    } catch (err) {
-      throw new Error(err);
-    }
-  };
-}
-
-export function deleteInvoice(userId, id) {
-  return async (dispatch) => {
-    try {
-      const invoiceColl = collection(db, "users", userId, "invoices");
-      await deleteDoc(doc(invoiceColl, id));
-
-      return dispatch({
-        type: DELETE_INVOICE,
-        payload: id,
-      });
-    } catch (err) {
-      throw new Error(err);
-    }
-  };
-}
-
-export function updateClient(userId, id, clientData) {
-  return async (dispatch) => {
-    try {
-      const clienColl = collection(db, "users", userId, "clients");
+      const clienColl = collection(
+        db,
+        "users",
+        auth.currentUser.uid,
+        "clients"
+      );
       await updateDoc(doc(clienColl, id), clientData);
 
       return dispatch({
@@ -617,15 +583,83 @@ export function updateClient(userId, id, clientData) {
   };
 }
 
-export function updateProduct(userId, productData) {
+export function updateProduct(productData) {
   return async (dispatch) => {
     try {
-      const productColl = collection(db, "users", userId, "products");
-      await updateDoc(doc(productColl, productData.code), productData);
+      const productColl = collection(
+        db,
+        "users",
+        auth.currentUser.uid,
+        "products"
+      );
+      await updateDoc(doc(productColl, productData.ITE_CODIGO), productData);
 
       return dispatch({
         type: UPDATE_PRODUCT,
         payload: productData,
+      });
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
+}
+
+export function deleteClient(id) {
+  return async (dispatch) => {
+    try {
+      const clienColl = collection(
+        db,
+        "users",
+        auth.currentUser.uid,
+        "clients"
+      );
+      await deleteDoc(doc(clienColl, id));
+
+      return dispatch({
+        type: DELETE_CLIENT,
+        payload: id,
+      });
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
+}
+
+export function deleteProduct(code) {
+  return async (dispatch) => {
+    try {
+      const productColl = collection(
+        db,
+        "users",
+        auth.currentUser.uid,
+        "products"
+      );
+      await deleteDoc(doc(productColl, code));
+
+      return dispatch({
+        type: DELETE_PRODUCT,
+        payload: code,
+      });
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
+}
+
+export function deleteInvoice(id) {
+  return async (dispatch) => {
+    try {
+      const invoiceColl = collection(
+        db,
+        "users",
+        auth.currentUser.uid,
+        "invoices"
+      );
+      await deleteDoc(doc(invoiceColl, id));
+
+      return dispatch({
+        type: DELETE_INVOICE,
+        payload: id,
       });
     } catch (err) {
       throw new Error(err);

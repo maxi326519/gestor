@@ -170,7 +170,6 @@ export default function InvoicesForm({
         handleAddClient={handleAddClient}
       />
       <div className="dashboard__invoice to-left">
-        <h2>Nueva Factura</h2>
         <div className="datas">
           <div className="data-left">
             {client ? (

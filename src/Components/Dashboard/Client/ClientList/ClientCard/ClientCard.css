@@ -7,12 +7,7 @@
     outline: 1px solid #ccc;
 }
 
-.client-card input{
-    min-width: 100px;
-}
-
 .client-card span{
-    min-width: 100px;
     padding-left: 10px;
     border-right: 1px solid #ccc;
 }
