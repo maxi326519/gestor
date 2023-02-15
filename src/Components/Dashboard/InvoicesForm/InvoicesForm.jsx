@@ -292,59 +292,122 @@ export default function InvoicesForm({
           </div>
         </div>
 
-        <div className="invoice-products">
-          <div className="invoice-row invoice-first-row">
-            <span>Codigo</span>
-            <span>Descripcion</span>
-            <span>Det. Cantidad</span>
-            <span>Cantidad</span>
-            <span>Descuento %</span>
-            <span>Precio unitario</span>
-            <span>Precio unitario + IVA</span>
-            <span>Monto</span>
-          </div>
-          {newProducts?.map((p) => (
-            <div className="invoice-row">
-              <span>{p.code}</span>
-              <span>{p.description}</span>
-              <span>{p.detCantidad}</span>
-              <input
-                className="amount"
-                type="number"
-                value={p.amount}
-                onChange={(e) => setAmount(e.target.value, p.code)}
-              />
-              <span>{p.descuesto}</span>
-              <span>{p.price}</span>
-              <span>
-                {p.taxesBoolean
-                  ? (Number(p.price) + p.price * (p.taxes / 100)).toFixed(
-                      user.EMP_PRECISION
-                    )
-                  : p.price}
-              </span>
-              <span>{p.price * p.amount}</span>
+        <div className="flex-2">
+          <div className="product-details">
+            <span>Products</span>
+            <div className="table">
+              <div className="item">
+                <span>IVA</span>
+                <span>Descripcion</span>
+                <span>Precio</span>
+              </div>
+
+              <div className="item">
+                <span>IVA</span>
+                <span>Descripcion</span>
+                <span>Precio</span>
+              </div>
             </div>
-          ))}
-          <div className="invoice-totals">
-            <span>Subtotal</span>
-            <span className="totals">{totals.subtotal}</span>
           </div>
-          <div className="invoice-totals">
-            <span>Subtotal 0%</span>
-            <span className="totals">{totals.subtotalPorcentual}</span>
-          </div>
-          <div className="invoice-totals">
-            <span>Subtotal IVA</span>
-            <span className="totals">{totals.subtotalIVA}</span>
-          </div>
-          <div className="invoice-totals">
-            <span>I.V.A. 12%</span>
-            <span className="totals">{totals.iva}</span>
-          </div>
-          <div className="invoice-totals">
-            <span>Total</span>
-            <span className="totals">{totals.total}</span>
+          <div className="invoice-products">
+            <div className="invoice-row invoice-first-row">
+              <span>Codigo</span>
+              <span>Descripcion</span>
+              <span>Det. Cantidad</span>
+              <span>Cantidad</span>
+              <span>Descuento %</span>
+              <span>Precio unitario</span>
+              <span>Precio unitario + IVA</span>
+              <span>Monto</span>
+            </div>
+            {newProducts?.map((p) => (
+              <div className="invoice-row">
+                <span>{p.code}</span>
+                <span>{p.description}</span>
+                <span>{p.detCantidad}</span>
+                <input
+                  className="amount"
+                  type="number"
+                  value={p.amount}
+                  onChange={(e) => setAmount(e.target.value, p.code)}
+                />
+                <span>{p.descuesto}</span>
+                <span>{p.price}</span>
+                <span>
+                  {p.taxesBoolean
+                    ? (Number(p.price) + p.price * (p.taxes / 100)).toFixed(
+                        user.EMP_PRECISION
+                      )
+                    : p.price}
+                </span>
+                <span>{p.price * p.amount}</span>
+              </div>
+            ))}
+            <div className="adicional">
+              <div className="data-aditional">
+                <h5>Informacion Adicional:</h5>
+                <div className="aditional-input-container">
+                  <input
+                    className="form-control"
+                    name="type"
+                    placeholder="Nombre"
+                  />
+                  <input
+                    className="form-control"
+                    name="type"
+                    placeholder="Valor"
+                  />
+                </div>
+
+                <div className="aditional-input-container">
+                  <input
+                    className="form-control"
+                    name="type"
+                    placeholder="Nombre"
+                  />
+                  <input
+                    className="form-control"
+                    name="type"
+                    placeholder="Valor"
+                  />
+                </div>
+
+                <div className="aditional-input-container">
+                  <input
+                    className="form-control"
+                    name="type"
+                    placeholder="Nombre"
+                  />
+                  <input
+                    className="form-control"
+                    name="type"
+                    placeholder="Valor"
+                  />
+                </div>
+              </div>
+              <div>
+                <div className="invoice-totals">
+                  <span>Subtotal</span>
+                  <span className="totals">{totals.subtotal}</span>
+                </div>
+                <div className="invoice-totals">
+                  <span>Subtotal 0%</span>
+                  <span className="totals">{totals.subtotalPorcentual}</span>
+                </div>
+                <div className="invoice-totals">
+                  <span>Subtotal IVA</span>
+                  <span className="totals">{totals.subtotalIVA}</span>
+                </div>
+                <div className="invoice-totals">
+                  <span>I.V.A. 12%</span>
+                  <span className="totals">{totals.iva}</span>
+                </div>
+                <div className="invoice-totals">
+                  <span>Total</span>
+                  <span className="totals">{totals.total}</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

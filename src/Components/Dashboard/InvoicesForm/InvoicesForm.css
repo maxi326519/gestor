@@ -72,6 +72,21 @@
   margin-left: 20px;
 }
 
+.flex-2{
+  display: flex;
+}
+/* Product list */
+.product-details .table{
+  display: flex;
+  flex-direction: column;
+}
+
+.product-details .item{
+  display: grid;
+  grid-template-columns: 120px 1fr 120px;
+}
+/* Product list */
+
 .invoice-products {
   display: flex;
   flex-direction: column;
@@ -123,4 +138,22 @@
 .data-left{
   display: flex;
   flex-direction: column;
+}
+
+.adicional{
+  display: flex;
+  width: 100%;
+}
+
+.aditional-input-container{
+  display: flex;
+}
+
+.data-aditional{
+  flex-grow: 1;
+}
+
+.data-aditional input{
+  flex-grow: 1;
+  margin-right: 20px;
 }
