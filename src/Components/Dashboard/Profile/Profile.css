@@ -1,166 +1,31 @@
-.dashboard__container_profile {
+.dashboard_profile {
   flex-grow: 1;
   display: flex;
   justify-content: center;
+  padding: 20px;
   overflow-y: scroll;
 }
 
-.dahsboard__profile {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 50px;
+.profile{
+  height: max-content;
+  padding: 30px;
   border-radius: 20px;
   background-color: white;
 }
 
-.dahsboard__container_2{
-  display: flex;
-}
-
-.dahsboard__logo {
-  display: flex;
-  flex-direction: column;
-  margin-right: 50px;
-}
-
-.logo_flex {
-  display: flex;
-  align-items: center;
-}
-
-.dahsboard__profile .logo-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 200px;
-  height: 200px;
-  margin-bottom: 20px;
-  margin-left: auto;
-  margin-right: auto;
-  border-radius: 50%;
+.profile h2{
   text-align: center;
-  border: 1px solid #ccc;
+  margin-bottom: 30px;
 }
 
-.dahsboard__logo .bar {
-  display: none;
-}
-
-.dahsboard__profile .logo-container img {
-  height: 80%;
-}
-
-.dahsboard__profile input {
-  width: 400px;
-}
-
-.profile-btn-container {
-  margin-top: 20px;
-}
-
-.dahsboard__profile button {
-  width: 240px;
-}
-
-.container_invoice_n{
+.profile-container{
   display: flex;
 }
 
-.container_invoice_n input:nth-child(1){
-  width: 100px;
+.profile-container input{
+  width: 300px;
 }
 
-.container_invoice_n:last-child(3){
-  flex-grow: 1;
-}
-
-@media screen and (max-width: 1200px) {
-  .dahsboard__logo {
-    width: 100%;
-  }
-
-  .dahsboard__logo h2 {
-    width: 100%;
-  }
-
-  .dahsboard__profile .logo-container {
-    width: 300px;
-    height: 300px;
-  }
-
-  .profile_form input {
-    width: 400px;
-  }
-
-  .dahsboard__profile button {
-    width: 190px;
-  }
-}
-
-@media screen and (max-width: 1000px) {
-  
-  .dashboard__container_profile{
-    overflow-y: scroll;
-    padding: 50px;
-  }
-  
-  .dahsboard__profile {
-    margin: 10px;
-    flex-direction: column;
-  }
-
-  .dahsboard__logo {
-    margin-right: 0;
-  }
-
-  .dahsboard__logo .bar {
-    display: block;
-  }
-}
-
-@media screen and (max-width: 700px) {
-  
-  .dashboard__container_profile{
-    overflow-y: scroll;
-    padding: 0;
-    padding-top: 100px;
-  }
-  
-  .dahsboard__profile {
-    width: 100%;
-    padding: 20px;
-    margin: 0;
-  }
-
-  .dahsboard__profile .btn-outline-success{
-    width: 100%;
-  }
-
-
-  .dahsboard__logo {
-    margin-right: 0;
-  }
-
-  .dahsboard__profile .logo-container {
-    width: 200px;
-    height: 200px;
-  }
-
-  .container-form{
-    width: 100%;
-  }
-
-  .profile_form input{
-    width: 100%;
-  }
-  
-  .profile-btn-container {
-    display: flex;
-    justify-content: center;
-  }
-
-  .profile-btn-container button {
-    width: 50%;
-  }
+.profile-container .left-content{
+  margin-right: 30px;
 }

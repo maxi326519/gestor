@@ -60,40 +60,42 @@ export default function Profile({
   }
 
   return (
-    <div className="dashboard perfil">
+    <div className="dashboard">
       <SideBar
         handleAddInvoice={handleAddInvoice}
         handleAddProduct={handleAddProduct}
         handleAddClient={handleAddClient}
       />
-      <div onSubmit={handleSubmit} className="dashboard__container_profile">
-        <form className="dahsboard__profile to-left">
+      <div className="dashboard_profile">
+        <form onSubmit={handleSubmit} className="profile">
           <h2>Mi perfil</h2>
+          <div className="profile-container">
+            <div className="left-content">
+              <ProfileLogo
+                userData={userData}
+                disabled={disabled}
+                handleChange={handleChange}
+              />
 
-          <ProfileLogo
-            userData={userData}
-            disabled={disabled}
-            handleChange={handleChange}
-          />
+              <Obligations
+                disabled={disabled}
+                userData={userData}
+                handleChange={handleChange}
+              />
+            </div>
 
-          <Obligations
-            disabled={disabled}
-            userData={userData}
-            handleChange={handleChange}
-          />
-
+            <DatosPersonales
+              disabled={disabled}
+              userData={userData}
+              handleChange={handleChange}
+            />
+          </div>
+          
           <Invoicing
             disabled={disabled}
             userData={userData}
             handleChange={handleChange}
           />
-
-          <DatosPersonales
-            disabled={disabled}
-            userData={userData}
-            handleChange={handleChange}
-          />
-
           <Buttons disabled={disabled} handleDisabled={handleDisabled} />
         </form>
       </div>

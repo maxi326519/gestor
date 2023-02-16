@@ -1,0 +1,20 @@
+.profile-obligations select{
+    width: 100%;
+}
+
+.profile-obligations label{
+    text-align: left;
+}
+
+.profile-obligations input[type="checkbox"]{
+    width: 50px;
+}
+
+.obligations-check{
+    display: flex;
+    flex-direction: column;
+}
+
+.left-content{
+    flex-grow: 1;
+}

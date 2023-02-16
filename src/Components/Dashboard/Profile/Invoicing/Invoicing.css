@@ -1,0 +1,28 @@
+.invoice_number{
+    display: flex;
+}
+
+.invoice_number .number{
+    width: 125px;
+    margin-right: 10px;
+}
+
+.invoice_number .number:last-child{
+    margin-left: 10px;
+}
+
+.invoice_number .number label{
+    width: 150px;
+}
+
+.invoice_number .serial{
+    flex-grow: 1;
+}
+
+.invoice_number .serial input{
+    text-align: right;
+}
+
+.invoicing .firma input[type="file"]{
+    margin-bottom: 10px;
+}

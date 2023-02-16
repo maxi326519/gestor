@@ -13,7 +13,6 @@ export default function PersonalData({ disabled, userData, handleChange }) {
 
   return (
     <div className="datosPersonales">
-      <hr></hr>
       <h5>Datos Personales</h5>
       <div className="profile_form">
         {/* RUC */}
