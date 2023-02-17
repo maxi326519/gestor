@@ -2,9 +2,9 @@
   "EMP_AGENTERETENCION": 0,
   "EMP_ARCHIVO": "1016532555296402617475543767.txt", /* archivo firma electronica */
   "EMP_AUTOMATICO": 1,   /* default */
-  "EMP_CODIGO": 1, /* default */
+  "EMP_CODIGO": 1, /* ambiente para la factura 1 prueba 2 produccion */
   "EMP_COMPROBANTES": 1, /* default */
-  "EMP_DADICIONAL": 0,  /* default */
+  "EMP_DADICIONAL": 0,  /* habilita det Cantidad */
   "EMP_DIRECCION": "Ciudad Azul",
   "EMP_EMAIL": "ciudadazul@gmail.com",
   "EMP_ESTABLECIMIENTO": "001",

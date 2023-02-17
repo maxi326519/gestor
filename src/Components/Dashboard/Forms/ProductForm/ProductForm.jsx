@@ -1,22 +1,21 @@
 import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import {
   postProduct,
   openLoading,
-  closeLoading,
+  closeLoading
 } from "../../../../redux/actions";
 
 import "../Form.css";
 
 export default function ProductForm({ addProduct, handleAddProduct }) {
   const dispatch = useDispatch();
-  const userId = useSelector((state) => state.user.uid);
   const initialState = {
     ITE_CODIGO: "",
     ITE_DESCRIPCION: "",
-    ITE_TIPO: "",
-    ITE_IMPUESTO: false,
+    ITE_TIPO: 0,
+    ITE_IMPUESTO: 0,
     ITE_PVP: "",
   };
   const [product, setProduct] = useState(initialState);
@@ -100,8 +99,8 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
             required
           >
             <option value="">Seleccione un tipo</option>
-            <option value={1}>Producto</option>
-            <option value={2}>Servicio</option>
+            <option value={0}>Producto</option>
+            <option value={1}>Servicio</option>
           </select>
           <label htmFor="floatingInput">Tipo</label>
         </div>
@@ -129,8 +128,8 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
             onChange={handleChange}
             required
           >
-            <option value={false}>No</option>
-            <option value={true}>Si</option>
+            <option value={0}>No</option>
+            <option value={2}>Si</option>
           </select>
           <label htmFor="floatingInput">Seleccione si paga inpuestos</label>
         </div>

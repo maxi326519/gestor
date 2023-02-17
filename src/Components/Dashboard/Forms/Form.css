@@ -45,6 +45,14 @@
   height: 100px !important;
 }
 
+.form small{
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  color: red;
+}
+
 @media screen and (max-width: 700px) {
   .form {
     width: 100%;

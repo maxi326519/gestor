@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   postClient,
   openLoading,
@@ -7,29 +7,49 @@ import {
 } from "../../../../redux/actions";
 import { toast } from "react-toastify";
 
+import validaDocumento from "../../../../Validations/Ruc-Ci.js";
+
 import "../Form.css";
 
+const initialState = {
+  CLI_DIRECCION: "",
+  CLI_EMAIL: "",
+  CLI_IDENTIFICACION: "",
+  CLI_NOMBRE: "",
+  CLI_TELEFONO: "",
+  CLI_TIPOIDE: "0",
+};
+
+const type = [
+  { value: "04", name: "Ruc" },
+  { value: "05", name: "Cedula" },
+  { value: "06", name: "Pasaporte" },
+];
+
 export default function ClientForm({ addClient, handleAddClient }) {
-  const userId = useSelector((state) => state.user.uid);
   const dispatch = useDispatch();
-  const initialState = {
-    CLI_DIRECCION: "",
-    CLI_EMAIL: "",
-    CLI_IDENTIFICACION: "",
-    CLI_NOMBRE: "",
-    CLI_TELEFONO: "",
-    CLI_TIPOIDE: "0",
-  };
   const [client, setclient] = useState(initialState);
-  const type = [
-    { value: 4, name: "Ruc" },
-    { value: 5, name: "Cedula" },
-    { value: 6, name: "Pasaporte" },
-  ];
+  const [error, setError] = useState({
+    CLI_IDENTIFICACION: null
+  });
 
   function handleChange(e) {
-    console.log(client);
     setclient({ ...client, [e.target.name]: e.target.value });
+
+    if((e.target.name === "CLI_IDENTIFICACION") && ((client.CLI_TIPOIDE === "04") || (client.CLI_TIPOIDE === "05"))){
+      let mensaje = validaDocumento(e.target.value).mensaje;
+      if( mensaje !== "ruc" && mensaje !== "cedula"){
+        setError({
+          ...error,
+          CLI_IDENTIFICACION: mensaje
+        });
+      }else{
+        setError({
+          ...error,
+          CLI_IDENTIFICACION: null
+        });
+      }
+    }
   }
 
   function handleSubmit(e) {
@@ -90,12 +110,10 @@ export default function ClientForm({ addClient, handleAddClient }) {
             onChange={handleChange}
             required
           >
-            <option value={0}>Seleccionar</option>
-            {type.map((t) => (
-              <option key={t.value} value={t.value}>
-                {t.name}
-              </option>
-            ))}
+            <option value="0">Seleccionar</option>
+            <option value="04">Ruc</option>
+            <option value="05">Cedula</option>
+            <option value="06">Pasaporte</option>
           </select>
           <label>Tipo</label>
         </div>
@@ -113,6 +131,7 @@ export default function ClientForm({ addClient, handleAddClient }) {
             <label className="form-label">
               {`${type.find((t) => t.value === Number(client.CLI_TIPOIDE)).name}`}
             </label>
+            { error.CLI_IDENTIFICACION ? <small>{ error.CLI_IDENTIFICACION }</small> : null}
           </div>
         ) : null}
 

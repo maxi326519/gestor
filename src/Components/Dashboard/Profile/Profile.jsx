@@ -2,11 +2,8 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   updateUserData,
-  uploadLogo,
-  changePassword,
   openLoading,
   closeLoading,
-  Alert,
 } from "../../../redux/actions";
 import { toast } from "react-toastify";
 

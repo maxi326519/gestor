@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-import Excel from "./Excel/Excel";
 
 export default function ExportForm({ exportInvoice, handleExportInvoice }) {
   const [exportData, setInvoice] = useState({
@@ -56,7 +55,6 @@ export default function ExportForm({ exportInvoice, handleExportInvoice }) {
           />
         </div>
 
-        <Excel/>
       </form>
     </div>
   );

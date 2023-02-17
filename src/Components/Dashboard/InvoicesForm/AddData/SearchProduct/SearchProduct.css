@@ -13,11 +13,26 @@
   flex-direction: column;
   width: 500px;
   height: 100px;
-  overflow-y: scroll;
   border: 1px solid grey;
   background-color: white;
 }
 
-.product-name span:hover {
+.product-name .head {
+  padding-right: 15px;
+  background-color: #3332;
+}
+
+.product-name .list {
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+}
+
+.search-product-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.product-name .search-product-row:hover {
   background-color: #3332;
 }

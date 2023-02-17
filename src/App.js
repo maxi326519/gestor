@@ -80,22 +80,18 @@ function App() {
   const [form, setForm] = useState(initialState);
 
   function handleAddInvoice() {
-    console.log(form);
     setForm({ ...initialState, addInvoice: !form.addInvoice });
   }
 
   function handleExportInvoice() {
-    console.log(form);
     setForm({ ...initialState, exportInvoice: !form.exportInvoice });
   }
 
   function handleAddProduct() {
-    console.log(form);
     setForm({ ...initialState, addProduct: !form.addProduct });
   }
 
   function handleAddClient() {
-    console.log(form);
     setForm({ ...initialState, addClient: !form.addClient });
   }
   /* FORMS */

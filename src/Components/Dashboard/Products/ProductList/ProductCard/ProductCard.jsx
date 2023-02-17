@@ -77,7 +77,7 @@ export default function ProductCard({ product }) {
         onChange={handleChange}
         disabled={disabled}
         required
-        />
+      />
       <select
         className={disabled ? "form-control input-disabled " : "form-select"}
         name="ITE_TIPO"
@@ -85,7 +85,7 @@ export default function ProductCard({ product }) {
         onChange={handleChange}
         disabled={disabled}
         required
-        >
+      >
         {type.map((t, i) => (
           <option key={i} value={t.value}>
             {t.name}
@@ -111,20 +111,30 @@ export default function ProductCard({ product }) {
         <option value={true}>Si</option>
         <option value={false}>No</option>
       </select>
-      <button
-        className={`btn ${disabled ? "btn-primary" : "btn-success"}`}
-        onClick={
-          disabled
-            ? handleEdit
-            : () => {
-                dispatch(
-                  Alert("¿Seguro que desea guardar los cambios?", handleUpdate)
-                );
-              }
-        }
-      >
-        <img src={disabled ? edit : save} alt="edit" />
-      </button>
+      <div className="edit-buttons">
+        <button
+          className={`btn ${disabled ? "btn-primary" : "btn-success"}`}
+          onClick={
+            disabled
+              ? handleEdit
+              : () => {
+                  dispatch(
+                    Alert(
+                      "¿Seguro que desea guardar los cambios?",
+                      handleUpdate
+                    )
+                  );
+                }
+          }
+        >
+          <img src={disabled ? edit : save} alt="edit" />
+        </button>
+        {disabled ? null : (
+          <button className="btn btn-danger" onClick={handleEdit}>
+            x
+          </button>
+        )}
+      </div>
       <button
         className="btn btn-danger"
         onClick={() => {

@@ -2,16 +2,65 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { postInvoice, openLoading, closeLoading } from "../../../redux/actions";
 
+import SideBar from "../SideBar/SideBar";
+import AddData from "./AddData/AddData";
+import InvoiceData from "./InvoiceData/InvoiceData";
+import InvoiceTable from "./invoiceTable/InvoiceTable";
 import AddProduct from "./AddProduct/AddProduct";
 import AddClient from "./AddClient/AddClient";
-import SideBar from "../SideBar/SideBar";
-import SearchProduct from "./SearchProduct/SearchProduct";
-import SearchClient from "./SearchClient/SearchClient";
 
-import addSquare from "../../../assets/svg/add-square.svg";
-import arrowChange from "../../../assets/svg/arrow-change.svg";
 import "./InvoicesForm.css";
 import { toast } from "react-toastify";
+
+const initialInvoice = {
+  CLI_CODIGO: 0,
+  CLI_DIRECCION: "S/N",
+  CLI_EMAIL: "",
+  CLI_IDENTIFICACION: "",
+  CLI_NOMBRE: "CONSUMIDOR FINAL",
+  CLI_TELEFONO: "",
+  CLI_TIPOIDE: "",
+  EMP_CODIGO: 0,
+  ITE_CODIGO: 0,
+  ITE_COSTO: 0,
+  ITE_EXISTENCIA: 0,
+  LOC_CODIGO: 0,
+  PTO_CODIGO: 0,
+  USU_CODIGO: 0,
+  VDR_CODIGO: 0,
+  VED_CODIGO: 0,
+  VEN_CAMPO1: "",
+  VEN_CAMPO2: "",
+  VEN_CAMPO3: "",
+  VEN_CLAVEACCESO: "",
+  VEN_CODIGO: 0,
+  VEN_COMISION: 0,
+  VEN_DESCUENTO: 0,
+  VEN_ESTABLECIMIENTO: "",
+  VEN_ESTADO: 3,
+  VEN_FAUTORIZA: new Date(),
+  VEN_FECHA: new Date().toLocaleDateString(),
+  VEN_FPAGO: 0,
+  VEN_GUIA: "",
+  VEN_ICE: 0,
+  VEN_IMPRESO: 0,
+  VEN_IVA: 0,
+  VEN_NUMERO: "",
+  VEN_PTOEMISION: "",
+  VEN_RETENCION: 0,
+  VEN_SRI: 0,
+  VEN_SUBTOTAL: 0,
+  VEN_SUBTOTAL0: 0,
+  VEN_SUBTOTAL12: 0,
+  VEN_SUBTOTALEXCENTIVA: 0,
+  VEN_SUBTOTALNOIVA: 0,
+  VEN_TIPODOC: "",
+  VEN_TOTAL: 0,
+  VEN_UKEY: "",
+  VEN_VALOR1: "",
+  VEN_VALOR2: "",
+  VEN_VALOR3: "",
+};
 
 export default function InvoicesForm({
   addInvoice,
@@ -19,45 +68,24 @@ export default function InvoicesForm({
   handleAddProduct,
   handleAddClient,
 }) {
-  const userId = useSelector((state) => state.user.uid);
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.user.userDB);
   const [formProduct, setFormproduct] = useState(false);
   const [formClient, setFormClient] = useState(false);
   const [newProducts, setNewProduct] = useState([]);
-  const [client, setClient] = useState(null);
-  const [totals, setTotal] = useState(0);
-  //
-  const initialState = {
-    product: [],
-    client: {},
-    date: "",
-    numeroDeFactura: "",
-    formadDePago: "",
-  };
+  const [invoice, setInvoice] = useState(initialInvoice);
 
-  const initialTotals = {
-    subtotal: 0,
-    subtotalPorcentual: 0,
-    subtotalIVA: 0,
-    iva: 0,
-    total: 0,
-  };
-
-  const formasDePago = [
-    { value: "01", name: "SIN UTILIZACION DEL SISTEMA FINANCIERO" },
-    { value: "15", name: "COMPENSACIÓN DE DEUDAS" },
-    { value: "16", name: "TARJETA DE DÉBITO" },
-    { value: "17", name: "DINERO ELECTRÓNICO" },
-    { value: "18", name: "TARJETA PREPAGO" },
-    { value: "19", name: "TARJETA DE CRÉDITO" },
-    { value: "20", name: "OTROS CON UTILIZACIÓN DEL SISTEMA FINANCIERO" },
-    { value: "21", name: "ENDOSO DE TÍTULOS" },
-  ];
-
-  const dispatch = useDispatch();
-  const [invoice, setInvoice] = useState(initialState);
+  useEffect(() => {
+    setInvoice({
+      ...invoice,
+      VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
+      VEN_PTOEMISION: user.EMP_PTOEMISION,
+      VEN_NUMERO: user.EMP_NUMERO,
+    });
+  }, [user, setInvoice]);
 
   function handleChange(e) {
+    console.log(e.target);
     console.log(invoice);
     setInvoice({ ...invoice, [e.target.name]: e.target.value });
   }
@@ -66,22 +94,16 @@ export default function InvoicesForm({
     e.preventDefault();
     dispatch(openLoading());
 
-    const newInvoice = {
-      ...invoice,
-      product: newProducts,
-      client: client.id,
-    };
+    console.log(invoice);
 
-    console.log(newInvoice);
-
-    dispatch(postInvoice(userId, newInvoice))
+    dispatch(postInvoice(invoice))
       .then((d) => {
         dispatch(closeLoading());
-        toast("Factura agregada exitosamente!");
+        toast("¡Factura agregada exitosamente!");
       })
       .catch((e) => {
         dispatch(closeLoading());
-        toast("Hubo un error al agregar el producto");
+        toast("Error al agregar la factura");
         console.log(e);
       });
   }
@@ -94,20 +116,42 @@ export default function InvoicesForm({
     setFormClient(!formClient);
   }
 
-  function handleAdd(p) {
-    if (!newProducts.find((pi) => pi.code === p.code)) {
+  function handleProduct(product) {
+    console.log(product);
+    console.log(newProducts);
+    if (!newProducts.find((pi) => pi.ITE_CODIGO === product.ITE_CODIGO)) {
       setNewProduct([
         ...newProducts,
         {
-          code: p.code,
-          description: p.description,
-          price: Number(p.price),
-          taxes: p.taxes,
-          taxesBoolean: p.taxesBoolean,
-          amount: 1,
+          ITE_BARRAS: product.ITE_BARRAS,
+          ITE_CODIGO: product.ITE_CODIGO,
+          ITE_DESCRIPCION: product.ITE_DESCRIPCION,
+          VED_CANTIDAD: 1,
+          VED_DESCUENTO: "",
+          VED_IMPUESTO: product.ITE_IMPUESTO,
+          VED_PORCENTAJE: "",
+          VED_PUNITARIO: product.ITE_PVP,
+          VED_PUNITARIOIVA: product.ITE_IMPUESTO
+            ? (product.ITE_PVP * 1.12).toFixed(2)
+            : product.ITE_PVP,
+          VED_UKEY: product.USU_KEY,
+          VED_VALOR: "",
+          VEN_CODIGO: 0,
         },
       ]);
     }
+  }
+
+  function handleClient(client) {
+    setInvoice({
+      ...invoice,
+      CLI_CODIGO: client.CLI_CODIGO,
+      CLI_DIRECCION: client.CLI_DIRECCION,
+      CLI_EMAIL: client.CLI_EMAIL,
+      CLI_IDENTIFICACION: client.CLI_IDENTIFICACION,
+      CLI_NOMBRE: client.CLI_NOMBRE,
+      CLI_TELEFONO: client.CLI_TELEFONO,
+    });
   }
 
   function handleRemove(p) {
@@ -115,17 +159,16 @@ export default function InvoicesForm({
   }
 
   function handleSelect(client) {
-    setClient(client);
     setFormClient(false);
   }
 
   function setAmount(amount, code) {
     setNewProduct(
       newProducts.map((p) => {
-        if (p.code === code) {
+        if (p.ITE_CODIGO === code) {
           return {
             ...p,
-            amount: amount,
+            VED_CANTIDAD: amount,
           };
         }
         return p;
@@ -141,24 +184,25 @@ export default function InvoicesForm({
     let total = 0;
 
     newProducts.forEach((p) => {
-      subtotal += p.price * p.amount;
+      subtotal += p.VED_PUNITARIO * p.VED_CANTIDAD;
 
-      if (p.taxesBoolean) {
-        total += p.price * (1 + p.taxes / 100) * p.amount;
-        subtotalIVA += Number(p.price * p.amount);
-        iva += p.price * (p.taxes / 100) * p.amount;
+      if (p.VED_IMPUESTO) {
+        total += p.VED_PUNITARIO * 1.12 * p.VED_CANTIDAD;
+        subtotalIVA += Number(p.VED_PUNITARIO * p.VED_CANTIDAD);
+        iva += p.VED_PUNITARIO * 1.12 * p.VED_CANTIDAD;
       } else {
-        total += p.price * p.amount;
-        subtotalPorcentual += Number(p.price * p.amount);
+        total += p.VED_PUNITARIO * p.VED_CANTIDAD;
+        subtotalPorcentual += Number(p.VED_PUNITARIO * p.VED_CANTIDAD);
       }
     });
 
-    setTotal({
-      subtotal: subtotal.toFixed(user.EMP_PRECISION),
-      subtotalPorcentual: subtotalPorcentual.toFixed(user.EMP_PRECISION),
-      subtotalIVA: subtotalIVA.toFixed(user.EMP_PRECISION),
-      iva: iva.toFixed(user.EMP_PRECISION),
-      total: total.toFixed(user.EMP_PRECISION),
+    setInvoice({
+      ...invoice,
+      VEN_SUBTOTAL: subtotal.toFixed(user.EMP_PRECISION),
+      VEN_SUBTOTAL0: subtotalPorcentual.toFixed(user.EMP_PRECISION),
+      VEN_SUBTOTAL12: subtotalIVA.toFixed(user.EMP_PRECISION),
+      VEN_SUBTOTALEXCENTIVA: iva.toFixed(user.EMP_PRECISION),
+      VEN_TOTAL: total.toFixed(user.EMP_PRECISION),
     });
   }, [newProducts]);
 
@@ -169,259 +213,43 @@ export default function InvoicesForm({
         handleAddProduct={handleAddProduct}
         handleAddClient={handleAddClient}
       />
-      <div className="dashboard__invoice to-left">
-        <div className="datas">
-          <div className="data-left">
-            {client ? (
-              <div class="invoice-data__client">
-                <div class="invoice-data__client-data">
-                  <h3>Cliente</h3>
-                  <button
-                    className="btn btn-primary"
-                    onClick={handleFormClient}
-                  >
-                    <img src={arrowChange} alt="change client" />
-                    <span>Cambiar</span>
-                  </button>
 
-                  <div className="form-floating mb-3">
-                    <input class="form-control" value={client.dataType} />
-                    <label>{client.type}</label>
-                  </div>
-
-                  <div className="form-floating mb-3">
-                    <input class="form-control" value={client.address} />
-                    <label>Direccion</label>
-                  </div>
-
-                  <div className="form-floating mb-3">
-                    <input class="form-control" value={client.phone} />
-                    <label>Telefono</label>
-                  </div>
-
-                  <div className="form-floating mb-3">
-                    <select class="form-select">
-                      <option>Consumidor final</option>
-                    </select>
-                    <label>Sr. (es)</label>
-                  </div>
-                </div>
-              </div>
-            ) : null}
-            <div>
-              <label for="floatingInput">Numero de Factura</label>
-              <div className="formas-de-pago">
-                <input
-                  className="form-control"
-                  type="text"
-                  name="EMP_ESTABLECIMIENTO"
-                  value={user.EMP_ESTABLECIMIENTO}
-                  onChange={handleChange}
-                  required
-                />
-                <input
-                  className="form-control"
-                  type="text"
-                  name="EMP_PTOEMISION"
-                  value={user.EMP_PTOEMISION}
-                  onChange={handleChange}
-                  required
-                />
-                <input
-                  className="form-control"
-                  type="text"
-                  name="EMP_NUMERO"
-                  value={user.EMP_NUMERO}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* NUMERO DE LA FACTURA*/}
-
-          <div className="buscadores">
-            <div className="invoice-data">
-              {/* Date*/}
-              <div className="form-floating mb-3">
-                <input
-                  type="date"
-                  className="form-control"
-                  name="date"
-                  onChange={handleChange}
-                  required
-                />
-                <label for="floatingInput">Fecha de emisión</label>
-              </div>
-
-              {/* FORMAS DE PAGO */}
-              <div className="form-floating mb-3">
-                <select
-                  className="form-select"
-                  name="type"
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Seleccionar</option>
-                  {formasDePago.map((f) => (
-                    <option value={f.value}>{f.name}</option>
-                  ))}
-                </select>
-                <label>Forma de pago</label>
-              </div>
-            </div>
-            {/* Client */}
-            <div className="search-container-btn">
-              <SearchClient handleSelect={handleSelect} />
-              <button className="btn btn-primary" onClick={handleFormClient}>
-                <img src={addSquare} alt="add client" />
-                <span>Cliente</span>
-              </button>
-            </div>
-
-            {/* Product */}
-            <div className="search-container-btn">
-              <SearchProduct handleSelect={handleAdd} />
-              <button className="btn btn-primary" onClick={handleFormProduct}>
-                <img src={addSquare} alt="add product" />
-                <span>Producto</span>
-              </button>
-            </div>
-          </div>
+      <div className="dashboard__invoice">
+        <div className="invoice__top">
+          <AddData
+            invoice={invoice}
+            handleChange={handleChange}
+            handleFormClient={handleFormClient}
+            handleFormProduct={handleFormProduct}
+            handleClient={handleClient}
+            handleProduct={handleProduct}
+          />
+          <InvoiceData invoice={invoice} handleChange={handleChange} />
         </div>
 
-        <div className="flex-2">
-          <div className="product-details">
-            <span>Products</span>
-            <div className="table">
-              <div className="item">
-                <span>IVA</span>
-                <span>Descripcion</span>
-                <span>Precio</span>
-              </div>
-
-              <div className="item">
-                <span>IVA</span>
-                <span>Descripcion</span>
-                <span>Precio</span>
-              </div>
-            </div>
-          </div>
-          <div className="invoice-products">
-            <div className="invoice-row invoice-first-row">
-              <span>Codigo</span>
-              <span>Descripcion</span>
-              <span>Det. Cantidad</span>
-              <span>Cantidad</span>
-              <span>Descuento %</span>
-              <span>Precio unitario</span>
-              <span>Precio unitario + IVA</span>
-              <span>Monto</span>
-            </div>
-            {newProducts?.map((p) => (
-              <div className="invoice-row">
-                <span>{p.code}</span>
-                <span>{p.description}</span>
-                <span>{p.detCantidad}</span>
-                <input
-                  className="amount"
-                  type="number"
-                  value={p.amount}
-                  onChange={(e) => setAmount(e.target.value, p.code)}
-                />
-                <span>{p.descuesto}</span>
-                <span>{p.price}</span>
-                <span>
-                  {p.taxesBoolean
-                    ? (Number(p.price) + p.price * (p.taxes / 100)).toFixed(
-                        user.EMP_PRECISION
-                      )
-                    : p.price}
-                </span>
-                <span>{p.price * p.amount}</span>
-              </div>
-            ))}
-            <div className="adicional">
-              <div className="data-aditional">
-                <h5>Informacion Adicional:</h5>
-                <div className="aditional-input-container">
-                  <input
-                    className="form-control"
-                    name="type"
-                    placeholder="Nombre"
-                  />
-                  <input
-                    className="form-control"
-                    name="type"
-                    placeholder="Valor"
-                  />
-                </div>
-
-                <div className="aditional-input-container">
-                  <input
-                    className="form-control"
-                    name="type"
-                    placeholder="Nombre"
-                  />
-                  <input
-                    className="form-control"
-                    name="type"
-                    placeholder="Valor"
-                  />
-                </div>
-
-                <div className="aditional-input-container">
-                  <input
-                    className="form-control"
-                    name="type"
-                    placeholder="Nombre"
-                  />
-                  <input
-                    className="form-control"
-                    name="type"
-                    placeholder="Valor"
-                  />
-                </div>
-              </div>
-              <div>
-                <div className="invoice-totals">
-                  <span>Subtotal</span>
-                  <span className="totals">{totals.subtotal}</span>
-                </div>
-                <div className="invoice-totals">
-                  <span>Subtotal 0%</span>
-                  <span className="totals">{totals.subtotalPorcentual}</span>
-                </div>
-                <div className="invoice-totals">
-                  <span>Subtotal IVA</span>
-                  <span className="totals">{totals.subtotalIVA}</span>
-                </div>
-                <div className="invoice-totals">
-                  <span>I.V.A. 12%</span>
-                  <span className="totals">{totals.iva}</span>
-                </div>
-                <div className="invoice-totals">
-                  <span>Total</span>
-                  <span className="totals">{totals.total}</span>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className="invoice__mid">
+          <InvoiceTable
+            user={user}
+            invoice={invoice}
+            newProducts={newProducts}
+            setAmount={setAmount}
+          />
         </div>
 
         <button className="btn btn-primary" onClick={handleSubmit}>
           Agregar factura
         </button>
-        {/* Add product form */}
+
+        {/* VENTANA PARA AGREGAR PRODUCTOS */}
         {formProduct ? (
           <AddProduct
             handleFormProduct={handleFormProduct}
-            handleAdd={handleAdd}
+            handleAdd={handleProduct}
             handleRemove={handleRemove}
           />
         ) : null}
-        {/* Add client form */}
+
+        {/* VENTANA PARA AGREGAR CLIENTES */}
         {formClient ? (
           <AddClient
             handleFormClient={handleFormClient}

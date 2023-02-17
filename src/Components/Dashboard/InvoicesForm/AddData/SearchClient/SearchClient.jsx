@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import "./SearchClient.css";
 
-export default function SearchClient({ handleSelect }) {
+export default function SearchClient({ handleAddClient }) {
   const clients = useSelector((state) => state.clients);
   const [rows, setRows] = useState();
 
@@ -12,7 +12,6 @@ export default function SearchClient({ handleSelect }) {
 
   function handleSearch(e) {
     const value = e.target.value;
-    console.log(value);
     setRows(
       clients.filter((c) => {
         if (c.dataType.toLowerCase().includes(value.toLowerCase())) return true;
@@ -30,13 +29,13 @@ export default function SearchClient({ handleSelect }) {
           name="newClient"
           onChange={handleSearch}
         />
-        <label for="floatingInput">Buscar cliente</label>
+        <label htmlFor="floatingInput">Buscar cliente</label>
       </div>
       <div className="client-name">
         {rows?.map((c) => (
-          <div className="search-client-row" onClick={() => handleSelect(c)}>
-            <span>{`${c.type}: ${c.dataType}`}</span>
-            <span>{c.name}</span>
+          <div key={c.id} className="search-client-row" onClick={() => handleAddClient(c)}>
+            <span>{`${c.CLI_TIPOIDE}: ${c.CLI_IDENTIFICACION}`}</span>
+            <span>{c.CLI_NOMBRE}</span>
           </div>
         ))}
       </div>

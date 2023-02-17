@@ -1,7 +1,6 @@
-import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { openLoading, closeLoading } from "../../../redux/actions";
+import { closeLoading } from "../../../redux/actions";
 
 import PersonalData from "./PersonalData/PersonalData";
 import Obligations from "./Obligations/Obligations";

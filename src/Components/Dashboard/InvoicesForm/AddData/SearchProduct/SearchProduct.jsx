@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import "./SearchProduct.css";
 
-export default function SearchProduct({ handleSelect }) {
+export default function SearchProduct({ handleAddProduct }) {
   const products = useSelector((state) => state.products);
   const [rows, setRows] = useState();
 
@@ -15,7 +15,8 @@ export default function SearchProduct({ handleSelect }) {
     setRows(
       products.filter((p) => {
         if (p.code.toLowerCase().includes(value.toLowerCase())) return true;
-        if (p.description.toLowerCase().includes(value.toLowerCase())) return true;
+        if (p.description.toLowerCase().includes(value.toLowerCase()))
+          return true;
         return false;
       })
     );
@@ -30,12 +31,25 @@ export default function SearchProduct({ handleSelect }) {
           name="newProduct"
           onChange={handleSearch}
         />
-        <label for="floatingInput">Buscar product</label>
+        <label htmlFor="floatingInput">Buscar product</label>
       </div>
       <div className="product-name">
-        {rows?.map((p) => (
-          <span onClick={() => handleSelect(p)}>{p.name}</span>
-        ))}
+        <div className="head search-product-row">
+          <span>Codigo</span>
+          <span>Descripcion</span>
+          <span>Precio</span>
+          <span>Impuesto</span>
+        </div>
+        <div className="list">
+          {rows?.map((p) => (
+            <div key={p.ITE_CODIGO} className="search-product-row" onClick={() => handleAddProduct(p)}>
+              <span>{p.ITE_CODIGO}</span>
+              <span>{p.ITE_DESCRIPCION}</span>
+              <span>{p.ITE_PVP}</span>
+              <span>{p.ITE_IMPUESTO ? "Si" : "No"}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

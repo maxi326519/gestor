@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import {
   deleteClient,
@@ -19,7 +19,7 @@ export default function ClientCard({ client }) {
   const dispatch = useDispatch();
   const [editClient, setProduct] = useState(client);
   const [disabled, setDisabled] = useState(true);
-  
+
   function handleEdit() {
     setDisabled(!disabled);
   }
@@ -68,9 +68,9 @@ export default function ClientCard({ client }) {
           disabled={true}
           required
         >
-          <option value="4">Ruc</option>
-          <option value="5">Cedula</option>
-          <option value="6">Pasaporte</option>
+          <option value="04">Ruc</option>
+          <option value="05">Cedula</option>
+          <option value="06">Pasaporte</option>
         </select>
         <input
           className={`form-control ${disabled ? "input-disabled" : ""}`}
@@ -88,7 +88,7 @@ export default function ClientCard({ client }) {
         onChange={handleChange}
         disabled={disabled}
         required
-        />
+      />
       <input
         className={`form-control ${disabled ? "input-disabled" : ""}`}
         name="CLI_EMAIL"
@@ -96,7 +96,7 @@ export default function ClientCard({ client }) {
         onChange={handleChange}
         disabled={disabled}
         required
-        />
+      />
       <input
         className={`form-control ${disabled ? "input-disabled" : ""}`}
         name="CLI_DIRECCION"
@@ -104,7 +104,7 @@ export default function ClientCard({ client }) {
         onChange={handleChange}
         disabled={disabled}
         required
-        />
+      />
       <input
         className={`form-control ${disabled ? "input-disabled" : ""}`}
         name="CLI_TELEFONO"
@@ -112,29 +112,32 @@ export default function ClientCard({ client }) {
         onChange={handleChange}
         disabled={disabled}
         required
-        />
-      <button
-        className={`btn ${disabled ? "btn-primary" : "btn-success"}`}
-        onClick={
-          disabled
-            ? handleEdit
-            : () => {
-                dispatch(
-                  Alert("¿Seguro que desea guardar los cambios?", handleUpdate)
-                );
-              }
-        }
-      >
-        <img src={disabled ? edit : save} alt="edit" />
-      </button>
+      />
+      <div className="edit-buttons">
+        <button
+          className={`btn ${disabled ? "btn-primary" : "btn-success"}`}
+          onClick={
+            disabled
+              ? handleEdit
+              : () => {
+                  dispatch(
+                    Alert(
+                      "¿Seguro que desea guardar los cambios?",
+                      handleUpdate
+                    )
+                  );
+                }
+          }
+        >
+          <img src={disabled ? edit : save} alt="edit" />
+        </button>
+        {disabled ? null : <button className="btn btn-danger" onClick={handleEdit}>x</button>}
+      </div>
       <button
         className="btn btn-danger"
         onClick={() => {
           dispatch(
-            Alert(
-              `¿Seguro que quiere eliminar este cliente?`,
-              handleRemove
-            )
+            Alert(`¿Seguro que quiere eliminar este cliente?`, handleRemove)
           );
         }}
       >

@@ -13,8 +13,6 @@ import {
 } from "firebase/firestore";
 
 /* Firebase */
-import { getStorage, ref, uploadBytes } from "firebase/storage";
-
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
@@ -231,7 +229,7 @@ export function login(userData) {
       if (dbUser.empty) throw new Error("El ruc no existe");
 
       // Si existe nos traemos el email y hacemos la Auth
-      const email = dbUser.docs[0].data().email;
+      const email = dbUser.docs[0].data().EMP_EMAIL;
 
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -272,10 +270,10 @@ export function GoogleSesion() {
     try {
       const provider = new GoogleAuthProvider();
       const response = await signInWithPopup(auth, provider);
-      const credential = GoogleAuthProvider.credentialFromResult(response);
+/*       const credential = GoogleAuthProvider.credentialFromResult(response); */
 
       const user = response.user;
-      const token = credential.accessToken;
+/*       const token = credential.accessToken; */
 
       await setDoc(doc(db, "users", user.uid), {
         ruc: null,

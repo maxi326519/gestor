@@ -27,7 +27,7 @@
   "VEN_FAUTORIZA": "2022-12-04 at 06:49:14PM",
   "VEN_FECHA": "04-12-2022",
   "VEN_FPAGO": 20,
-  "VEN_GUIA": "",
+  "VEN_GUIA": "", /* guia de remision */
   "VEN_ICE": 0,
   "VEN_IMPRESO": 0,
   "VEN_IVA": 0,
@@ -35,12 +35,12 @@
   "VEN_PTOEMISION": "001",
   "VEN_RETENCION": 0,
   "VEN_SRI": 2,
-  "VEN_SUBTOTAL": 15,
-  "VEN_SUBTOTAL0": 15,
-  "VEN_SUBTOTAL12": 0,
-  "VEN_SUBTOTALEXCENTIVA": 0,
-  "VEN_SUBTOTALNOIVA": 0,
-  "VEN_TIPODOC": "01",
+  "VEN_SUBTOTAL": 15, /*  suma de los dos de abajo*/
+  "VEN_SUBTOTAL0": 15, /* no pagan iva */
+  "VEN_SUBTOTAL12": 0, /* pagan iva */
+  "VEN_SUBTOTALEXCENTIVA": 0, /* default */
+  "VEN_SUBTOTALNOIVA": 0, /* default */
+  "VEN_TIPODOC": "01", /* default */
   "VEN_TOTAL": 15,
   "VEN_UKEY": "clave_Authentification",
   "VEN_VALOR1": "",

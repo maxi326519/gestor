@@ -39,18 +39,6 @@ export default function ElectronicInvoice() {
     });
   }
 
-  function addZero(number) {
-    let numberWidthZeros = [number];
-    let limit = 10;
-
-    for (let i = 0; i < limit; i++) {
-      numberWidthZeros.shift("0");
-      console.log("addZero");
-    }
-
-    return numberWidthZeros.join();
-  }
-
   return (
     <form className="electronicInvoice" onSubmit={handleSubmit}>
       <hr></hr>

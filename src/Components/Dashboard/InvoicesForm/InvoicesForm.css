@@ -7,13 +7,35 @@
   background-color: white;
 }
 
+.invoice__top{
+  display: flex;
+  width: 100%;
+}
+
+.invoice__mid{
+  display: flex;
+}
+
+/* adasda */
+.invoice-data__client-data{
+  margin-right: 40px;
+}
+
+.buscadores{
+  flex-grow: 1;
+}
+
+.invoice-products{
+  flex-grow: 1;
+}
+
 .dashboard__invoice h2 {
   margin-bottom: 20px;
 }
 
 .invoice-data {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   padding-bottom: 20px;
 }
 
@@ -34,7 +56,7 @@
   display: flex;
 }
 
-.invoice-data__client-data {
+.invoice-data__client-data .grid{
   display: grid;
   gap: 10px;
   grid-template-columns: 1fr 1fr;
