@@ -1,47 +1,20 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteInvoice, openLoading, closeLoading } from "../../../../../redux/actions";
+import {
+  deleteInvoice,
+  openLoading,
+  closeLoading,
+} from "../../../../../redux/actions";
 
 import removeIcon from "../../../../../assets/svg/remove.svg";
 import "./InvoiceCard.css";
 
 export default function InvoiceCard({ invoice, viewPDF }) {
   const dispatch = useDispatch();
-  const userId = useSelector((state) => state.user.uid);
-  const client = useSelector((state) =>
-    state.clients.find((c) => c.id === invoice.client)
-  );
-  const initialState = {
-    total: 0,
-    unitAmount: 0,
-    productAmount: 0,
-  };
-
-  const [result, setInvoiceData] = useState(initialState);
-
-  useEffect(() => {
-    let total = 0;
-    let unitAmount = 0;
-    let productAmount = invoice.product.length;
-
-    invoice.product.map((p) => {
-      total += p.amount * p.unitPrice;
-    });
-
-    invoice.product.map((p) => {
-      unitAmount += p.amount;
-    });
-
-    setInvoiceData({
-      total,
-      unitAmount,
-      productAmount,
-    });
-  }, [client]);
 
   function handleRemove() {
     dispatch(openLoading());
-    dispatch(deleteInvoice(userId, invoice.id))
+    dispatch(deleteInvoice(invoice.id))
       .then(() => {
         dispatch(closeLoading());
       })
@@ -53,12 +26,18 @@ export default function InvoiceCard({ invoice, viewPDF }) {
 
   return (
     <div className="invoice-card">
-      {console.log(client)}
-      <span>{invoice.date}</span>
-      <span>{client?.name}</span>
-      <span>{result.total}</span>
-      <span>{result.unitAmount}</span>
-      <span>{result.productAmount}</span>
+      <span>{invoice.VEN_FECHA}</span>
+      <span>
+        {invoice.CLI_NOMBRE} <button className="btn btn-primary">Ver</button>
+      </span>
+      <span>
+        {invoice.VEN_SUBTOTAL} <button className="btn btn-primary">Ver</button>
+      </span>
+      <span>{invoice.VEN_SUBTOTAL}</span>
+      <span>{invoice.VEN_SUBTOTAL0}</span>
+      <span>{invoice.VEN_SUBTOTAL12}</span>
+      <span>{invoice.VEN_SUBTOTAL0 * 0.12}</span>
+      <span>{invoice.VEN_TOTAL}</span>
       <button className="btn btn-primary" onClick={viewPDF}>
         Ver en PDF
       </button>

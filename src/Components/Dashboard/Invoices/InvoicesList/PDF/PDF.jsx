@@ -3,81 +3,389 @@ import {
   Page,
   Text,
   View,
+  Image,
   StyleSheet,
   PDFViewer,
 } from "@react-pdf/renderer";
+import { useSelector } from "react-redux";
 
 import "./PDF.css";
 const styles = StyleSheet.create({
   page: {
-    backgroundColor: "#444",
-    color: "white",
+    padding: "30px",
+    fontSize: "10px",
   },
   viewer: {
     width: "100%", //the pdf viewer will take up all of the width and height
-    height: window.innerHeight,
+    height: "calc(100% - 50px)",
   },
-  info: {
-    borderBottom: "1px solid red",
+  userData: {
+    display: "grid",
+    flexDirection: "row",
+    marginBottom: "10px",
+    border: "1px solid grey",
+    borderTop: "10px solid #389",
+  },
+  logo: {
+    width: "100px",
+    height: "100px",
+    margin: "auto",
+    marginBottom: "20px",
+  },
+  comerceData: {
+    flexGrow: 1,
+    padding: 10,
+    paddingRight: "20px",
+    borderRight: "1px solid grey",
+  },
+  invoicingData: {
+    padding: 10,
+    paddingLeft: "20px",
+  },
+  invoiceHead: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    marginBottom: "10px",
+    fontSize: "15px",
+  },
+  clientData: {
+    display: "grid",
+    flexDirection: "row",
+    padding: "10px",
+    border: "1px solid grey",
+    borderTop: "10px solid #389",
   },
   table: {
     display: "flex",
     flexDirection: "column",
     width: "auto",
-    margin: 10,
-    padding: 10,
+    marginTop: 10,
+    fontSize: "10px",
+    borderLeft: "1px solid grey",
+    borderTop: "1px solid grey",
   },
   tablaRows: {
     display: "flex",
     flexDirection: "row",
+    flexWrap: "wrap",
+    borderBottom: "1px solid grey",
   },
   text: {
-    padding: "10px",
-    border: "1px solid white",
+    padding: "5px",
+    textAlign: "center",
+    borderRight: "1px solid grey",
+  },
+  endData: {
+    display: "flex",
+    flexDirection: "row",
+    paddingTop: "10px",
+  },
+  textEnd: {
+    padding: "5px",
+    textAlign: "right",
+  },
+  dataEnd: {
+    padding: "5px",
+    textAlign: "left",
   },
 });
 
+const formasDePago = [
+  { value: "01", name: "SIN UTILIZACION DEL SISTEMA FINANCIERO" },
+  { value: "15", name: "COMPENSACIÓN DE DEUDAS" },
+  { value: "16", name: "TARJETA DE DÉBITO" },
+  { value: "17", name: "DINERO ELECTRÓNICO" },
+  { value: "18", name: "TARJETA PREPAGO" },
+  { value: "19", name: "TARJETA DE CRÉDITO" },
+  { value: "20", name: "OTROS CON UTILIZACIÓN DEL SISTEMA FINANCIERO" },
+  { value: "21", name: "ENDOSO DE TÍTULOS" },
+];
+
 // Create Document Component
 export default function PDF({ invoice, handleClosePDF }) {
+  const user = useSelector((state) => state.user.userDB);
+
   return (
     <div className="pdf-container">
-      {console.log(invoice)}
-      {console.log(invoice.client)}
-      <button onClick={handleClosePDF}>X</button>
+      <div className="head">
+        <h4>Visor PDF</h4>
+        <button
+          className="pdf-close-btn btn btn-danger"
+          onClick={handleClosePDF}
+        >
+          Cerrar PDF
+        </button>
+      </div>
       <PDFViewer style={styles.viewer}>
         <Document>
           <Page size="A4" style={styles.page}>
-            <View>
-              <Text>Nombre de la empresa</Text>
-            </View>
-            <View>
-              <Text>Ruc: </Text>
-              <Text>Dirección: </Text>
-              <Text>Correo: </Text>
-              <Text>Teléfono: </Text>
-            </View>
-            <View style={styles.info}>
-              <Text>Cliente: {invoice.client}</Text>
-              <Text>Fecha: {invoice.date}</Text>
-            </View>
-            <View style={styles.table}>
-              <View style={styles.tablaRows}>
-                <Text style={{ ...styles.text, width: "50%" }}>Nombre</Text>
-                <Text style={styles.text}>Precio</Text>
-                <Text style={styles.text}>Cantidad</Text>
+            {/* INVOICING DATA */}
+            <View style={styles.userData}>
+              {/* COMERCE DATA */}
+              <View style={styles.comerceData}>
+                <Image
+                  style={styles.logo}
+                  src="https://res.cloudinary.com/doxph7wwq/image/upload/v1676561586/kpvt6nniodzjnrn6aqqm.png"
+                  alt="asda"
+                />
+                <Text>Nombre: {user.EMP_NOMBRE}</Text>
+                <Text>Ruc: {user.EMP_RUC}</Text>
+                <Text>Dirección: {user.EMP_DIRECCION}</Text>
+                <Text>Teléfono: {user.EMP_TELEFONO}</Text>
+                <Text>Correo: {user.EMP_EMAIL}</Text>
+                <Text>
+                  OBLIGADO A LLEVAR CONTABILIDAD:{" "}
+                  {user.EMP_SOCIEDAD ? "SI" : "NO"}
+                </Text>
+                <Text>
+                  CONTRIBUYENTE RÉGIMEN{" "}
+                  {user.EMP_RUC === "1" ? "GENERAL" : "EMPRENDEDOR"}
+                </Text>
               </View>
-              {invoice.product.map((p) => (
+
+              {/* USER DATA */}
+              <View style={styles.invoicingData}>
+                <View style={styles.invoiceHead}>
+                  <Text>Factura </Text>
+                  <Text>Nro: {`${user.EMP_ESTABLECIMIENTO}-${user.EMP_PTOEMISION}-00000000${user.EMP_SECUENCIAL}`}</Text>
+                </View>
+                <Text>Fecha y hora: </Text>
+                <Text>AMBIENTE: { user.EMP_CODIGO === 1 ? "Pueba" : "Produccion" }</Text>
+                <Text>EMISION: { user.EMP_LICENCIA }</Text>
+                <Text>AUTORIZACION Y CLAVE DE ACCESO: </Text>
+                {/* AGREGAR CODIGO DE BARRAS */}
+                <Image
+                  style={{ width: "100%", height: "100px" }}
+                  src="https://1000marcas.net/wp-content/uploads/2020/02/logo-Google.png"
+                />
+                <Text>{ invoice.VEN_CLAVEACCESO }</Text>
+              </View>
+            </View>
+
+            {/* CLIENT DATA */}
+            <View style={styles.clientData}>
+              <View style={{ flexGrow: 1 }}>
+                <Text>Razón social: {invoice.CLI_NOMBRE}</Text>
+                <Text>Ci/Ruc: {invoice.CLI_IDENTIFICACION} </Text>
+                <Text>Fecha Emisión: {invoice.VEN_FECHA} </Text>
+                <Text>Dirección: {invoice.CLI_DIRECCION} </Text>
+              </View>
+              <View style={{ flexGrow: 1 }}>
+                <Text>Correo: {invoice.CLI_EMAIL} </Text>
+                <Text>Teléfono: {invoice.CLI_TELEFONO} </Text>
+                <Text>Guia: {invoice.VEN_GUIA} </Text>
+              </View>
+            </View>
+
+            {/* TABLE */}
+            <View style={styles.table}>
+              <View
+                style={{
+                  ...styles.tablaRows,
+                  backgroundColor: "#389",
+                  color: "white",
+                }}
+              >
+                <Text
+                  style={{ ...styles.text, width: "60px", padding: "8px 5px" }}
+                >
+                  Codigo
+                </Text>
+                <Text style={{ ...styles.text, flexGrow: "1" }}>
+                  Descripcion
+                </Text>
+                <Text
+                  style={{ ...styles.text, width: "60px", padding: "8px 5px" }}
+                >
+                  Cantidad
+                </Text>
+                <Text
+                  style={{ ...styles.text, width: "70px", padding: "8px 5px" }}
+                >
+                  Descuento
+                </Text>
+                <Text
+                  style={{ ...styles.text, width: "60px", padding: "8px 5px" }}
+                >
+                  Precio U.
+                </Text>
+                <Text
+                  style={{ ...styles.text, width: "80px", padding: "8px 5px" }}
+                >
+                  Precio U+IVA
+                </Text>
+                <Text
+                  style={{ ...styles.text, width: "80px", padding: "8px 5px" }}
+                >
+                  Valor
+                </Text>
+              </View>
+              {invoice.ITE_DETELLES?.map((p) => (
                 <View style={styles.tablaRows}>
-                  <Text style={{ ...styles.text, width: "50%" }}>{p.name}</Text>
-                  <Text style={styles.text}>{p.unitPrice}</Text>
-                  <Text style={styles.text}>{p.amount}</Text>
+                  <Text style={{ ...styles.text, width: "60px" }}>
+                    {p.ITE_CODIGO}
+                  </Text>
+                  <Text style={{ ...styles.text, flexGrow: "1" }}>
+                    {p.ITE_DESCRIPCION}
+                  </Text>
+                  <Text style={{ ...styles.text, width: "60px" }}>
+                    {p.VED_CANTIDAD}
+                  </Text>
+                  <Text style={{ ...styles.text, width: "70px" }}>
+                    {p.VED_DESCUENTO}
+                  </Text>
+                  <Text style={{ ...styles.text, width: "60px" }}>
+                    {p.VED_PUNITARIO}
+                  </Text>
+                  <Text style={{ ...styles.text, width: "80px" }}>
+                    {p.VED_PUNITARIOIVA}
+                  </Text>
+                  <Text style={{ ...styles.text, width: "80px" }}>
+                    {p.VED_VALOR}
+                  </Text>
                 </View>
               ))}
-            <View>
-              <Text>Subtotal: </Text>
-              <Text>Impuestos: </Text>
-              <Text>Total: </Text>
             </View>
+
+            <View style={styles.endData}>
+              <View style={{ flexGrow: 1 }}>
+                {/* LEFT COLUMN */}
+                <View>
+                  <View
+                    style={{ ...styles.table, width: "80%", marginTop: "0" }}
+                  >
+                    <View
+                      style={{
+                        ...styles.tablaRows,
+                        backgroundColor: "#389",
+                        color: "white",
+                      }}
+                    >
+                      <Text style={{ ...styles.text, flexGrow: 1 }}>
+                        Forma de pago
+                      </Text>
+                      <Text style={{ ...styles.text, width: "90px" }}>
+                        Valor
+                      </Text>
+                    </View>
+                    <View style={{ ...styles.tablaRows, width: "100%"}}>
+                      <Text style={{ ...styles.text, flexGrow: 1, fontSize: "8px" }}>
+                        {
+                          formasDePago.find(
+                            (f) => f.value === invoice.VEN_FPAGO
+                          )?.name
+                        }
+                      </Text>
+                      <Text style={{ ...styles.text, width: "90px" }}>
+                        {invoice.VEN_TOTAL}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={{ ...styles.table, width: "80%" }}>
+                    <View
+                      style={{
+                        ...styles.tablaRows,
+                        backgroundColor: "#389",
+                        color: "white",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          ...styles.text,
+                          flexGrow: 1,
+                          textAlign: "left",
+                        }}
+                      >
+                        Informacion Adicional
+                      </Text>
+                    </View>
+                    <View style={{ ...styles.tablaRows, width: "100%" }}>
+                      <Text
+                        style={{
+                          ...styles.text,
+                          width: "50%",
+                          textAlign: "left",
+                        }}
+                      >
+                        vacio
+                      </Text>
+                      <Text
+                        style={{
+                          ...styles.text,
+                          width: "50%",
+                          textAlign: "left",
+                        }}
+                      >
+                        vacio
+                      </Text>
+                    </View>
+                    <View style={{ ...styles.tablaRows, width: "100%" }}>
+                      <Text
+                        style={{
+                          ...styles.text,
+                          width: "50%",
+                          textAlign: "left",
+                        }}
+                      >
+                        vacio
+                      </Text>
+                      <Text
+                        style={{
+                          ...styles.text,
+                          width: "50%",
+                          textAlign: "left",
+                        }}
+                      >
+                        vacio
+                      </Text>
+                    </View>
+                    <View style={{ ...styles.tablaRows, width: "100%" }}>
+                      <Text
+                        style={{
+                          ...styles.text,
+                          width: "50%",
+                          textAlign: "left",
+                        }}
+                      >
+                        vacio
+                      </Text>
+                      <Text
+                        style={{
+                          ...styles.text,
+                          width: "50%",
+                          textAlign: "left",
+                        }}
+                      >
+                        vacio
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              </View>
+
+              {/* RIGHT COLUMN */}
+              <View style={{ display: "flex", flexDirection: "row" }}>
+                <View style={{ width: "80px" }}>
+                  <Text style={styles.textEnd}>Subtotal:</Text>
+                  <Text style={styles.textEnd}>Subtotal 0%:</Text>
+                  <Text style={styles.textEnd}>Subtotal I.V.A.:</Text>
+                  <Text style={styles.textEnd}>I.V.A. 12%: </Text>
+                  <Text style={styles.textEnd}>Total:</Text>
+                </View>
+                <View style={{ width: "80px" }}>
+                  <Text style={styles.dataEnd}>{invoice.VEN_SUBTOTAL}</Text>
+                  <Text style={styles.dataEnd}>{invoice.VEN_SUBTOTAL0}</Text>
+                  <Text style={styles.dataEnd}>{invoice.VEN_SUBTOTAL12}</Text>
+                  <Text style={styles.dataEnd}>
+                    {(invoice.VEN_SUBTOTAL12 * 0.12).toFixed(
+                      user.EMP_PRECISION
+                    )}
+                  </Text>
+                  <Text style={styles.dataEnd}>{invoice.VEN_TOTAL}</Text>
+                </View>
+              </View>
             </View>
           </Page>
         </Document>

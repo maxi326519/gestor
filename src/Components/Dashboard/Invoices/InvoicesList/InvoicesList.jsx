@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 
 import InvoiceCard from "./InvoiceCard/InvoiceCard";
 import PDF from "./PDF/PDF";
@@ -55,13 +56,13 @@ export default function InvoicesList({
           placeholder="Buscar factura"
           onChange={handleChange}
         />
-        <button
+        <Link
+          to="/dashboard/invoices/add"
           className="btn btn-primary invoicesList__export"
-          onClick={handleAddInvoice}
         >
           <img src={addSquare} alt="export" />
           <span>Factura</span>
-        </button>
+        </Link>
         <button
           className="btn btn-primary"
           onClick={() => {
@@ -77,10 +78,14 @@ export default function InvoicesList({
         <div className="invoice-card first-row">
           <span>Fecha</span>
           <span>Nombre\Cliente</span>
-          <span>Cant\Products</span>
-          <span>Cant\Unitario</span>
-          <span>total</span>
+          <span>Productos</span>
+          <span>Subtotal</span>
+          <span>Subtotal 0%</span>
+          <span>Subtotal IVA</span>
+          <span>I.V.A. 12%</span>
+          <span>Total</span>
           <span>Ver en PDF</span>
+          <span>Eliminar</span>
         </div>
         <div className="contentCard">
           {rows.length <= 0 ? (

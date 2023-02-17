@@ -39,7 +39,7 @@ export default function Invoicing({ disabled, userData, handleChange }) {
             className="form-control"
             name="EMP_SECUENCIAL"
             disabled={disabled}
-            value={userData.EMP_SECUENCIAL?.toString().padStart(9, "0")}
+            value={userData.EMP_NUMERO?.toString().padStart(9, "0")}
             onChange={handleChange}
             required
           />

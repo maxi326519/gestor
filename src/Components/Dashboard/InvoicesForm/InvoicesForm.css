@@ -116,7 +116,7 @@
 
 .invoice-row {
   display: grid;
-  grid-template-columns: 1fr 200px repeat(5, 150px) 100px;
+  grid-template-columns: 100px 1fr repeat(4, 150px) 100px;
 }
 
 .invoice-first-row {

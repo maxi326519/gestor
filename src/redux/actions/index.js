@@ -451,13 +451,11 @@ export function postProduct(product) {
   };
 }
 
-export function postInvoice(userId, invoice) {
+export function postInvoice(invoice) {
   return async (dispatch) => {
     try {
-      const invoicesColl = collection(db, "users", userId, "invoices");
+      const invoicesColl = collection(db, "users", auth.currentUser.uid, "invoices");
       const newProduct = await addDoc(invoicesColl, invoice);
-
-      console.log(newProduct);
 
       return dispatch({
         type: POST_INVOICE,
@@ -469,11 +467,10 @@ export function postInvoice(userId, invoice) {
   };
 }
 
-export function getClients(userId) {
+export function getClients() {
   return async (dispatch) => {
     try {
-      if (!userId) throw new Error("Falta ID de usuario");
-      const clientColl = collection(db, "users", userId, "clients");
+      const clientColl = collection(db, "users", auth.currentUser.uid, "clients");
       const query = await getDocs(clientColl);
 
       let clients = [];
@@ -497,7 +494,7 @@ export function getClients(userId) {
   };
 }
 
-export function getProducts(userId) {
+export function getProducts() {
   return async (dispatch) => {
     try {
       const productColl = collection(

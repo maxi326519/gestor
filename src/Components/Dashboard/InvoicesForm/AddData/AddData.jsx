@@ -10,17 +10,17 @@ export default function AddData({
   handleChange,
   handleFormClient,
   handleFormProduct,
-  handleAddClient,
-  handleAddProduct,
+  handleClient,
+  handleProduct,
 }) {
   return (
     <div>
       <div class="invoice-data__client-data">
         {/* Client */}
         <h3>Cliente</h3>
-        
+
         <div className="search-container-btn">
-          <SearchClient handleAddClient={handleAddClient} />
+          <SearchClient handleClient={handleClient} />
           <button className="btn btn-primary" onClick={handleFormClient}>
             <img src={addSquare} alt="add client" />
             <span>Cliente</span>
@@ -29,34 +29,57 @@ export default function AddData({
 
         <div className="grid">
           <div className="form-floating mb-3">
-            <input class="form-control" value={invoice.CLI_IDENTIFICACION} />
-            <label>{/* {invoice.type} */}</label>
+            <input
+              class="form-control"
+              type="text"
+              value={invoice.CLI_IDENTIFICACION}
+              disabled
+            />
+            <label>
+              {
+                invoice.CLI_TIPOIDE === "05"
+                ? "Cedula"
+                : invoice.CLI_TIPOIDE === "06"
+                ? "Pasaporte"
+                : "Ruc"
+              }
+            </label>
           </div>
 
           <div className="form-floating mb-3">
-            <input class="form-control" value={invoice.CLI_DIRECCION} />
+            <input
+              class="form-control"
+              type="text"
+              value={invoice.CLI_DIRECCION}
+              disabled
+            />
             <label>Direccion</label>
           </div>
 
           <div className="form-floating mb-3">
-            <input class="form-control" value={invoice.CLI_TELEFONO} />
+            <input
+              class="form-control"
+              type="text"
+              value={invoice.CLI_TELEFONO}
+              disabled
+            />
             <label>Telefono</label>
           </div>
 
           <div className="form-floating mb-3">
-            <select class="form-select" value={7} onChange={handleChange}>
-              <option value={4}>Ruc</option>
-              <option value={5}>Cedula</option>
-              <option value={6}>Pasaporte</option>
-              <option value={7}>Consumidor final</option>
-            </select>
+            <input
+              class="form-control"
+              type="text"
+              value={invoice.CLI_NOMBRE}
+              disabled
+            />
             <label>Sr. (es)</label>
           </div>
         </div>
 
         {/* Product */}
         <div className="search-container-btn">
-          <SearchProduct handleAddProduct={handleAddProduct} />
+          <SearchProduct handleProduct={handleProduct} />
           <button className="btn btn-primary" onClick={handleFormProduct}>
             <img src={addSquare} alt="add product" />
             <span>Producto</span>

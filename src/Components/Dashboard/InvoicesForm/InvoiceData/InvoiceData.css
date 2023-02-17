@@ -1,0 +1,17 @@
+.buscadores h2{
+  text-align: right;
+}
+
+.invoice-number{
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.invoice-number span{
+  font-weight: bold;
+}
+
+.guia-de-emision input[type="checkbox"]{
+  margin-right: 10px;
+}

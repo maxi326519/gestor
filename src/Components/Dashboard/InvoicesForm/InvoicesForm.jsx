@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { postInvoice, openLoading, closeLoading } from "../../../redux/actions";
+import {
+  postInvoice,
+  updateUserData,
+  openLoading,
+  closeLoading,
+} from "../../../redux/actions";
 
 import SideBar from "../SideBar/SideBar";
 import AddData from "./AddData/AddData";
@@ -15,11 +20,11 @@ import { toast } from "react-toastify";
 const initialInvoice = {
   CLI_CODIGO: 0,
   CLI_DIRECCION: "S/N",
-  CLI_EMAIL: "",
-  CLI_IDENTIFICACION: "",
+  CLI_EMAIL: "-",
+  CLI_IDENTIFICACION: "-",
   CLI_NOMBRE: "CONSUMIDOR FINAL",
-  CLI_TELEFONO: "",
-  CLI_TIPOIDE: "",
+  CLI_TELEFONO: "-",
+  CLI_TIPOIDE: "-",
   EMP_CODIGO: 0,
   ITE_CODIGO: 0,
   ITE_COSTO: 0,
@@ -40,8 +45,8 @@ const initialInvoice = {
   VEN_ESTADO: 3,
   VEN_FAUTORIZA: new Date(),
   VEN_FECHA: new Date().toLocaleDateString(),
-  VEN_FPAGO: 0,
-  VEN_GUIA: "",
+  VEN_FPAGO: "01",
+  VEN_GUIA: "-",
   VEN_ICE: 0,
   VEN_IMPRESO: 0,
   VEN_IVA: 0,
@@ -85,21 +90,28 @@ export default function InvoicesForm({
   }, [user, setInvoice]);
 
   function handleChange(e) {
-    console.log(e.target);
-    console.log(invoice);
     setInvoice({ ...invoice, [e.target.name]: e.target.value });
   }
 
   function handleSubmit(e) {
     e.preventDefault();
     dispatch(openLoading());
+    const newInvoice = {
+      ...invoice,
+      ITE_DETELLES: newProducts,
+    };
 
-    console.log(invoice);
-
-    dispatch(postInvoice(invoice))
+    dispatch(postInvoice(newInvoice))
       .then((d) => {
-        dispatch(closeLoading());
-        toast("¡Factura agregada exitosamente!");
+        dispatch(
+          updateUserData({
+            EMP_NUMERO: user.EMP_NUMERO + 1,
+            EMP_SECUENCIAL: user.EMP_SECUENCIAL + 1,
+          })
+        ).then(() => {
+          dispatch(closeLoading());
+          toast("¡Factura agregada exitosamente!");
+        });
       })
       .catch((e) => {
         dispatch(closeLoading());
@@ -127,15 +139,16 @@ export default function InvoicesForm({
           ITE_CODIGO: product.ITE_CODIGO,
           ITE_DESCRIPCION: product.ITE_DESCRIPCION,
           VED_CANTIDAD: 1,
-          VED_DESCUENTO: "",
+          VED_DESCUENTO: 0,
           VED_IMPUESTO: product.ITE_IMPUESTO,
           VED_PORCENTAJE: "",
           VED_PUNITARIO: product.ITE_PVP,
-          VED_PUNITARIOIVA: product.ITE_IMPUESTO
-            ? (product.ITE_PVP * 1.12).toFixed(2)
-            : product.ITE_PVP,
+          VED_PUNITARIOIVA:
+            product.ITE_IMPUESTO === "2"
+              ? (product.ITE_PVP * 1.12).toFixed(user.EMP_PRECISION)
+              : product.ITE_PVP,
           VED_UKEY: product.USU_KEY,
-          VED_VALOR: "",
+          VED_VALOR: product.ITE_PVP,
           VEN_CODIGO: 0,
         },
       ]);
@@ -162,13 +175,30 @@ export default function InvoicesForm({
     setFormClient(false);
   }
 
-  function setAmount(amount, code) {
+  function handleChangeProduct(e, code) {
+    const { name, value } = e.target;
+    console.log(name, value, code);
+
     setNewProduct(
       newProducts.map((p) => {
         if (p.ITE_CODIGO === code) {
-          return {
+          const newProduct = {
             ...p,
-            VED_CANTIDAD: amount,
+            [name]: value,
+            VED_PUNITARIOIVA:
+              p.VED_IMPUESTO === "2" && name === "VED_PUNITARIO"
+                ? (value * 1.12).toFixed(2)
+                : name === "VED_PUNITARIO"
+                ? value
+                : p.VED_PUNITARIOIVA,
+          };
+          return {
+            ...newProduct,
+            VED_VALOR: (
+              newProduct.VED_CANTIDAD *
+              newProduct.VED_PUNITARIO *
+              ((100 - newProduct.VED_DESCUENTO) / 100)
+            ).toFixed(user.EMP_PRECISION),
           };
         }
         return p;
@@ -180,16 +210,14 @@ export default function InvoicesForm({
     let subtotal = 0;
     let subtotalPorcentual = 0;
     let subtotalIVA = 0;
-    let iva = 0;
     let total = 0;
 
     newProducts.forEach((p) => {
       subtotal += p.VED_PUNITARIO * p.VED_CANTIDAD;
 
-      if (p.VED_IMPUESTO) {
+      if (p.VED_IMPUESTO === "2") {
         total += p.VED_PUNITARIO * 1.12 * p.VED_CANTIDAD;
         subtotalIVA += Number(p.VED_PUNITARIO * p.VED_CANTIDAD);
-        iva += p.VED_PUNITARIO * 1.12 * p.VED_CANTIDAD;
       } else {
         total += p.VED_PUNITARIO * p.VED_CANTIDAD;
         subtotalPorcentual += Number(p.VED_PUNITARIO * p.VED_CANTIDAD);
@@ -201,10 +229,9 @@ export default function InvoicesForm({
       VEN_SUBTOTAL: subtotal.toFixed(user.EMP_PRECISION),
       VEN_SUBTOTAL0: subtotalPorcentual.toFixed(user.EMP_PRECISION),
       VEN_SUBTOTAL12: subtotalIVA.toFixed(user.EMP_PRECISION),
-      VEN_SUBTOTALEXCENTIVA: iva.toFixed(user.EMP_PRECISION),
       VEN_TOTAL: total.toFixed(user.EMP_PRECISION),
     });
-  }, [newProducts]);
+  }, [newProducts, user, setInvoice]);
 
   return (
     <div className="dashboard">
@@ -214,7 +241,7 @@ export default function InvoicesForm({
         handleAddClient={handleAddClient}
       />
 
-      <div className="dashboard__invoice">
+      <div className="dashboard__invoice  to-left">
         <div className="invoice__top">
           <AddData
             invoice={invoice}
@@ -232,7 +259,7 @@ export default function InvoicesForm({
             user={user}
             invoice={invoice}
             newProducts={newProducts}
-            setAmount={setAmount}
+            handleChangeProduct={handleChangeProduct}
           />
         </div>
 

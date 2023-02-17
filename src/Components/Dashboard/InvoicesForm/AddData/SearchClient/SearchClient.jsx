@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import "./SearchClient.css";
 
-export default function SearchClient({ handleAddClient }) {
+export default function SearchClient({ handleClient }) {
   const clients = useSelector((state) => state.clients);
   const [rows, setRows] = useState();
 
@@ -33,7 +33,7 @@ export default function SearchClient({ handleAddClient }) {
       </div>
       <div className="client-name">
         {rows?.map((c) => (
-          <div key={c.id} className="search-client-row" onClick={() => handleAddClient(c)}>
+          <div key={c.id} className="search-client-row" onClick={() => handleClient(c)}>
             <span>{`${c.CLI_TIPOIDE}: ${c.CLI_IDENTIFICACION}`}</span>
             <span>{c.CLI_NOMBRE}</span>
           </div>

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import "./SearchProduct.css";
 
-export default function SearchProduct({ handleAddProduct }) {
+export default function SearchProduct({ handleProduct }) {
   const products = useSelector((state) => state.products);
   const [rows, setRows] = useState();
 
@@ -42,7 +42,7 @@ export default function SearchProduct({ handleAddProduct }) {
         </div>
         <div className="list">
           {rows?.map((p) => (
-            <div key={p.ITE_CODIGO} className="search-product-row" onClick={() => handleAddProduct(p)}>
+            <div key={p.ITE_CODIGO} className="search-product-row" onClick={() => handleProduct(p)}>
               <span>{p.ITE_CODIGO}</span>
               <span>{p.ITE_DESCRIPCION}</span>
               <span>{p.ITE_PVP}</span>
