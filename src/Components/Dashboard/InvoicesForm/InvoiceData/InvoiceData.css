@@ -8,8 +8,9 @@
   margin-top: 20px;
 }
 
-.invoice-number span{
+.invoice-number span, input[type="date"], .invoice-clave{
   font-weight: bold;
+  font-size: 20px;
 }
 
 .guia-de-emision input[type="checkbox"]{

@@ -23,7 +23,7 @@
   "VEN_COMISION": 0,
   "VEN_DESCUENTO": 0,
   "VEN_ESTABLECIMIENTO": "001",
-  "VEN_ESTADO": 3,
+  "VEN_ESTADO": 3, /* 1 generada 2 anulada 3 autorizada */
   "VEN_FAUTORIZA": "2022-12-04 at 06:49:14PM",
   "VEN_FECHA": "04-12-2022",
   "VEN_FPAGO": 20,

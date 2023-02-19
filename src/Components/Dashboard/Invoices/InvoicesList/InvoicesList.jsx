@@ -77,8 +77,10 @@ export default function InvoicesList({
       <div className="dashboardList__grid">
         <div className="invoice-card first-row">
           <span>Fecha</span>
+          <span>Ruc</span>
           <span>Nombre\Cliente</span>
           <span>Productos</span>
+          <span>Descueto %</span>
           <span>Subtotal</span>
           <span>Subtotal 0%</span>
           <span>Subtotal IVA</span>

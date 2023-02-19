@@ -1,7 +1,8 @@
 import SearchClient from "./SearchClient/SearchClient";
 import SearchProduct from "./SearchProduct/SearchProduct";
 
-import addSquare from "../../../../assets/svg/add-square.svg";
+import user from "../../../../assets/svg/user-solid.svg";
+import products from "../../../../assets/svg/boxes-stacked-solid.svg";
 
 import "./AddData.css";
 
@@ -14,15 +15,15 @@ export default function AddData({
   handleProduct,
 }) {
   return (
-    <div>
-      <div class="invoice-data__client-data">
+    <div className="invoice-client-product">
+      <div className="invoice-data__client-data">
         {/* Client */}
         <h3>Cliente</h3>
 
         <div className="search-container-btn">
           <SearchClient handleClient={handleClient} />
           <button className="btn btn-primary" onClick={handleFormClient}>
-            <img src={addSquare} alt="add client" />
+            <img src={user} alt="add client" />
             <span>Cliente</span>
           </button>
         </div>
@@ -30,7 +31,7 @@ export default function AddData({
         <div className="grid">
           <div className="form-floating mb-3">
             <input
-              class="form-control"
+              className="form-control"
               type="text"
               value={invoice.CLI_IDENTIFICACION}
               disabled
@@ -48,7 +49,7 @@ export default function AddData({
 
           <div className="form-floating mb-3">
             <input
-              class="form-control"
+              className="form-control"
               type="text"
               value={invoice.CLI_DIRECCION}
               disabled
@@ -58,7 +59,7 @@ export default function AddData({
 
           <div className="form-floating mb-3">
             <input
-              class="form-control"
+              className="form-control"
               type="text"
               value={invoice.CLI_TELEFONO}
               disabled
@@ -68,7 +69,7 @@ export default function AddData({
 
           <div className="form-floating mb-3">
             <input
-              class="form-control"
+              className="form-control"
               type="text"
               value={invoice.CLI_NOMBRE}
               disabled
@@ -81,7 +82,7 @@ export default function AddData({
         <div className="search-container-btn">
           <SearchProduct handleProduct={handleProduct} />
           <button className="btn btn-primary" onClick={handleFormProduct}>
-            <img src={addSquare} alt="add product" />
+            <img src={products} alt="add product" />
             <span>Producto</span>
           </button>
         </div>

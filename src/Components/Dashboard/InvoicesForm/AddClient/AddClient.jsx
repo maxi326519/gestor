@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
-import add from "../../../../assets/svg/add-square.svg";
 import "./AddClient.css";
 
 export default function AddClient({ handleFormClient, handleSelect }) {
@@ -49,7 +48,7 @@ export default function AddClient({ handleFormClient, handleSelect }) {
           {rows?.map((c, i) => (
             <div key={i} className="invoice-product-card">
               <span>{`${c.type}: ${c.dataType}`}</span>
-              <span>{c.name}</span>
+              <span>{c.EMP_NOMBRE}</span>
               <span className="btn btn-primary"onClick={() => handleSelect(c)}>
                 +
               </span>

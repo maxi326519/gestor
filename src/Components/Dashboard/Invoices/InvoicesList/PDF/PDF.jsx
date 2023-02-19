@@ -150,7 +150,7 @@ export default function PDF({ invoice, handleClosePDF }) {
                   <Text>Factura </Text>
                   <Text>Nro: {`${user.EMP_ESTABLECIMIENTO}-${user.EMP_PTOEMISION}-00000000${user.EMP_SECUENCIAL}`}</Text>
                 </View>
-                <Text>Fecha y hora: </Text>
+                <Text style={{ marginBottom: "30px" }}>FECHA Y HORA DE AUTORIZACION: { invoice.VEN_FECHA }</Text>
                 <Text>AMBIENTE: { user.EMP_CODIGO === 1 ? "Pueba" : "Produccion" }</Text>
                 <Text>EMISION: { user.EMP_LICENCIA }</Text>
                 <Text>AUTORIZACION Y CLAVE DE ACCESO: </Text>
@@ -192,18 +192,13 @@ export default function PDF({ invoice, handleClosePDF }) {
                 >
                   Codigo
                 </Text>
-                <Text style={{ ...styles.text, flexGrow: "1" }}>
-                  Descripcion
-                </Text>
                 <Text
                   style={{ ...styles.text, width: "60px", padding: "8px 5px" }}
                 >
                   Cantidad
                 </Text>
-                <Text
-                  style={{ ...styles.text, width: "70px", padding: "8px 5px" }}
-                >
-                  Descuento
+                <Text style={{ ...styles.text, flexGrow: "1" }}>
+                  Descripcion
                 </Text>
                 <Text
                   style={{ ...styles.text, width: "60px", padding: "8px 5px" }}
@@ -211,9 +206,9 @@ export default function PDF({ invoice, handleClosePDF }) {
                   Precio U.
                 </Text>
                 <Text
-                  style={{ ...styles.text, width: "80px", padding: "8px 5px" }}
+                  style={{ ...styles.text, width: "70px", padding: "8px 5px" }}
                 >
-                  Precio U+IVA
+                  Descuento
                 </Text>
                 <Text
                   style={{ ...styles.text, width: "80px", padding: "8px 5px" }}
@@ -226,20 +221,17 @@ export default function PDF({ invoice, handleClosePDF }) {
                   <Text style={{ ...styles.text, width: "60px" }}>
                     {p.ITE_CODIGO}
                   </Text>
+                  <Text style={{ ...styles.text, width: "60px" }}>
+                    {p.VED_CANTIDAD}
+                  </Text>
                   <Text style={{ ...styles.text, flexGrow: "1" }}>
                     {p.ITE_DESCRIPCION}
                   </Text>
                   <Text style={{ ...styles.text, width: "60px" }}>
-                    {p.VED_CANTIDAD}
+                    {p.VED_PUNITARIO}
                   </Text>
                   <Text style={{ ...styles.text, width: "70px" }}>
                     {p.VED_DESCUENTO}
-                  </Text>
-                  <Text style={{ ...styles.text, width: "60px" }}>
-                    {p.VED_PUNITARIO}
-                  </Text>
-                  <Text style={{ ...styles.text, width: "80px" }}>
-                    {p.VED_PUNITARIOIVA}
                   </Text>
                   <Text style={{ ...styles.text, width: "80px" }}>
                     {p.VED_VALOR}
@@ -368,17 +360,17 @@ export default function PDF({ invoice, handleClosePDF }) {
               {/* RIGHT COLUMN */}
               <View style={{ display: "flex", flexDirection: "row" }}>
                 <View style={{ width: "80px" }}>
-                  <Text style={styles.textEnd}>Subtotal:</Text>
-                  <Text style={styles.textEnd}>Subtotal 0%:</Text>
-                  <Text style={styles.textEnd}>Subtotal I.V.A.:</Text>
-                  <Text style={styles.textEnd}>I.V.A. 12%: </Text>
-                  <Text style={styles.textEnd}>Total:</Text>
+                  <Text style={styles.text}>Subtotal:</Text>
+                  <Text style={styles.text}>Subtotal 0%:</Text>
+                  <Text style={styles.text}>Subtotal I.V.A.:</Text>
+                  <Text style={styles.text}>I.V.A. 12%: </Text>
+                  <Text style={styles.text}>Total:</Text>
                 </View>
                 <View style={{ width: "80px" }}>
-                  <Text style={styles.dataEnd}>{invoice.VEN_SUBTOTAL}</Text>
-                  <Text style={styles.dataEnd}>{invoice.VEN_SUBTOTAL0}</Text>
-                  <Text style={styles.dataEnd}>{invoice.VEN_SUBTOTAL12}</Text>
-                  <Text style={styles.dataEnd}>
+                  <Text style={styles.text}>{invoice.VEN_SUBTOTAL}</Text>
+                  <Text style={styles.text}>{invoice.VEN_SUBTOTAL0}</Text>
+                  <Text style={styles.text}>{invoice.VEN_SUBTOTAL12}</Text>
+                  <Text style={styles.text}>
                     {(invoice.VEN_SUBTOTAL12 * 0.12).toFixed(
                       user.EMP_PRECISION
                     )}

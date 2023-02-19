@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+
 import clave2 from "../../../../Validations/Clave.ts";
 
 import "./InvoiceData.css";
@@ -23,12 +24,38 @@ export default function InvoiceData({ invoice, handleChange }) {
   const user = useSelector((state) => state.user.userDB);
   const [guia, setGuia] = useState(false);
   const [dateFormat, setFormat] = useState("");
+  const [clave, setClave] = useState(0);
 
   useEffect(() => {
-    const dateSplit = invoice.VEN_FECHA.split("/");
-    const date = `${dateSplit[2]}-${(0 + dateSplit[1]).slice(-3)}-${dateSplit[0]}`;
+    const dateSplit = invoice.VEN_FECHA.split("-");
+    let date;
+
+    if (dateSplit[0].length === 2) {
+      date = `${dateSplit[2]}-${(0 + dateSplit[1]).slice(-2)}-${dateSplit[0]}`;
+    } else {
+      date = invoice.VEN_FECHA;
+    }
     setFormat(date);
-  }, [invoice])
+  }, [invoice]);
+
+  useEffect(() => {
+    console.log(
+      user.EMP_RUC,
+      invoice.VEN_FECHA.split("/").join(""),
+      invoice.VEN_NUMERO,
+      invoice.VEN_ESTABLECIMIENTO,
+      invoice.VEN_PTOEMISION
+    );
+    setClave(
+      clave2(
+        user.EMP_RUC,
+        invoice.VEN_FECHA.split("/").join(""),
+        invoice.VEN_NUMERO,
+        invoice.VEN_ESTABLECIMIENTO,
+        invoice.VEN_PTOEMISION
+      )
+    );
+  }, [invoice, user]);
 
   function handleActive(e) {
     setGuia(e.target.checked);
@@ -38,7 +65,7 @@ export default function InvoiceData({ invoice, handleChange }) {
   return (
     <div className="buscadores">
       <h2>Factura</h2>
-      <span>{clave2("1003223185001", "16-2-2023", "1", "001", "001")}</span>
+      <span className="invoice-clave">{clave}</span>
       <div className="invoice-data">
         {/* DATE */}
         <div className="form-floating mb-3">
@@ -47,7 +74,7 @@ export default function InvoiceData({ invoice, handleChange }) {
             className="form-control"
             name="VEN_FECHA"
             value={dateFormat}
-            onChange={e => console.log(e)}
+            onChange={handleChange}
             required
           />
           <label htmlFor="floatingInput">Fecha de emisión</label>
@@ -56,9 +83,11 @@ export default function InvoiceData({ invoice, handleChange }) {
         {/* NUMERO DE LA FACTURA*/}
         <div className="invoice-number">
           <label htmlFor="floatingInput">Numero de Factura</label>
-          {user ? <span>{`${user.EMP_ESTABLECIMIENTO} - ${
-            user.EMP_PTOEMISION
-          } - ${addZero(user.EMP_NUMERO)}`}</span> : null}
+          {user ? (
+            <span>{`${user.EMP_ESTABLECIMIENTO} - ${
+              user.EMP_PTOEMISION
+            } - ${addZero(user.EMP_NUMERO)}`}</span>
+          ) : null}
         </div>
       </div>
 
@@ -73,34 +102,32 @@ export default function InvoiceData({ invoice, handleChange }) {
             />
             Guia de remision
           </label>
-          {guia ? (
-            <div className="formas-de-pago">
-              <input
-                className="form-control"
-                type="text"
-                name="EMP_ESTABLECIMIENTO"
-                value={invoice.VEN_ESTABLECIMIENTO}
-                onChange={handleChange}
-                required
-              />
-              <input
-                className="form-control"
-                type="text"
-                name="EMP_PTOEMISION"
-                value={invoice.VEN_PTOEMISION}
-                onChange={handleChange}
-                required
-              />
-              <input
-                className="form-control"
-                type="text"
-                name="EMP_NUMERO"
-                value={invoice.VEN_NUMERO}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          ) : null}
+          <div className="formas-de-pago">
+            <input
+              className="form-control"
+              type="text"
+              name="EMP_ESTABLECIMIENTO"
+              value={invoice.VEN_ESTABLECIMIENTO}
+              onChange={handleChange}
+              required
+            />
+            <input
+              className="form-control"
+              type="text"
+              name="EMP_PTOEMISION"
+              value={invoice.VEN_PTOEMISION}
+              onChange={handleChange}
+              required
+            />
+            <input
+              className="form-control"
+              type="text"
+              name="EMP_NUMERO"
+              value={invoice.VEN_NUMERO}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
 
         {/* FORMAS DE PAGO */}

@@ -81,23 +81,23 @@ export default function InvoiceTable({
         <div>
           <div className="invoice-totals">
             <span>Subtotal</span>
-            <span className="totals">{invoice.VEN_SUBTOTAL}</span>
+            <span className="totals">{invoice.VEN_SUBTOTAL.toFixed(2)}</span>
           </div>
           <div className="invoice-totals">
             <span>Subtotal 0%</span>
-            <span className="totals">{invoice.VEN_SUBTOTAL0}</span>
+            <span className="totals">{invoice.VEN_SUBTOTAL0.toFixed(2)}</span>
           </div>
           <div className="invoice-totals">
             <span>Subtotal IVA</span>
-            <span className="totals">{invoice.VEN_SUBTOTAL12}</span>
+            <span className="totals">{invoice.VEN_SUBTOTAL12.toFixed(2)}</span>
           </div>
           <div className="invoice-totals">
             <span>I.V.A. 12%</span>
-            <span className="totals">{(invoice.VEN_SUBTOTAL12 * 0.12).toFixed(user.EMP_PRECISION)}</span>
+            <span className="totals">{(invoice.VEN_SUBTOTAL12 * 0.12).toFixed(2)}</span>
           </div>
           <div className="invoice-totals">
             <span>Total</span>
-            <span className="totals">{invoice.VEN_TOTAL}</span>
+            <span className="totals">{invoice.VEN_TOTAL.toFixed(2)}</span>
           </div>
         </div>
       </div>

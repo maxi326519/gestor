@@ -63,30 +63,32 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
           ></button>
         </div>
 
-        {/* DESCRIPCION */}
-        <div className="form-floating mb-3">
-          <textarea
-            className="form-control"
-            id="floatingInput"
-            name="ITE_DESCRIPCION"
-            value={product.ITE_DESCRIPCION}
-            onChange={handleChange}
-            required
-          />
-          <label htmFor="floatingInput">Descripcion</label>
-        </div>
-
         {/* Code */}
         <div className="form-floating mb-3">
           <input
             className="form-control"
             id="floatingInput"
             name="ITE_CODIGO"
+            placeholder="C001"
             value={product.ITE_CODIGO}
             onChange={handleChange}
             required
           />
           <label htmFor="floatingInput">Codigo</label>
+        </div>
+
+        {/* DESCRIPCION */}
+        <div className="form-floating mb-3">
+          <textarea
+            className="form-control"
+            id="floatingInput"
+            name="ITE_DESCRIPCION"
+            placeholder="Mesa"
+            value={product.ITE_DESCRIPCION}
+            onChange={handleChange}
+            required
+          />
+          <label htmFor="floatingInput">Descripcion</label>
         </div>
 
         {/* Type */}
@@ -109,6 +111,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
         <div className="form-floating mb-3">
           <input
             className="form-control"
+            type="number"
             id="floatingInput"
             name="ITE_PVP"
             value={product.ITE_PVP}

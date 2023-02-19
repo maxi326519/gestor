@@ -1,0 +1,8 @@
+.invoice-client-product{
+  flex-grow: 1;
+}
+
+.invoice-client-product .btn{
+  display: flex;
+  align-items: center;
+}

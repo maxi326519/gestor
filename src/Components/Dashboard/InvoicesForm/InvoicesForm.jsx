@@ -21,7 +21,7 @@ const initialInvoice = {
   CLI_CODIGO: 0,
   CLI_DIRECCION: "S/N",
   CLI_EMAIL: "-",
-  CLI_IDENTIFICACION: "-",
+  CLI_IDENTIFICACION: "9999999999999",
   CLI_NOMBRE: "CONSUMIDOR FINAL",
   CLI_TELEFONO: "-",
   CLI_TIPOIDE: "-",
@@ -41,17 +41,17 @@ const initialInvoice = {
   VEN_CODIGO: 0,
   VEN_COMISION: 0,
   VEN_DESCUENTO: 0,
-  VEN_ESTABLECIMIENTO: "",
+  VEN_ESTABLECIMIENTO: "001",
   VEN_ESTADO: 3,
   VEN_FAUTORIZA: new Date(),
-  VEN_FECHA: new Date().toLocaleDateString(),
+  VEN_FECHA: new Date().toLocaleDateString().split("/").join("-"),
   VEN_FPAGO: "01",
   VEN_GUIA: "-",
   VEN_ICE: 0,
   VEN_IMPRESO: 0,
   VEN_IVA: 0,
   VEN_NUMERO: "",
-  VEN_PTOEMISION: "",
+  VEN_PTOEMISION: "001",
   VEN_RETENCION: 0,
   VEN_SRI: 0,
   VEN_SUBTOTAL: 0,
@@ -110,6 +110,8 @@ export default function InvoicesForm({
           })
         ).then(() => {
           dispatch(closeLoading());
+          setInvoice(initialInvoice);
+          setNewProduct([])
           toast("¡Factura agregada exitosamente!");
         });
       })
@@ -231,7 +233,11 @@ export default function InvoicesForm({
       VEN_SUBTOTAL12: subtotalIVA.toFixed(user.EMP_PRECISION),
       VEN_TOTAL: total.toFixed(user.EMP_PRECISION),
     });
-  }, [newProducts, user, setInvoice]);
+  }, [newProducts]);
+
+  function handleTotal(){
+
+  }
 
   return (
     <div className="dashboard">

@@ -1,16 +1,16 @@
 [
   {
-    "ITE_BARRAS": "CLI20",
+    "ITE_BARRAS": "CLI20", /* codigo de producto */
     "ITE_CODIGO": 18531,
     "ITE_DESCRIPCION": "CCLEANER LiCENCIA",
     "VED_CANTIDAD": 1,
     "VED_DESCUENTO": "0", 
     "VED_IMPUESTO": 0,
-    "VED_PORCENTAJE": "0",
+    "VED_PORCENTAJE": "0", /* porcentaje si paga iva 12% */
     "VED_PUNITARIO": 15,
     "VED_PUNITARIOIVA": "15.00",
     "VED_UKEY": "clave_Authentification",
     "VED_VALOR": "15.00",
-    "VEN_CODIGO": 147
+    "VEN_CODIGO": 147  /* id factura */
   }
 ]
