@@ -6,3 +6,7 @@
   display: flex;
   align-items: center;
 }
+
+.invoice-client-product div span {
+  padding-left: 10px;
+}

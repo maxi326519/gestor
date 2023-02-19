@@ -111,7 +111,7 @@ export default function InvoicesForm({
         ).then(() => {
           dispatch(closeLoading());
           setInvoice(initialInvoice);
-          setNewProduct([])
+          setNewProduct([]);
           toast("¡Factura agregada exitosamente!");
         });
       })
@@ -235,9 +235,7 @@ export default function InvoicesForm({
     });
   }, [newProducts]);
 
-  function handleTotal(){
-
-  }
+  function handleTotal() {}
 
   return (
     <div className="dashboard">
@@ -266,12 +264,19 @@ export default function InvoicesForm({
             invoice={invoice}
             newProducts={newProducts}
             handleChangeProduct={handleChangeProduct}
+            handleChange={handleChange}
           />
         </div>
 
-        <button className="btn btn-primary" onClick={handleSubmit}>
-          Agregar factura
-        </button>
+        <div className="buttons">
+          <button className="btn btn-primary" onClick={handleSubmit}>
+            Agregar factura
+          </button>
+
+          <button className="btn btn-primary" onClick={handleSubmit}>
+            Vaciar factura
+          </button>
+        </div>
 
         {/* VENTANA PARA AGREGAR PRODUCTOS */}
         {formProduct ? (

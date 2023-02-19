@@ -16,6 +16,10 @@
   display: flex;
 }
 
+.dashboard__invoice .buttons button:first-child{
+  margin-right: 20px;
+}
+
 /* adasda */
 .invoice-data__client-data{
   margin-right: 40px;
@@ -82,11 +86,6 @@
 .formas-de-pago .form-floating input{
   margin-bottom: 0px;
   width: 100%;
-}
-
-.invoice-data__client-data div span {
-  padding: 0 10px;
-  outline: 1px solid #ccc;
 }
 
 .invoice-data__client button {
