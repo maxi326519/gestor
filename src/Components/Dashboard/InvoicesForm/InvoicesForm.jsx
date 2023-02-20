@@ -80,16 +80,46 @@ export default function InvoicesForm({
   const [newProducts, setNewProduct] = useState([]);
   const [invoice, setInvoice] = useState(initialInvoice);
 
+  /* Valores del usuario */
   useEffect(() => {
     setInvoice({
       ...invoice,
       VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
       VEN_PTOEMISION: user.EMP_PTOEMISION,
-      VEN_NUMERO: user.EMP_NUMERO,
+      VEN_NUMERO: Number(user.EMP_NUMERO),
     });
   }, [user, setInvoice]);
 
+  /* Calcular totales por cada cambio */
+  useEffect(() => {
+    let subtotal = 0;
+    let subtotalPorcentual = 0;
+    let subtotalIVA = 0;
+    let total = 0;
+
+    newProducts.forEach((p) => {
+      subtotal += p.VED_PUNITARIO * p.VED_CANTIDAD;
+
+      if (p.VED_IMPUESTO === "2") {
+        total += p.VED_PUNITARIO * 1.12 * p.VED_CANTIDAD;
+        subtotalIVA += Number(p.VED_PUNITARIO * p.VED_CANTIDAD);
+      } else {
+        total += p.VED_PUNITARIO * p.VED_CANTIDAD;
+        subtotalPorcentual += Number(p.VED_PUNITARIO * p.VED_CANTIDAD);
+      }
+    });
+
+    setInvoice({
+      ...invoice,
+      VEN_SUBTOTAL: subtotal.toFixed(user.EMP_PRECISION),
+      VEN_SUBTOTAL0: subtotalPorcentual.toFixed(user.EMP_PRECISION),
+      VEN_SUBTOTAL12: subtotalIVA.toFixed(user.EMP_PRECISION),
+      VEN_TOTAL: total.toFixed(user.EMP_PRECISION),
+    });
+  }, [newProducts]);
+
   function handleChange(e) {
+    console.log(invoice);
     setInvoice({ ...invoice, [e.target.name]: e.target.value });
   }
 
@@ -112,14 +142,23 @@ export default function InvoicesForm({
           dispatch(closeLoading());
           setInvoice(initialInvoice);
           setNewProduct([]);
-          toast("¡Factura agregada exitosamente!");
+          toast.success("¡Factura agregada exitosamente!",{
+            position: toast.POSITION.TOP_CENTER
+          });
         });
       })
       .catch((e) => {
         dispatch(closeLoading());
-        toast("Error al agregar la factura");
+        toast("Error al agregar la factura",{
+          position: toast.POSITION.TOP_CENTER
+        });
         console.log(e);
       });
+  }
+  
+  function handleClear(){
+    setInvoice(initialInvoice);
+    setNewProduct([]);
   }
 
   function handleFormProduct() {
@@ -208,33 +247,6 @@ export default function InvoicesForm({
     );
   }
 
-  useEffect(() => {
-    let subtotal = 0;
-    let subtotalPorcentual = 0;
-    let subtotalIVA = 0;
-    let total = 0;
-
-    newProducts.forEach((p) => {
-      subtotal += p.VED_PUNITARIO * p.VED_CANTIDAD;
-
-      if (p.VED_IMPUESTO === "2") {
-        total += p.VED_PUNITARIO * 1.12 * p.VED_CANTIDAD;
-        subtotalIVA += Number(p.VED_PUNITARIO * p.VED_CANTIDAD);
-      } else {
-        total += p.VED_PUNITARIO * p.VED_CANTIDAD;
-        subtotalPorcentual += Number(p.VED_PUNITARIO * p.VED_CANTIDAD);
-      }
-    });
-
-    setInvoice({
-      ...invoice,
-      VEN_SUBTOTAL: subtotal.toFixed(user.EMP_PRECISION),
-      VEN_SUBTOTAL0: subtotalPorcentual.toFixed(user.EMP_PRECISION),
-      VEN_SUBTOTAL12: subtotalIVA.toFixed(user.EMP_PRECISION),
-      VEN_TOTAL: total.toFixed(user.EMP_PRECISION),
-    });
-  }, [newProducts]);
-
   function handleTotal() {}
 
   return (
@@ -273,7 +285,7 @@ export default function InvoicesForm({
             Agregar factura
           </button>
 
-          <button className="btn btn-primary" onClick={handleSubmit}>
+          <button className="btn btn-primary" onClick={handleClear}>
             Vaciar factura
           </button>
         </div>

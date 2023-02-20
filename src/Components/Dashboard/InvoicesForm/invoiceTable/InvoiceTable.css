@@ -1,0 +1,38 @@
+.invoice-products {
+  display: flex;
+  flex-direction: column;
+}
+
+.invoice-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 110px repeat(4, 150px);
+}
+
+.invoice-first-row {
+  background-color: #0002;
+}
+
+.invoice-row span {
+  padding: 10px 20px;
+  outline: 1px solid #ccc;
+}
+
+.invoice-totals {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.invoice-totals span {
+  padding: 10px 20px;
+  width: 150px;
+}
+
+.data-aditional h5{
+  padding-top: 30px;
+  padding-bottom: 10px;
+}
+
+.aditional-input-container input{
+  max-width: 300px !important;
+  margin-bottom: 10px;
+}

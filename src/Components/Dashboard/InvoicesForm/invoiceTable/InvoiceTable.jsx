@@ -53,29 +53,29 @@ export default function InvoiceTable({
             className="amount"
             type="number"
             name="VED_PUNITARIO"
-            value={p.VED_PUNITARIO}
+            value={Number(p.VED_PUNITARIO).toFixed(user.EMP_PRECISION)}
             onChange={(e) => handleChangeProduct(e, p.ITE_CODIGO)}
           />
-          <span>{p.VED_PUNITARIOIVA}</span>
-          <span>{p.VED_VALOR}</span>
+          <span>{Number(p.VED_PUNITARIOIVA).toFixed(user.EMP_PRECISION)}</span>
+          <span>{Number(p.VED_VALOR).toFixed(2)}</span>
         </div>
       ))}
       <div className="adicional">
         <div className="data-aditional">
           <h5>Informacion Adicional:</h5>
           <div className="aditional-input-container">
-            <input className="form-control" name="VEN_CAMPO1" placeholder="Nombre" onChange={handleChange}/>
-            <input className="form-control" name="VEN_VALOR1" placeholder="Valor" onChange={handleChange}/>
+            <input className="form-control" name="VEN_CAMPO1" value={invoice.VEN_CAMPO1} placeholder="Nombre" onChange={handleChange}/>
+            <input className="form-control" name="VEN_VALOR1" value={invoice.VEN_VALOR1} placeholder="Valor" onChange={handleChange}/>
           </div>
 
           <div className="aditional-input-container">
-            <input className="form-control" name="VEN_CAMPO2" placeholder="Nombre" onChange={handleChange}/>
-            <input className="form-control" name="VEN_VALOR2" placeholder="Valor" onChange={handleChange}/>
+            <input className="form-control" name="VEN_CAMPO2" value={invoice.VEN_CAMPO2} placeholder="Nombre" onChange={handleChange}/>
+            <input className="form-control" name="VEN_VALOR2" value={invoice.VEN_VALOR2} placeholder="Valor" onChange={handleChange}/>
           </div>
 
           <div className="aditional-input-container">
-            <input className="form-control" name="VEN_CAMPO2" placeholder="Nombre" onChange={handleChange}/>
-            <input className="form-control" name="VEN_VALOR3" placeholder="Valor" onChange={handleChange}/>
+            <input className="form-control" name="VEN_CAMPO3" value={invoice.VEN_CAMPO3} placeholder="Nombre" onChange={handleChange}/>
+            <input className="form-control" name="VEN_VALOR3" value={invoice.VEN_VALOR3} placeholder="Valor" onChange={handleChange}/>
           </div>
         </div>
         <div>

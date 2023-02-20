@@ -96,46 +96,6 @@
 .flex-2{
   display: flex;
 }
-/* Product list */
-.product-details .table{
-  display: flex;
-  flex-direction: column;
-}
-
-.product-details .item{
-  display: grid;
-  grid-template-columns: 120px 1fr 120px;
-}
-/* Product list */
-
-.invoice-products {
-  display: flex;
-  flex-direction: column;
-}
-
-.invoice-row {
-  display: grid;
-  grid-template-columns: 100px 1fr 1fr repeat(5, 150px) 100px;
-}
-
-.invoice-first-row {
-  background-color: #0002;
-}
-
-.invoice-row span {
-  padding: 10px 20px;
-  outline: 1px solid #ccc;
-}
-
-.invoice-totals {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.invoice-totals span {
-  padding: 10px 20px;
-  width: 150px;
-}
 
 .form-invoice button[type="submit"] {
   margin-top: 30px;

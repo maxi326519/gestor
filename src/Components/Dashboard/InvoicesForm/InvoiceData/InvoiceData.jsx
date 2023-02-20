@@ -134,7 +134,7 @@ export default function InvoiceData({ invoice, handleChange }) {
         <div className="form-floating mb-3">
           <select
             className="form-select"
-            name="type"
+            name="VEN_FPAGO"
             onChange={handleChange}
             required
           >
