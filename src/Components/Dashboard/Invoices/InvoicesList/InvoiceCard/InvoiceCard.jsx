@@ -8,6 +8,7 @@ import {
 
 import removeIcon from "../../../../../assets/svg/remove.svg";
 import "./InvoiceCard.css";
+import { toast } from "react-toastify";
 
 export default function InvoiceCard({ invoice, viewPDF }) {
   const dispatch = useDispatch();
@@ -17,9 +18,15 @@ export default function InvoiceCard({ invoice, viewPDF }) {
     dispatch(deleteInvoice(invoice.id))
       .then(() => {
         dispatch(closeLoading());
+        toast.success("¡Factura eliminada exitosamente!",{
+          position: toast.POSITION.TOP_CENTER
+        });
       })
       .catch((e) => {
         dispatch(closeLoading());
+        toast.error("Error al eliminar la factura",{
+          position: toast.POSITION.TOP_CENTER
+        });
         console.log(e);
       });
   }

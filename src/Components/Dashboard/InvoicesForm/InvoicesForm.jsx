@@ -149,7 +149,7 @@ export default function InvoicesForm({
       })
       .catch((e) => {
         dispatch(closeLoading());
-        toast("Error al agregar la factura",{
+        toast.error("Error al agregar la factura",{
           position: toast.POSITION.TOP_CENTER
         });
         console.log(e);
