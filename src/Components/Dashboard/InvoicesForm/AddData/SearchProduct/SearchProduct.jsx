@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import "./SearchProduct.css";
 
-export default function SearchProduct({ handleProduct }) {
+export default function SearchProduct({ handleProduct, handleFormProduct }) {
   const products = useSelector((state) => state.products);
-  const [rows, setRows] = useState();
+  const [rows, setRows] = useState([]);
 
   useEffect(() => {
     setRows(products);
@@ -41,14 +41,27 @@ export default function SearchProduct({ handleProduct }) {
           <span>Impuesto</span>
         </div>
         <div className="list">
-          {rows?.map((p) => (
-            <div key={p.ITE_CODIGO} className="search-product-row" onClick={() => handleProduct(p)}>
-              <span>{p.ITE_CODIGO}</span>
-              <span>{p.ITE_DESCRIPCION}</span>
-              <span>{p.ITE_PVP}</span>
-              <span>{p.ITE_IMPUESTO ? "Si" : "No"}</span>
+          {rows.length > 0 ? (
+            rows?.map((p) => (
+              <div
+                key={p.ITE_CODIGO}
+                className="search-product-row"
+                onClick={() => handleProduct(p)}
+              >
+                <span>{p.ITE_CODIGO}</span>
+                <span>{p.ITE_DESCRIPCION}</span>
+                <span>{p.ITE_PVP}</span>
+                <span>{p.ITE_IMPUESTO ? "Si" : "No"}</span>
+              </div>
+            ))
+          ) : (
+            <div>
+              <span>¿No encuentra el producto?</span>
+              <button className="btn btn-primary" onClick={handleFormProduct}>
+                Agregar Producto
+              </button>
             </div>
-          ))}
+          )}
         </div>
       </div>
     </div>

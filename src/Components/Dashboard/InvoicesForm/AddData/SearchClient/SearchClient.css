@@ -1,17 +1,13 @@
-.search-container {
-  width: 500px;
-}
-
 .search-container:hover .client-name {
   display: flex;
 }
 
 .client-name {
   position: absolute;
-  z-index: 1000;
+  z-index: 500;
   display: none;
   flex-direction: column;
-  width: 500px;
+  width: 600px;
   height: 200px;
   overflow-y: scroll;
   border: 1px solid grey;
@@ -21,9 +17,21 @@
   background-color: white;
 }
 
+.client-name .head {
+  padding-right: 15px;
+  background-color: #3332;
+}
+
+.client-name .list {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: scroll;
+}
+
 .search-client-row{
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 100px 150px 1fr 1fr;
 }
 
 .search-client-row:hover {

@@ -4,6 +4,7 @@ import {
   deleteInvoice,
   openLoading,
   closeLoading,
+  Alert,
 } from "../../../../../redux/actions";
 
 import removeIcon from "../../../../../assets/svg/remove.svg";
@@ -18,15 +19,11 @@ export default function InvoiceCard({ invoice, viewPDF }) {
     dispatch(deleteInvoice(invoice.id))
       .then(() => {
         dispatch(closeLoading());
-        toast.success("¡Factura eliminada exitosamente!",{
-          position: toast.POSITION.TOP_CENTER
-        });
+        toast.success("¡Factura eliminada exitosamente!");
       })
       .catch((e) => {
         dispatch(closeLoading());
-        toast.error("Error al eliminar la factura",{
-          position: toast.POSITION.TOP_CENTER
-        });
+        toast.error("Error al eliminar la factura");
         console.log(e);
       });
   }
@@ -34,21 +31,26 @@ export default function InvoiceCard({ invoice, viewPDF }) {
   return (
     <div className="invoice-card">
       <span>{invoice.VEN_FECHA}</span>
-      <span>
-        {invoice.CLI_NOMBRE} <button className="btn btn-primary">Ver</button>
-      </span>
-      <span>
-        {invoice.VEN_SUBTOTAL} <button className="btn btn-primary">Ver</button>
-      </span>
+      <span>{invoice.CLI_IDENTIFICACION}</span>
+      <span>{invoice.CLI_NOMBRE}</span>
+      <span>{invoice.CLI_NOMBRE}</span>
+      <span>{invoice.VEN_DESCUENTO}</span>
       <span>{invoice.VEN_SUBTOTAL}</span>
       <span>{invoice.VEN_SUBTOTAL0}</span>
       <span>{invoice.VEN_SUBTOTAL12}</span>
       <span>{invoice.VEN_SUBTOTAL0 * 0.12}</span>
       <span>{invoice.VEN_TOTAL}</span>
       <button className="btn btn-primary" onClick={viewPDF}>
-        Ver en PDF
+        PDF
       </button>
-      <button className="btn btn-danger" onClick={handleRemove}>
+      <button
+        className="btn btn-danger"
+        onClick={() =>
+          dispatch(
+            Alert(`¿Seguro que quiere eliminar la factura?`, handleRemove)
+          )
+        }
+      >
         <img src={removeIcon} alt="remove" />
       </button>
     </div>

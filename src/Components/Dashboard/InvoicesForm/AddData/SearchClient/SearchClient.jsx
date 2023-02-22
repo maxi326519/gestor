@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import "./SearchClient.css";
 
-export default function SearchClient({ handleClient }) {
+export default function SearchClient({ handleClient, handleFormClient }) {
   const clients = useSelector((state) => state.clients);
-  const [rows, setRows] = useState();
+  const [rows, setRows] = useState([]);
 
   useEffect(() => {
     setRows(clients);
@@ -32,12 +32,30 @@ export default function SearchClient({ handleClient }) {
         <label htmlFor="floatingInput">Buscar cliente</label>
       </div>
       <div className="client-name">
-        {rows?.map((c) => (
-          <div key={c.id} className="search-client-row" onClick={() => handleClient(c)}>
-            <span>{`${c.CLI_TIPOIDE}: ${c.CLI_IDENTIFICACION}`}</span>
-            <span>{c.CLI_NOMBRE}</span>
-          </div>
-        ))}
+        <div className="head search-client-row">
+              <span>Id</span>
+              <span>Nombre</span>
+              <span>Email</span>
+              <span>Direccion</span>
+        </div>
+        <div className="list">
+          {rows.length > 0 ? rows?.map((c) => (
+            <div
+              key={c.id}
+              className="search-client-row"
+              onClick={() => handleClient(c)}
+            >
+              <span>{`${c.CLI_TIPOIDE}: ${c.CLI_IDENTIFICACION}`}</span>
+              <span>{c.CLI_NOMBRE}</span>
+              <span>{c.CLI_EMAIL}</span>
+              <span>{c.CLI_DIRECCION}</span>
+            </div>
+          )):
+          <div>
+              <span>¿No encuentra al cliente?</span>
+            <button className="btn btn-primary"onClick={handleFormClient}>Agregar cliente</button>
+          </div>}
+        </div>
       </div>
     </div>
   );

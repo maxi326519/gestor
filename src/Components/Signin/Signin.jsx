@@ -121,7 +121,7 @@ export default function Signin() {
       })
       .catch((e) => {
         dispatch(closeLoading());
-        toast(e);
+        toast.error(e);
         console.log(e);
       });
   }

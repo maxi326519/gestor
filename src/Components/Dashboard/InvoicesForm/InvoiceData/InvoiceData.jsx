@@ -39,16 +39,9 @@ export default function InvoiceData({ invoice, handleChange }) {
   }, [invoice]);
 
   useEffect(() => {
-    console.log(
-      user.EMP_RUC,
-      invoice.VEN_FECHA.split("/").join(""),
-      invoice.VEN_NUMERO,
-      invoice.VEN_ESTABLECIMIENTO,
-      invoice.VEN_PTOEMISION
-    );
     setClave(
       clave2(
-        user.EMP_RUC,
+        user ? user.EMP_RUC : null,
         invoice.VEN_FECHA.split("/").join(""),
         invoice.VEN_NUMERO,
         invoice.VEN_ESTABLECIMIENTO,
@@ -59,7 +52,6 @@ export default function InvoiceData({ invoice, handleChange }) {
 
   function handleActive(e) {
     setGuia(e.target.checked);
-    handleChange();
   }
 
   return (
@@ -95,39 +87,21 @@ export default function InvoiceData({ invoice, handleChange }) {
       <div>
         <div className="guia-de-emision">
           <label>
-            <input
-              type="checkbox"
-              checked={invoice.VEN_GUIA}
-              onChange={handleActive}
-            />
+            <input type="checkbox" checked={guia} onChange={handleActive} />
             Guia de remision
           </label>
-          <div className="formas-de-pago">
-            <input
-              className="form-control"
-              type="text"
-              name="EMP_ESTABLECIMIENTO"
-              value={invoice.VEN_ESTABLECIMIENTO}
-              onChange={handleChange}
-              required
-            />
-            <input
-              className="form-control"
-              type="text"
-              name="EMP_PTOEMISION"
-              value={invoice.VEN_PTOEMISION}
-              onChange={handleChange}
-              required
-            />
-            <input
-              className="form-control"
-              type="text"
-              name="EMP_NUMERO"
-              value={invoice.VEN_NUMERO}
-              onChange={handleChange}
-              required
-            />
-          </div>
+          {guia ? (
+            <div className="guia">
+              <input
+                className="form-control"
+                type="text"
+                name="VEN_GUIA"
+                value={invoice.VEN_GUIA}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          ) : null}
         </div>
 
         {/* FORMAS DE PAGO */}
@@ -135,6 +109,7 @@ export default function InvoiceData({ invoice, handleChange }) {
           <select
             className="form-select"
             name="VEN_FPAGO"
+            value={invoice.VEN_FPAGO}
             onChange={handleChange}
             required
           >

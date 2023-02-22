@@ -15,7 +15,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
     ITE_CODIGO: "",
     ITE_DESCRIPCION: "",
     ITE_TIPO: 0,
-    ITE_IMPUESTO: 0,
+    ITE_IMPUESTO: "0",
     ITE_PVP: "",
   };
   const [product, setProduct] = useState(initialState);
@@ -33,11 +33,11 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
       .then((d) => {
         dispatch(closeLoading());
         handleClose();
-        toast.success("¡Producto agregado exitosamente!");
+        toast.success("¡Producto agregado exitosamente!",{position: toast.POSITION.TOP_CENTER});
       })
       .catch((e) => {
         dispatch(closeLoading());
-        toast.error("Error al agregar el producto");
+        toast.error("Error al agregar el producto",{position: toast.POSITION.TOP_CENTER});
         console.log(e);
       });
   }

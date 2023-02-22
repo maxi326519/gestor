@@ -18,7 +18,8 @@ export default function AddClient({ handleFormClient, handleSelect }) {
       clients.filter((row) => {
         if (value === "") return true;
         if (row.name.toLowerCase().includes(value.toLowerCase())) return true;
-        if (row.dataType.toLowerCase().includes(value.toLowerCase())) return true;
+        if (row.dataType.toLowerCase().includes(value.toLowerCase()))
+          return true;
         return false;
       })
     );
@@ -37,19 +38,29 @@ export default function AddClient({ handleFormClient, handleSelect }) {
           ></button>
         </div>
         <div className="Search-product">
-          <input className="form-control" placeholder="Buscar un cliente..." onChange={handleChange}/>
+          <input
+            className="form-control"
+            placeholder="Buscar un cliente..."
+            onChange={handleChange}
+          />
         </div>
         <div className="product-list">
           <div className="invoice-product-card">
-            <span>Ruc/Cedula/Pasaporte</span>
+            <span>Identificacion</span>
             <span>Nombre</span>
+            <span>Email</span>
+            <span>Direccion</span>
+            <span>Telefono</span>
             <span>Agregar</span>
           </div>
           {rows?.map((c, i) => (
             <div key={i} className="invoice-product-card">
-              <span>{`${c.type}: ${c.dataType}`}</span>
-              <span>{c.EMP_NOMBRE}</span>
-              <span className="btn btn-primary"onClick={() => handleSelect(c)}>
+              <span>{`${c.CLI_TIPOIDE}: ${c.CLI_IDENTIFICACION}`}</span>
+              <span>{c.CLI_NOMBRE}</span>
+              <span>{c.CLI_EMAIL}</span>
+              <span>{c.CLI_DIRECCION}</span>
+              <span>{c.CLI_TELEFONO}</span>
+              <span className="btn btn-primary" onClick={() => handleSelect(c)}>
                 +
               </span>
             </div>

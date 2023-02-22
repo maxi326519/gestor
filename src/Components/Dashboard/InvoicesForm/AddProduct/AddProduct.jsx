@@ -8,6 +8,7 @@ export default function AddProduct({
   handleFormProduct,
   handleAdd,
   handleRemove,
+  newProducts
 }) {
   const products = useSelector((state) => state.products);
   const [productInvoice, setProduct] = useState([]);
@@ -60,13 +61,19 @@ export default function AddProduct({
         <div className="product-list">
           <div className="invoice-product-card">
             <span>Codigo</span>
-            <span>Nombre</span>
+            <span>Descripcion</span>
+            <span>Tipo</span>
+            <span>Precio</span>
+            <span>Impuesto</span>
             <span>Agregar</span>
           </div>
           {rows?.map((p, i) => (
             <div key={i} className="invoice-product-card">
-              <span>{p.code}</span>
-              <span>{p.name}</span>
+              <span>{p.ITE_CODIGO}</span>
+              <span>{p.ITE_DESCRIPCION}</span>
+              <span>{p.ITE_TIPO === 0 ? "Producto" : "Servicio"}</span>
+              <span>{p.ITE_PVP}</span>
+              <span>{p.ITE_IMPUESTO === "0" ? "NO" : "SI"}</span>
               {isAdded[i] && isAdded[i].added ? (
                 <span
                   key={i}

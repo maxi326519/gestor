@@ -60,10 +60,7 @@ export const Reducer = (state = initialState, action) => {
       };
 
     case SIGN_OUT:
-      return {
-        ...state,
-        user: {},
-      };
+      return initialState;
 
     case CONFIRM_REGISTER:
       return {

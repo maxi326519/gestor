@@ -17,7 +17,7 @@ const initialState = {
   CLI_IDENTIFICACION: "",
   CLI_NOMBRE: "",
   CLI_TELEFONO: "",
-  CLI_TIPOIDE: "0",
+  CLI_TIPOIDE: "04",
 };
 
 const type = [
@@ -30,23 +30,26 @@ export default function ClientForm({ addClient, handleAddClient }) {
   const dispatch = useDispatch();
   const [client, setclient] = useState(initialState);
   const [error, setError] = useState({
-    CLI_IDENTIFICACION: null
+    CLI_IDENTIFICACION: null,
   });
 
   function handleChange(e) {
     setclient({ ...client, [e.target.name]: e.target.value });
 
-    if((e.target.name === "CLI_IDENTIFICACION") && ((client.CLI_TIPOIDE === "04") || (client.CLI_TIPOIDE === "05"))){
+    if (
+      e.target.name === "CLI_IDENTIFICACION" &&
+      (client.CLI_TIPOIDE === "04" || client.CLI_TIPOIDE === "05")
+    ) {
       let mensaje = validaDocumento(e.target.value).mensaje;
-      if( mensaje !== "ruc" && mensaje !== "cedula"){
+      if (mensaje !== "ruc" && mensaje !== "cedula") {
         setError({
           ...error,
-          CLI_IDENTIFICACION: mensaje
+          CLI_IDENTIFICACION: mensaje,
         });
-      }else{
+      } else {
         setError({
           ...error,
-          CLI_IDENTIFICACION: null
+          CLI_IDENTIFICACION: null,
         });
       }
     }
@@ -54,23 +57,28 @@ export default function ClientForm({ addClient, handleAddClient }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    dispatch(openLoading());
-    dispatch(postClient(client))
-      .then((d) => {
-        hanldeClose();
-        dispatch(closeLoading());
-        toast.success("¡Cliente agregado exitosamente!");
-      })
-      .catch((e) => {
-        dispatch(closeLoading());
-        toast.error("Error al agregar el cliente");
-        console.log(e);
-      });
+    if(error.CLI_IDENTIFICACION === null){
+      dispatch(openLoading());
+      dispatch(postClient(client))
+        .then((d) => {
+          hanldeClose();
+          dispatch(closeLoading());
+          toast.success("¡Cliente agregado exitosamente!",{position: toast.POSITION.TOP_CENTER});
+        })
+        .catch((e) => {
+          dispatch(closeLoading());
+          toast.error("Error al agregar el cliente",{position: toast.POSITION.TOP_CENTER});
+          console.log(e);
+        });
+    }
   }
 
   function hanldeClose() {
     handleAddClient();
     setclient(initialState);
+    setError({
+      CLI_IDENTIFICACION: null,
+    });
   }
 
   return (
@@ -89,6 +97,41 @@ export default function ClientForm({ addClient, handleAddClient }) {
           ></button>
         </div>
 
+        {/* Type */}
+        <div className="form-floating mb-3">
+          <select
+            className="form-select"
+            name="CLI_TIPOIDE"
+            onChange={handleChange}
+            required
+          >
+            <option value="04">Ruc</option>
+            <option value="05">Cedula</option>
+            <option value="06">Pasaporte</option>
+          </select>
+          <label>Tipo</label>
+        </div>
+
+        <div className="form-floating mb-3">
+          <input
+            disabled={client.type === "Tipo" ? true : false}
+            name="CLI_IDENTIFICACION"            
+            className={`form-control ${
+              !error.CLI_IDENTIFICACION ? null : "is-invalid"
+            }`}
+            id={error.CLI_IDENTIFICACION ? "floatingInputInvalid" : "floatingInput"}
+            value={client.CLI_IDENTIFICACION}
+            onChange={handleChange}
+            required
+          />
+          <label className="form-label">
+            {`${type.find((t) => t.value === client.CLI_TIPOIDE)?.name}`}
+          </label>
+          {error.CLI_IDENTIFICACION ? (
+            <small>{error.CLI_IDENTIFICACION}</small>
+          ) : null}
+        </div>
+
         {/* Name */}
         <div className="form-floating mb-3">
           <input
@@ -101,40 +144,7 @@ export default function ClientForm({ addClient, handleAddClient }) {
           />
           <label className="form-label">Nombre</label>
         </div>
-
-        {/* Type */}
-        <div className="form-floating mb-3">
-          <select
-            className="form-select"
-            name="CLI_TIPOIDE"
-            onChange={handleChange}
-            required
-          >
-            <option value="0">Seleccionar</option>
-            <option value="04">Ruc</option>
-            <option value="05">Cedula</option>
-            <option value="06">Pasaporte</option>
-          </select>
-          <label>Tipo</label>
-        </div>
-
-        {client.CLI_TIPOIDE !== '0' ? (
-          <div className="form-floating mb-3">
-            <input
-              disabled={client.type === "Tipo" ? true : false}
-              className="form-control"
-              name="CLI_IDENTIFICACION"
-              value={client.CLI_IDENTIFICACION}
-              onChange={handleChange}
-              required
-            />
-            <label className="form-label">
-              {`${type.find((t) => t.value === Number(client.CLI_TIPOIDE)).name}`}
-            </label>
-            { error.CLI_IDENTIFICACION ? <small>{ error.CLI_IDENTIFICACION }</small> : null}
-          </div>
-        ) : null}
-
+        
         {/* Email*/}
         <div className="form-floating mb-3">
           <input

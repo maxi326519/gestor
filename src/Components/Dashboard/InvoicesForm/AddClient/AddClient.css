@@ -21,7 +21,7 @@
 }
 
 .form__container form{
-    width: 600px;
+    width: 900px;
     box-shadow: 0 0 20px 5px #0008;
 }
 
@@ -38,7 +38,7 @@
 
 .invoice-product-card{
     display: grid;
-    grid-template-columns: 1fr 200px 80px;
+    grid-template-columns: 150px 150px 150px 1fr 1fr 80px;
     padding: 5px;
     outline: 1px solid #ccc;
 }
@@ -46,7 +46,8 @@
 .invoice-product-card span{
     padding-left: 10px;
     border-right: 1px solid #ccc;
-}
+    overflow: hidden;
+  }
 
 .invoice-row .amount{
     width: 150px;

@@ -98,7 +98,7 @@ function App() {
 
   return (
     <div className="App">
-      <ToastContainer />
+      <ToastContainer position="top-center"/>
       <Alert
         text={alert.text}
         isAccept={alert.isAcceptFunction}

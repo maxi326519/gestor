@@ -108,8 +108,8 @@ export default function ProductCard({ product }) {
         required
         disabled={disabled}
       >
-        <option value={true}>Si</option>
-        <option value={false}>No</option>
+        <option value="0">No</option>
+        <option value="2">Si</option>
       </select>
       <div className="edit-buttons">
         <button

@@ -1,17 +1,13 @@
-.search-container {
-  width: 500px;
-}
-
 .search-container:hover .product-name {
   display: flex;
 }
 
 .product-name {
   position: absolute;
-  z-index: 1000;
+  z-index: 500;
   display: none;
   flex-direction: column;
-  width: 500px;
+  width: 600px;
   height: 200px;
   border: 1px solid grey;
   border-radius: 5px;
@@ -35,6 +31,10 @@
 .search-product-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.search-product-row span{
+  outline: 1px solid grey;
 }
 
 .product-name .search-product-row:hover {

@@ -142,16 +142,12 @@ export default function InvoicesForm({
           dispatch(closeLoading());
           setInvoice(initialInvoice);
           setNewProduct([]);
-          toast.success("¡Factura agregada exitosamente!",{
-            position: toast.POSITION.TOP_CENTER
-          });
+          toast.success("¡Factura agregada exitosamente!",{position: toast.POSITION.TOP_CENTER});
         });
       })
       .catch((e) => {
         dispatch(closeLoading());
-        toast.error("Error al agregar la factura",{
-          position: toast.POSITION.TOP_CENTER
-        });
+        toast.error("Error al agregar la factura",{position: toast.POSITION.TOP_CENTER});
         console.log(e);
       });
   }
@@ -266,6 +262,8 @@ export default function InvoicesForm({
             handleFormProduct={handleFormProduct}
             handleClient={handleClient}
             handleProduct={handleProduct}
+            handleAddProduct={handleAddProduct}
+            handleAddClient={handleAddClient}
           />
           <InvoiceData invoice={invoice} handleChange={handleChange} />
         </div>
@@ -296,6 +294,7 @@ export default function InvoicesForm({
             handleFormProduct={handleFormProduct}
             handleAdd={handleProduct}
             handleRemove={handleRemove}
+            newProducts={newProducts}
           />
         ) : null}
 
@@ -304,6 +303,7 @@ export default function InvoicesForm({
           <AddClient
             handleFormClient={handleFormClient}
             handleSelect={handleSelect}
+            newProducts={newProducts}
           />
         ) : null}
       </div>

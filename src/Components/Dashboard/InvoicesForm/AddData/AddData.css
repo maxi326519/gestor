@@ -10,3 +10,17 @@
 .invoice-client-product div span {
   padding-left: 10px;
 }
+
+.search-container-btn .add{
+  width: min-content;
+  margin-left: 10px;
+}
+
+.search-container-btn .add img{
+  width: 30px;
+  height: 30px;
+}
+
+.search-container {
+  flex-grow: 1;
+}
