@@ -142,12 +142,12 @@ export default function InvoicesForm({
           dispatch(closeLoading());
           setInvoice(initialInvoice);
           setNewProduct([]);
-          toast.success("¡Factura agregada exitosamente!",{position: toast.POSITION.TOP_CENTER});
+          toast.success("¡Factura agregada exitosamente!");
         });
       })
       .catch((e) => {
         dispatch(closeLoading());
-        toast.error("Error al agregar la factura",{position: toast.POSITION.TOP_CENTER});
+        toast.error("Error al agregar la factura");
         console.log(e);
       });
   }

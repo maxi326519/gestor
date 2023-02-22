@@ -33,11 +33,11 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
       .then((d) => {
         dispatch(closeLoading());
         handleClose();
-        toast.success("¡Producto agregado exitosamente!",{position: toast.POSITION.TOP_CENTER});
+        toast.success("¡Producto agregado exitosamente!");
       })
       .catch((e) => {
         dispatch(closeLoading());
-        toast.error("Error al agregar el producto",{position: toast.POSITION.TOP_CENTER});
+        toast.error("Error al agregar el producto");
         console.log(e);
       });
   }

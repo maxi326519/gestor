@@ -63,11 +63,11 @@ export default function ClientForm({ addClient, handleAddClient }) {
         .then((d) => {
           hanldeClose();
           dispatch(closeLoading());
-          toast.success("¡Cliente agregado exitosamente!",{position: toast.POSITION.TOP_CENTER});
+          toast.success("¡Cliente agregado exitosamente!");
         })
         .catch((e) => {
           dispatch(closeLoading());
-          toast.error("Error al agregar el cliente",{position: toast.POSITION.TOP_CENTER});
+          toast.error("Error al agregar el cliente");
           console.log(e);
         });
     }

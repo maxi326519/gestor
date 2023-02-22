@@ -43,11 +43,11 @@ export default function Profile({
     dispatch(updateUserData(userData))
       .then(() => {
         dispatch(closeLoading());
-        toast.success("¡Perfil actualizado exitosamente!",{position: toast.POSITION.TOP_CENTER});
+        toast.success("¡Perfil actualizado exitosamente!");
       })
       .catch((e) => {
         dispatch(closeLoading());
-        toast.error(e.message,{position: toast.POSITION.TOP_CENTER});
+        toast.error(e.message);
         console.log(e.message);
       });
   }
