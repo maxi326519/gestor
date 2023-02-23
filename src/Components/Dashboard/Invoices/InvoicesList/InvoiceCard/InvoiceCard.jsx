@@ -33,8 +33,9 @@ export default function InvoiceCard({ invoice, viewPDF }) {
       <span>{invoice.VEN_FECHA}</span>
       <span>{invoice.CLI_IDENTIFICACION}</span>
       <span>{invoice.CLI_NOMBRE}</span>
-      <span>{invoice.CLI_NOMBRE}</span>
       <span>{invoice.VEN_DESCUENTO}</span>
+      <span>{`${invoice.VEN_ESTABLECIMIENTO}-${invoice.VEN_PTOEMISION}-${invoice.VEN_NUMERO}`}</span>
+      <span>"Generada"</span>
       <span>{invoice.VEN_SUBTOTAL}</span>
       <span>{invoice.VEN_SUBTOTAL0}</span>
       <span>{invoice.VEN_SUBTOTAL12}</span>

@@ -14,7 +14,10 @@ export default function SearchClient({ handleClient, handleFormClient }) {
     const value = e.target.value;
     setRows(
       clients.filter((c) => {
-        if (c.dataType.toLowerCase().includes(value.toLowerCase())) return true;
+        if (c.CLI_TIPOIDE.toLowerCase().includes(value.toLowerCase())) return true;
+        if (c.CLI_NOMBRE.toLowerCase().includes(value.toLowerCase())) return true;
+        if (c.CLI_EMAIL.toLowerCase().includes(value.toLowerCase())) return true;
+        if (c.CLI_DIRECCION.toLowerCase().includes(value.toLowerCase())) return true;
         return false;
       })
     );
@@ -33,28 +36,41 @@ export default function SearchClient({ handleClient, handleFormClient }) {
       </div>
       <div className="client-name">
         <div className="head search-client-row">
-              <span>Id</span>
-              <span>Nombre</span>
-              <span>Email</span>
-              <span>Direccion</span>
+          <span>Id</span>
+          <span>Nombre</span>
+          <span>Email</span>
+          <span>Direccion</span>
         </div>
         <div className="list">
-          {rows.length > 0 ? rows?.map((c) => (
-            <div
-              key={c.id}
-              className="search-client-row"
-              onClick={() => handleClient(c)}
-            >
-              <span>{`${c.CLI_TIPOIDE}: ${c.CLI_IDENTIFICACION}`}</span>
-              <span>{c.CLI_NOMBRE}</span>
-              <span>{c.CLI_EMAIL}</span>
-              <span>{c.CLI_DIRECCION}</span>
-            </div>
-          )):
-          <div>
+          {rows.length > 0 ? (
+            rows?.map((c) => (
+              <div
+                key={c.id}
+                className="search-client-row"
+                onClick={() => handleClient(c)}
+              >
+                <span>{`${
+                  c.CLI_TIPOIDE === "04"
+                    ? "RUC"
+                    : c.CLI_TIPOIDE === "05"
+                    ? "Cedula"
+                    : c.CLI_TIPOIDE === "06"
+                    ? "Pasaporte"
+                    : "Error"
+                }: ${c.CLI_IDENTIFICACION}`}</span>
+                <span>{c.CLI_NOMBRE}</span>
+                <span>{c.CLI_EMAIL}</span>
+                <span>{c.CLI_DIRECCION}</span>
+              </div>
+            ))
+          ) : (
+            <div>
               <span>¿No encuentra al cliente?</span>
-            <button className="btn btn-primary"onClick={handleFormClient}>Agregar cliente</button>
-          </div>}
+              <button className="btn btn-primary" onClick={handleFormClient}>
+                Agregar cliente
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

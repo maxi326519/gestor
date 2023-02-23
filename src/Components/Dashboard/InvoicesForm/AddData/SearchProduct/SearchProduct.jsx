@@ -14,8 +14,9 @@ export default function SearchProduct({ handleProduct, handleFormProduct }) {
     const value = e.target.value;
     setRows(
       products.filter((p) => {
-        if (p.code.toLowerCase().includes(value.toLowerCase())) return true;
-        if (p.description.toLowerCase().includes(value.toLowerCase()))
+        if (p.ITE_CODIGO.toLowerCase().includes(value.toLowerCase()))
+          return true;
+        if (p.ITE_DESCRIPCION.toLowerCase().includes(value.toLowerCase()))
           return true;
         return false;
       })

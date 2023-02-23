@@ -17,9 +17,11 @@ export default function AddClient({ handleFormClient, handleSelect }) {
     setRows(
       clients.filter((row) => {
         if (value === "") return true;
-        if (row.name.toLowerCase().includes(value.toLowerCase())) return true;
-        if (row.dataType.toLowerCase().includes(value.toLowerCase()))
-          return true;
+        if (row.CLI_IDENTIFICACION.toLowerCase().includes(value.toLowerCase())) return true;
+        if (row.CLI_NOMBRE.toLowerCase().includes(value.toLowerCase()))
+        if (row.CLI_DIRECCION.toLowerCase().includes(value.toLowerCase()))
+        if (row.CLI_TELEFONO.toLowerCase().includes(value.toLowerCase()))
+          return true; 
         return false;
       })
     );

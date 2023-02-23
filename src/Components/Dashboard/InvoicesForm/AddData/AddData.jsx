@@ -16,6 +16,7 @@ export default function AddData({
   handleProduct,
   handleAddProduct,
   handleAddClient,
+  handleClearClient,
 }) {
   return (
     <div className="invoice-client-product">
@@ -30,7 +31,10 @@ export default function AddData({
           />
           <button className="btn btn-primary" onClick={handleFormClient}>
             <img src={user} alt="add client" />
-            <span>Cliente</span>
+            <span>Clientes</span>
+          </button>
+          <button className="btn btn-primary clear" onClick={handleClearClient}>
+            <span>Borrar</span>
           </button>
           <button className="btn btn-primary add" onClick={handleAddClient}>
             <img src={square} alt="add client" />
@@ -93,7 +97,7 @@ export default function AddData({
           />
           <button className="btn btn-primary" onClick={handleFormProduct}>
             <img src={products} alt="add product" />
-            <span>Producto</span>
+            <span>Productos</span>
           </button>
           <button className="btn btn-primary add" onClick={handleAddProduct}>
             <img src={square} alt="add client" />

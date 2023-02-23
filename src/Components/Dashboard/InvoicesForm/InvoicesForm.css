@@ -16,7 +16,7 @@
   display: flex;
 }
 
-.dashboard__invoice .buttons button:first-child{
+.dashboard__invoice .buttons button{
   margin-right: 20px;
 }
 
@@ -99,16 +99,6 @@
 
 .form-invoice button[type="submit"] {
   margin-top: 30px;
-}
-
-.search-container-btn {
-  display: flex;
-}
-
-.search-container-btn button {
-  width: 120px;
-  margin-bottom: 1rem;
-  margin-left: 20px;
 }
 
 .datas{

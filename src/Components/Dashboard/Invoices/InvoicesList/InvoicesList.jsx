@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
 import InvoiceCard from "./InvoiceCard/InvoiceCard";
-import PDF from "./PDF/PDF";
+import PDF from "../../PDF/PDF";
 
 import exportIcon from "../../../../assets/svg/export.svg";
 import addSquare from "../../../../assets/svg/add-square.svg";
@@ -66,7 +66,6 @@ export default function InvoicesList({
         <button
           className="btn btn-primary"
           onClick={() => {
-            console.log("asd");
             handleExportInvoice();
           }}
         >
@@ -79,12 +78,13 @@ export default function InvoicesList({
           <span>Fecha</span>
           <span>Ruc / Cedula / Pasaporte</span>
           <span>Nombre cliente</span>
-          <span>Productos</span>
           <span>Descueto %</span>
+          <span>Nro</span>
+          <span>Estado</span>
           <span>Subtotal</span>
           <span>Subtotal 0%</span>
           <span>Subtotal IVA</span>
-          <span>I.V.A. 12%</span>
+          <span>IVA</span>
           <span>Total</span>
           <span>Ver en PDF</span>
           <span>Eliminar</span>

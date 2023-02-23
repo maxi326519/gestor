@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
   dataEnd: {
     padding: "5px",
     border: "1px solid gray",
+    textAlign: "right",
   },
 });
 
@@ -395,23 +396,35 @@ export default function PDF({ invoice, handleClosePDF }) {
                   <Text style={styles.textEnd}>TOTAL:</Text>
                 </View>
                 <View style={{ width: "80px" }}>
-                  <Text style={styles.dataEnd}>{invoice.VEN_SUBTOTAL12}</Text>
-                  <Text style={styles.dataEnd}>{invoice.VEN_SUBTOTAL0}</Text>
                   <Text style={styles.dataEnd}>
-                    {invoice.VEN_SUBTOTALNOIVA}
+                    {Number(invoice.VEN_SUBTOTAL12).toFixed(2)}
                   </Text>
-                  <Text style={styles.textEnd}>
-                    {invoice.VEN_SUBTOTALEXCENTIVA}
+                  <Text style={styles.dataEnd}>
+                    {Number(invoice.VEN_SUBTOTAL0).toFixed(2)}
                   </Text>
-                  <Text style={styles.textEnd}>{invoice.VEN_SUBTOTAL}</Text>
-                  <Text style={styles.textEnd}>{invoice.VEN_DESCUENTO}</Text>
-                  <Text style={styles.textEnd}>{invoice.VEN_ICE}</Text>
+                  <Text style={styles.dataEnd}>
+                    {Number(invoice.VEN_SUBTOTALNOIVA).toFixed(2)}
+                  </Text>
+                  <Text style={styles.dataEnd}>
+                    {Number(invoice.VEN_SUBTOTALEXCENTIVA).toFixed(2)}
+                  </Text>
+                  <Text style={styles.dataEnd}>
+                    {Number(invoice.VEN_SUBTOTAL).toFixed(2)}
+                  </Text>
+                  <Text style={styles.dataEnd}>
+                    {Number(invoice.VEN_DESCUENTO).toFixed(2)}
+                  </Text>
+                  <Text style={styles.dataEnd}>
+                    {Number(invoice.VEN_ICE).toFixed(2)}
+                  </Text>
                   <Text style={styles.dataEnd}>
                     {(invoice.VEN_SUBTOTAL12 * 0.12).toFixed(2)}
                   </Text>
-                  <Text style={styles.textEnd}>null</Text>
-                  <Text style={styles.textEnd}>null</Text>
-                  <Text style={styles.dataEnd}>{invoice.VEN_TOTAL}</Text>
+                  <Text style={styles.dataEnd}>0.00</Text>
+                  <Text style={styles.dataEnd}>0.00</Text>
+                  <Text style={styles.dataEnd}>
+                    {Number(invoice.VEN_TOTAL).toFixed(2)}
+                  </Text>
                 </View>
               </View>
             </View>

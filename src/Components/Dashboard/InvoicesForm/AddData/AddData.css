@@ -1,22 +1,37 @@
-.invoice-client-product{
+.invoice-client-product {
   flex-grow: 1;
 }
 
-.invoice-client-product .btn{
+.search-container-btn {
   display: flex;
-  align-items: center;
 }
 
-.invoice-client-product div span {
+.search-container-btn .btn {
+  display: flex;
+  align-items: center;
+  width: min-content;
+  margin-bottom: 1rem;
+  margin-left: 20px;
+}
+
+.search-container-btn .btn span{
   padding-left: 10px;
 }
 
-.search-container-btn .add{
+.search-container-btn .clear span{
+  padding: 0 5px;
+}
+
+.search-container-btn .btn:nth-child(2) {
+  min-width: 150px;
+}
+
+.search-container-btn .add, .search-container-btn .clear{
   width: min-content;
   margin-left: 10px;
 }
 
-.search-container-btn .add img{
+.search-container-btn .add img {
   width: 30px;
   height: 30px;
 }

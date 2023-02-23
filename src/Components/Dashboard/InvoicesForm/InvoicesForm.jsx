@@ -13,6 +13,7 @@ import InvoiceData from "./InvoiceData/InvoiceData";
 import InvoiceTable from "./invoiceTable/InvoiceTable";
 import AddProduct from "./AddProduct/AddProduct";
 import AddClient from "./AddClient/AddClient";
+import PDF from "../PDF/PDF";
 
 import "./InvoicesForm.css";
 import { toast } from "react-toastify";
@@ -47,20 +48,20 @@ const initialInvoice = {
   VEN_FECHA: new Date().toLocaleDateString().split("/").join("-"),
   VEN_FPAGO: "01",
   VEN_GUIA: "-",
-  VEN_ICE: 0,
-  VEN_IMPRESO: 0,
-  VEN_IVA: 0,
+  VEN_ICE: 0.00,
+  VEN_IMPRESO: 0.00,
+  VEN_IVA: 0.00,
   VEN_NUMERO: "",
   VEN_PTOEMISION: "001",
-  VEN_RETENCION: 0,
-  VEN_SRI: 0,
-  VEN_SUBTOTAL: 0,
-  VEN_SUBTOTAL0: 0,
-  VEN_SUBTOTAL12: 0,
-  VEN_SUBTOTALEXCENTIVA: 0,
-  VEN_SUBTOTALNOIVA: 0,
+  VEN_RETENCION: 0.00,
+  VEN_SRI: 0.00,
+  VEN_SUBTOTAL: 0.00,
+  VEN_SUBTOTAL0: 0.00,
+  VEN_SUBTOTAL12: 0.00,
+  VEN_SUBTOTALEXCENTIVA: 0.00,
+  VEN_SUBTOTALNOIVA: 0.00,
   VEN_TIPODOC: "",
-  VEN_TOTAL: 0,
+  VEN_TOTAL: 0.00,
   VEN_UKEY: "",
   VEN_VALOR1: "",
   VEN_VALOR2: "",
@@ -79,6 +80,7 @@ export default function InvoicesForm({
   const [formClient, setFormClient] = useState(false);
   const [newProducts, setNewProduct] = useState([]);
   const [invoice, setInvoice] = useState(initialInvoice);
+  const [invoicePDF, setPDF] = useState(null);
 
   /* Valores del usuario */
   useEffect(() => {
@@ -140,6 +142,7 @@ export default function InvoicesForm({
           })
         ).then(() => {
           dispatch(closeLoading());
+          setPDF(newInvoice);
           setInvoice(initialInvoice);
           setNewProduct([]);
           toast.success("¡Factura agregada exitosamente!");
@@ -156,6 +159,20 @@ export default function InvoicesForm({
     setInvoice(initialInvoice);
     setNewProduct([]);
   }
+
+  function handleClearClient(){
+    setInvoice({
+      ...initialInvoice,
+      CLI_CODIGO: 0,
+      CLI_DIRECCION: "S/N",
+      CLI_EMAIL: "-",
+      CLI_IDENTIFICACION: "9999999999999",
+      CLI_NOMBRE: "CONSUMIDOR FINAL",
+      CLI_TELEFONO: "-",
+      CLI_TIPOIDE: "-",
+    });
+  }
+
 
   function handleFormProduct() {
     setFormproduct(!formProduct);
@@ -243,7 +260,17 @@ export default function InvoicesForm({
     );
   }
 
-  function handleTotal() {}
+  function handleClosePDF(i) {
+    setPDF(null);
+  }
+
+  function handleViewPDF(){
+    const currentInvoice = {
+      ...invoice,
+      ITE_DETELLES: newProducts,
+    } 
+    setPDF(currentInvoice);
+  }
 
   return (
     <div className="dashboard">
@@ -254,6 +281,7 @@ export default function InvoicesForm({
       />
 
       <div className="dashboard__invoice  to-left">
+      {invoicePDF ? <PDF invoice={invoicePDF} handleClosePDF={handleClosePDF}></PDF> : null}
         <div className="invoice__top">
           <AddData
             invoice={invoice}
@@ -264,6 +292,7 @@ export default function InvoicesForm({
             handleProduct={handleProduct}
             handleAddProduct={handleAddProduct}
             handleAddClient={handleAddClient}
+            handleClearClient={handleClearClient}
           />
           <InvoiceData invoice={invoice} handleChange={handleChange} />
         </div>
@@ -285,6 +314,10 @@ export default function InvoicesForm({
 
           <button className="btn btn-primary" onClick={handleClear}>
             Vaciar factura
+          </button>
+
+          <button className="btn btn-primary" onClick={handleViewPDF}>
+            Ver en PDF
           </button>
         </div>
 

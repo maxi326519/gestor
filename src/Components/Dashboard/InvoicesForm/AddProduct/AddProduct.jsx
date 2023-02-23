@@ -32,8 +32,8 @@ export default function AddProduct({
     setRows(
       products.filter((row) => {
         if (value === "") return true;
-        if (row.name.toLowerCase().includes(value.toLowerCase())) return true;
-        if (row.code.toLowerCase().includes(value.toLowerCase())) return true;
+        if (row.ITE_CODIGO.toLowerCase().includes(value.toLowerCase())) return true;
+        if (row.ITE_DESCRIPCION.toLowerCase().includes(value.toLowerCase())) return true;
         return false;
       })
     );
