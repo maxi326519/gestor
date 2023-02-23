@@ -114,7 +114,7 @@ export default function InvoiceData({ invoice, handleChange }) {
             required
           >
             {formasDePago.map((f) => (
-              <option value={f.value}>{f.name}</option>
+              <option key={f.value} value={f.value}>{f.name}</option>
             ))}
           </select>
           <label>Forma de pago</label>

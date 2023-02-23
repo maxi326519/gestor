@@ -9,17 +9,16 @@ import exportIcon from "../../../../assets/svg/export.svg";
 import addSquare from "../../../../assets/svg/add-square.svg";
 
 import "../../Dashboard.css";
+import "./InvoicesList.css";
 
 export default function InvoicesList({
   handleAddInvoice,
   handleExportInvoice,
 }) {
   const [invoicePDF, setPDF] = useState(null);
-  const dispatch = useDispatch();
   const invoices = useSelector((state) => state.invoices);
-  const clients = useSelector((state) => state.clients);
-  const userId = useSelector((state) => state.user.id);
-  const [rows, setRows] = useState([]);
+  const user = useSelector((state) => state.user.userDB);
+  const [rows, setRows] = useState([]); 
 
   useEffect(() => {
     setRows(invoices);
@@ -30,9 +29,8 @@ export default function InvoicesList({
 
     setRows(
       invoices.filter((row) => {
-        if (value === "") return true;
-        /*         if (row.client.toLowerCase().includes(value.toLowerCase())) return true;
-        return true; */
+        if (row.CLI_DIRECCION.toLowerCase().includes(value.toLowerCase())) return true;
+        if (row.CLI_NOMBRE.toLowerCase().includes(value.toLowerCase())) return true;
         return false;
       })
     );
@@ -48,7 +46,9 @@ export default function InvoicesList({
 
   return (
     <div className="dashboardList">
-      {invoicePDF ? <PDF invoice={invoicePDF} handleClosePDF={handleClosePDF}></PDF> : null}
+      {invoicePDF ? (
+        <PDF invoice={invoicePDF} handleClosePDF={handleClosePDF}></PDF>
+      ) : null}
       <h3>Listado de Facturas</h3>
       <div className="dashboardList__searchBar">
         <input
@@ -72,6 +72,7 @@ export default function InvoicesList({
           <img src={exportIcon} alt="export" />
           <span>Excel</span>
         </button>
+        <span className="limit">{`${user.EMP_SECUENCIAL} de 100 facturas`}</span>
       </div>
       <div className="dashboardList__grid">
         <div className="invoice-card first-row">

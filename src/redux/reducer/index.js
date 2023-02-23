@@ -26,8 +26,8 @@ import {
 const initialState = {
   user: {
     userDB: {
-      EMP_PERFIL: {}
-    }
+      EMP_PERFIL: {},
+    },
   },
   clients: [],
   products: [],
@@ -56,7 +56,7 @@ export const Reducer = (state = initialState, action) => {
     case PERSISTENCE:
       return {
         ...state,
-        user: { ...state.user, ...action.payload},
+        user: { ...state.user, ...action.payload },
       };
 
     case SIGN_OUT:
@@ -68,19 +68,19 @@ export const Reducer = (state = initialState, action) => {
         user: {
           ...state.user,
           userDB: { ...state.user.userDB, ...action.payload },
-        }
+        },
       };
 
     case GET_USER_DATA:
       return {
         ...state,
-        user: { 
+        user: {
           ...state.user,
           userDB: { ...state.user.userDB, ...action.payload },
         },
       };
 
-    case  UPDATE_PROFILE:
+    case UPDATE_PROFILE:
       return {
         ...state,
         user: {
@@ -149,12 +149,13 @@ export const Reducer = (state = initialState, action) => {
     case POST_INVOICE:
       return {
         ...state,
-        user:{
+        user: {
           ...state.user,
           userDB: {
             ...state.user.userDB,
             EMP_NUMERO: state.user.userDB.EMP_NUMERO + 1,
-          }
+            EMP_SECUENCIAL: state.user.userDB.EMP_SECUENCIAL + 1,
+          },
         },
         invoices: [...state.invoices, action.payload],
       };
@@ -170,7 +171,7 @@ export const Reducer = (state = initialState, action) => {
     case UPDATE_PRODUCT:
       return {
         ...state,
-        products: state.products.map(p =>
+        products: state.products.map((p) =>
           p.ITE_CODIGO === action.payload.ITE_CODIGO ? action.payload : p
         ),
       };
@@ -190,6 +191,14 @@ export const Reducer = (state = initialState, action) => {
     case DELETE_INVOICE:
       return {
         ...state,
+        user: {
+          ...state.user,
+          userDB: {
+            ...state.user.userDB,
+            EMP_NUMERO: state.user.userDB.EMP_NUMERO - 1,
+            EMP_SECUENCIAL: state.user.userDB.EMP_SECUENCIAL - 1,
+          },
+        },
         invoices: state.invoices.filter((i) => i.id !== action.payload),
       };
 

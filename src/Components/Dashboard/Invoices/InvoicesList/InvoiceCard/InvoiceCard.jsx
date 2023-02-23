@@ -1,29 +1,37 @@
-import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import swal from "sweetalert";
 import {
   deleteInvoice,
+  updateUserData,
   openLoading,
-  closeLoading,
-  Alert,
+  closeLoading
 } from "../../../../../redux/actions";
 
 import removeIcon from "../../../../../assets/svg/remove.svg";
 import "./InvoiceCard.css";
-import { toast } from "react-toastify";
 
 export default function InvoiceCard({ invoice, viewPDF }) {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.userDB);
 
   function handleRemove() {
     dispatch(openLoading());
     dispatch(deleteInvoice(invoice.id))
       .then(() => {
+        updateUserData({
+          EMP_NUMERO: user.EMP_NUMERO - 1,
+          EMP_SECUENCIAL: user.EMP_SECUENCIAL - 1,
+        });
         dispatch(closeLoading());
-        toast.success("¡Factura eliminada exitosamente!");
+        swal("Eliminado", "Su factura se elimino con exito", "success");
       })
       .catch((e) => {
         dispatch(closeLoading());
-        toast.error("Error al eliminar la factura");
+        swal(
+          "Error",
+          "Surgio un error desconocido al eliminar la factura",
+          "error"
+        );
         console.log(e);
       });
   }
@@ -47,9 +55,17 @@ export default function InvoiceCard({ invoice, viewPDF }) {
       <button
         className="btn btn-danger"
         onClick={() =>
-          dispatch(
-            Alert(`¿Seguro que quiere eliminar la factura?`, handleRemove)
-          )
+          swal({
+            title: "Atencion!",
+            text: "¿Seguro que quiere eliminar la factura?",
+            icon: "warning",
+            buttons: {
+              eliminar: true,
+              cancel: true,
+            },
+          }).then((r) => {
+            if(r) handleRemove()
+          })
         }
       >
         <img src={removeIcon} alt="remove" />

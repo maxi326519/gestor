@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import swal from "sweetalert";
+
 import {
   postInvoice,
   updateUserData,
@@ -16,7 +18,6 @@ import AddClient from "./AddClient/AddClient";
 import PDF from "../PDF/PDF";
 
 import "./InvoicesForm.css";
-import { toast } from "react-toastify";
 
 const initialInvoice = {
   CLI_CODIGO: 0,
@@ -48,20 +49,20 @@ const initialInvoice = {
   VEN_FECHA: new Date().toLocaleDateString().split("/").join("-"),
   VEN_FPAGO: "01",
   VEN_GUIA: "-",
-  VEN_ICE: 0.00,
-  VEN_IMPRESO: 0.00,
-  VEN_IVA: 0.00,
+  VEN_ICE: 0.0,
+  VEN_IMPRESO: 0.0,
+  VEN_IVA: 0.0,
   VEN_NUMERO: "",
   VEN_PTOEMISION: "001",
-  VEN_RETENCION: 0.00,
-  VEN_SRI: 0.00,
-  VEN_SUBTOTAL: 0.00,
-  VEN_SUBTOTAL0: 0.00,
-  VEN_SUBTOTAL12: 0.00,
-  VEN_SUBTOTALEXCENTIVA: 0.00,
-  VEN_SUBTOTALNOIVA: 0.00,
+  VEN_RETENCION: 0.0,
+  VEN_SRI: 0.0,
+  VEN_SUBTOTAL: 0.0,
+  VEN_SUBTOTAL0: 0.0,
+  VEN_SUBTOTAL12: 0.0,
+  VEN_SUBTOTALEXCENTIVA: 0.0,
+  VEN_SUBTOTALNOIVA: 0.0,
   VEN_TIPODOC: "",
-  VEN_TOTAL: 0.00,
+  VEN_TOTAL: 0.0,
   VEN_UKEY: "",
   VEN_VALOR1: "",
   VEN_VALOR2: "",
@@ -84,6 +85,7 @@ export default function InvoicesForm({
 
   /* Valores del usuario */
   useEffect(() => {
+    console.log(user.EMP_NUMERO);
     setInvoice({
       ...invoice,
       VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
@@ -127,40 +129,65 @@ export default function InvoicesForm({
 
   function handleSubmit(e) {
     e.preventDefault();
-    dispatch(openLoading());
-    const newInvoice = {
-      ...invoice,
-      ITE_DETELLES: newProducts,
-    };
 
-    dispatch(postInvoice(newInvoice))
-      .then((d) => {
-        dispatch(
-          updateUserData({
-            EMP_NUMERO: user.EMP_NUMERO + 1,
-            EMP_SECUENCIAL: user.EMP_SECUENCIAL + 1,
-          })
-        ).then(() => {
-          dispatch(closeLoading());
-          setPDF(newInvoice);
-          setInvoice(initialInvoice);
-          setNewProduct([]);
-          toast.success("¡Factura agregada exitosamente!");
-        });
-      })
-      .catch((e) => {
-        dispatch(closeLoading());
-        toast.error("Error al agregar la factura");
-        console.log(e);
-      });
-  }
+      if(user.EMP_SECUENCIAL < 100){
+      dispatch(openLoading());
+      const newInvoice = {
+        ...invoice,
+        ITE_DETELLES: newProducts,
+      };
   
-  function handleClear(){
-    setInvoice(initialInvoice);
-    setNewProduct([]);
+      dispatch(postInvoice(newInvoice))
+        .then((d) => {
+          dispatch(
+            updateUserData({
+              EMP_NUMERO: user.EMP_NUMERO + 1,
+              EMP_SECUENCIAL: user.EMP_SECUENCIAL + 1,
+            })
+          ).then(() => {
+            dispatch(closeLoading());
+            setPDF(newInvoice);
+            setInvoice(initialInvoice);
+            setNewProduct([]);
+            swal("Guardado!", "Su factura se agrego correctamente", "success");
+          });
+        })
+        .catch((e) => {
+          dispatch(closeLoading());
+          swal(
+            "Error",
+            "Surgio un error desconocido al agregar la factura",
+            "error"
+          );
+          console.log(e);
+        });
+    }else{
+      swal(
+        "¡Atencion!",
+        "Llegaste a tu limite de 100 facturas",
+        "warning"
+      );
+    }
   }
 
-  function handleClearClient(){
+  function handleClear() {
+    swal({
+      title: "¡Atencion!",
+      text: "¿Seguro que quiere vaciar la factura?",
+      icon: "warning",
+      buttons: {
+        eliminar: true,
+        cancel: true,
+      },
+    }).then((r) => {
+      if (r) {
+        setInvoice(initialInvoice);
+        setNewProduct([]);
+      }
+    });
+  }
+
+  function handleClearClient() {
     setInvoice({
       ...initialInvoice,
       CLI_CODIGO: 0,
@@ -172,7 +199,6 @@ export default function InvoicesForm({
       CLI_TIPOIDE: "-",
     });
   }
-
 
   function handleFormProduct() {
     setFormproduct(!formProduct);
@@ -264,11 +290,11 @@ export default function InvoicesForm({
     setPDF(null);
   }
 
-  function handleViewPDF(){
+  function handleViewPDF() {
     const currentInvoice = {
       ...invoice,
       ITE_DETELLES: newProducts,
-    } 
+    };
     setPDF(currentInvoice);
   }
 
@@ -281,7 +307,9 @@ export default function InvoicesForm({
       />
 
       <div className="dashboard__invoice  to-left">
-      {invoicePDF ? <PDF invoice={invoicePDF} handleClosePDF={handleClosePDF}></PDF> : null}
+        {invoicePDF ? (
+          <PDF invoice={invoicePDF} handleClosePDF={handleClosePDF}></PDF>
+        ) : null}
         <div className="invoice__top">
           <AddData
             invoice={invoice}

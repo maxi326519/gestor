@@ -1,22 +1,21 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import swal from "sweetalert";
+
 import {
   deleteProduct,
   updateProduct,
   openLoading,
   closeLoading,
-  Alert,
 } from "../../.././../../redux/actions";
 
 import edit from "../../../../../assets/svg/edit.svg";
 import removeIcon from "../../../../../assets/svg/remove.svg";
 import save from "../../../../../assets/svg/save.svg";
 import "./ProductCard.css";
-import { toast } from "react-toastify";
 
 export default function ProductCard({ product }) {
   const dispatch = useDispatch();
-  const userId = useSelector((state) => state.user.uid);
   const [editProduct, setProduct] = useState(product);
   const [disabled, setDisabled] = useState(true);
   const type = [
@@ -33,32 +32,70 @@ export default function ProductCard({ product }) {
   }
 
   function handleRemove() {
-    dispatch(openLoading());
-    dispatch(deleteProduct(product.ITE_CODIGO))
-      .then(() => {
-        dispatch(closeLoading());
-        toast.success("¡Producto eliminado exitosamente!");
-      })
-      .catch((e) => {
-        dispatch(closeLoading());
-        toast.error("Error al eliminar el producto");
-        console.log(e.message);
-      });
+    swal({
+      title: "¡Atencion!",
+      text: "¿Seguro que quiere eliminar el producto?",
+      icon: "warning",
+      buttons: {
+        eliminar: true,
+        cancel: true,
+      },
+    }).then((r) => {
+      if (r) {
+        dispatch(openLoading());
+        dispatch(deleteProduct(product.ITE_CODIGO))
+          .then(() => {
+            dispatch(closeLoading());
+            swal(
+              "Guardado",
+              "Su producto se elimino correctamente",
+              "success"
+            );
+          })
+          .catch((e) => {
+            dispatch(closeLoading());
+            swal(
+              "Error",
+              "Surgio un error desconocido al eliminar el producto",
+              "error"
+            );
+            console.log(e.message);
+          });
+      }
+    });
   }
 
   function handleUpdate() {
-    dispatch(openLoading());
-    dispatch(updateProduct(editProduct))
-      .then(() => {
-        dispatch(closeLoading());
-        toast.success("¡Producto actualizado exitosamente!");
-        setDisabled(true);
-      })
-      .catch((e) => {
-        dispatch(closeLoading());
-        toast.error("Error al actualizar el producto");
-        console.log(e.message);
-      });
+    swal({
+      text: "¿Seguro quiere guardar los datos del producto?",
+      buttons: {
+        guardar: true,
+        cancel: true,
+      },
+    }).then((r) => {
+      if (r) {
+        dispatch(openLoading());
+        dispatch(updateProduct(editProduct))
+          .then(() => {
+            dispatch(closeLoading());
+            swal(
+              "Actualizado",
+              "Se actualizaron los datos del producto con exito",
+              "success"
+            );
+            setDisabled(true);
+          })
+          .catch((e) => {
+            dispatch(closeLoading());
+            swal(
+              "Error",
+              "Surgio un error desconocido al actualizar el producto",
+              "error"
+            );
+            console.log(e.message);
+          });
+      }
+    });
   }
 
   return (
@@ -114,18 +151,7 @@ export default function ProductCard({ product }) {
       <div className="edit-buttons">
         <button
           className={`btn ${disabled ? "btn-primary" : "btn-success"}`}
-          onClick={
-            disabled
-              ? handleEdit
-              : () => {
-                  dispatch(
-                    Alert(
-                      "¿Seguro que desea guardar los cambios?",
-                      handleUpdate
-                    )
-                  );
-                }
-          }
+          onClick={disabled ? handleEdit : handleUpdate}
         >
           <img src={disabled ? edit : save} alt="edit" />
         </button>
@@ -135,14 +161,7 @@ export default function ProductCard({ product }) {
           </button>
         )}
       </div>
-      <button
-        className="btn btn-danger"
-        onClick={() => {
-          dispatch(
-            Alert(`¿Seguro que quiere eliminar el producto?`, handleRemove)
-          );
-        }}
-      >
+      <button className="btn btn-danger" onClick={handleRemove}>
         <img src={removeIcon} alt="remove" />
       </button>
     </div>

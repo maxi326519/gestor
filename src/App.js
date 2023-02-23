@@ -7,14 +7,10 @@ import {
   getProducts,
   getClients,
   getInvoices,
-  clearAlert,
   openLoading,
-  closeLoading,
+  closeLoading
 } from "./redux/actions";
 import { getAuth } from "firebase/auth";
-
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 import Loading from "./Components/Loading/Loading";
 import Profile from "./Components/Dashboard/Profile/Profile";
@@ -22,8 +18,6 @@ import Products from "./Components/Dashboard/Products/Products";
 import Client from "./Components/Dashboard/Client/Client";
 import Invoices from "./Components/Dashboard/Invoices/Invoices";
 import InvoicesForm from "./Components/Dashboard/InvoicesForm/InvoicesForm";
-
-import Alert from "./Components/Alert/Alert";
 
 import ExportInvoice from "./Components/Dashboard/Forms/ExportForm/ExportForm";
 import AddProduct from "./Components/Dashboard/Forms/ProductForm/ProductForm";
@@ -40,7 +34,6 @@ function App() {
   const redirect = useNavigate();
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.loading);
-  const alert = useSelector((state) => state.alert);
   const auth = getAuth();
 
   useEffect(() => {
@@ -98,12 +91,6 @@ function App() {
 
   return (
     <div className="App">
-      <ToastContainer position="top-center"/>
-      <Alert
-        text={alert.text}
-        isAccept={alert.isAcceptFunction}
-        isCanceled={() => dispatch(clearAlert())}
-      />
       {loading ? <Loading /> : null}
       <Routes>
         <Route path="/dashboard/profile" element={<Profile />} />

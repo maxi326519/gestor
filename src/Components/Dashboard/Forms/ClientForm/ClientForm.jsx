@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import swal from "sweetalert";
 import {
   postClient,
   openLoading,
   closeLoading,
 } from "../../../../redux/actions";
-import { toast } from "react-toastify";
 
 import validaDocumento from "../../../../Validations/Ruc-Ci.js";
 
@@ -31,6 +31,7 @@ export default function ClientForm({ addClient, handleAddClient }) {
   const [client, setclient] = useState(initialState);
   const [error, setError] = useState({
     CLI_IDENTIFICACION: null,
+    CLI_EMAIL: null,
   });
 
   function handleChange(e) {
@@ -63,11 +64,15 @@ export default function ClientForm({ addClient, handleAddClient }) {
         .then((d) => {
           hanldeClose();
           dispatch(closeLoading());
-          toast.success("¡Cliente agregado exitosamente!");
+        swal("Agregado", "Se agrego el nuevo cliente con exito", "success");
         })
         .catch((e) => {
           dispatch(closeLoading());
-          toast.error("Error al agregar el cliente");
+          swal(
+            "Error",
+            "No se pudo agregar al cliente por un error desconocido",
+            "error"
+          );
           console.log(e);
         });
     }

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { toast } from "react-toastify";
+import swal from "sweetalert";
 import {
   postProduct,
   openLoading,
-  closeLoading
+  closeLoading,
 } from "../../../../redux/actions";
 
 import "../Form.css";
@@ -33,11 +33,15 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
       .then((d) => {
         dispatch(closeLoading());
         handleClose();
-        toast.success("¡Producto agregado exitosamente!");
+        swal("Agregado", "Se agrego el nuevo producto con exito", "success");
       })
       .catch((e) => {
         dispatch(closeLoading());
-        toast.error("Error al agregar el producto");
+        swal(
+          "Error",
+          "No se pudo agregar el producto por un error desconocido",
+          "error"
+        );
         console.log(e);
       });
   }

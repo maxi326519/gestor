@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { toast } from "react-toastify";
+import swal from "sweetalert";
+
 import {
   deleteClient,
   openLoading,
   closeLoading,
   updateClient,
-  Alert,
 } from "../../.././../../redux/actions";
 
 import edit from "../../../../../assets/svg/edit.svg";
@@ -30,31 +30,69 @@ export default function ClientCard({ client }) {
   }
 
   function handleRemove() {
-    dispatch(openLoading());
-    dispatch(deleteClient(client.id))
-      .then(() => {
-        dispatch(closeLoading());
-        toast.success("¡Cliente eliminado exitosamente!");
-      })
-      .catch((e) => {
-        toast.error("Error al eliminar el cliente");
-        console.log(e);
-      });
+    swal({
+      title: "¡Atencion!",
+      text: "¿Seguro que quiere eliminar el cliente?",
+      icon: "warning",
+      buttons: {
+        eliminar: true,
+        cancel: true,
+      },
+    }).then((r) => {
+      if (r) {
+        dispatch(openLoading());
+        dispatch(deleteClient(client.id))
+          .then(() => {
+            dispatch(closeLoading());
+            swal(
+              "Eliminado",
+              "Se elimino el cliente con exito",
+              "success"
+            );
+          })
+          .catch((e) => {
+            swal(
+              "Error",
+              "Surgio un error desconocido al eliminar el cliente",
+              "error"
+            );
+            console.log(e);
+          });
+      }
+    });
   }
 
   function handleUpdate() {
-    dispatch(openLoading());
-    dispatch(updateClient(client.id, editClient))
-      .then(() => {
-        dispatch(closeLoading());
-        toast.success("¡Cliente actualizado exitosamente!");
-        setDisabled(true);
-      })
-      .catch((e) => {
-        dispatch(closeLoading());
-        toast.error("Error al actualizar el cliente");
-        console.log(e);
-      });
+    swal({
+      text: "¿Seguro quiere guardar los datos del cliente?",
+      buttons: {
+        guardar: true,
+        cancel: true,
+      },
+    }).then((r) => {
+      if (r) {
+        dispatch(openLoading());
+        dispatch(updateClient(client.id, editClient))
+          .then(() => {
+            dispatch(closeLoading());
+            swal(
+              "Actualizado",
+              "Se actualizaron los datos del cliente con exito",
+              "success"
+            );
+            setDisabled(true);
+          })
+          .catch((e) => {
+            dispatch(closeLoading());
+            swal(
+              "Error",
+              "Surgio un error desconocido al actualizar el cliente",
+              "error"
+            );
+            console.log(e);
+          });
+      }
+    });
   }
 
   return (
@@ -116,31 +154,17 @@ export default function ClientCard({ client }) {
       <div className="edit-buttons">
         <button
           className={`btn ${disabled ? "btn-primary" : "btn-success"}`}
-          onClick={
-            disabled
-              ? handleEdit
-              : () => {
-                  dispatch(
-                    Alert(
-                      "¿Seguro que desea guardar los cambios?",
-                      handleUpdate
-                    )
-                  );
-                }
-          }
+          onClick={disabled ? handleEdit : handleUpdate}
         >
           <img src={disabled ? edit : save} alt="edit" />
         </button>
-        {disabled ? null : <button className="btn btn-danger" onClick={handleEdit}>x</button>}
+        {disabled ? null : (
+          <button className="btn btn-danger" onClick={handleEdit}>
+            x
+          </button>
+        )}
       </div>
-      <button
-        className="btn btn-danger"
-        onClick={() => {
-          dispatch(
-            Alert(`¿Seguro que quiere eliminar este cliente?`, handleRemove)
-          );
-        }}
-      >
+      <button className="btn btn-danger" onClick={handleRemove}>
         <img src={removeIcon} alt="remove" />
       </button>
     </div>
