@@ -1,18 +1,35 @@
-.buscadores h2{
+.buscadores h2 {
   text-align: right;
 }
 
-.invoice-number{
+.invoice-number {
   display: flex;
   flex-direction: column;
   margin-top: 20px;
 }
 
-.invoice-number span, input[type="date"], .invoice-clave{
+.invoice-number span,
+input[type="date"],
+.invoice-clave {
   font-weight: bold;
   font-size: 20px;
 }
 
-.guia-de-emision input[type="checkbox"]{
+.guia-de-emision input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.guia-de-emision span {
+  margin-bottom: 20px;
+}
+
+.guia-de-emision .guia {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.guia-de-emision .guia div:first-child,
+.guia-de-emision .guia div:nth-child(2) {
+  width: 100px;
   margin-right: 10px;
 }

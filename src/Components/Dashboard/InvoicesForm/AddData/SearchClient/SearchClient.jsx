@@ -14,10 +14,14 @@ export default function SearchClient({ handleClient, handleFormClient }) {
     const value = e.target.value;
     setRows(
       clients.filter((c) => {
-        if (c.CLI_TIPOIDE.toLowerCase().includes(value.toLowerCase())) return true;
-        if (c.CLI_NOMBRE.toLowerCase().includes(value.toLowerCase())) return true;
-        if (c.CLI_EMAIL.toLowerCase().includes(value.toLowerCase())) return true;
-        if (c.CLI_DIRECCION.toLowerCase().includes(value.toLowerCase())) return true;
+        if (c.CLI_IDENTIFICACION.toLowerCase().includes(value.toLowerCase()))
+          return true;
+        if (c.CLI_NOMBRE.toLowerCase().includes(value.toLowerCase()))
+          return true;
+        if (c.CLI_EMAIL.toLowerCase().includes(value.toLowerCase()))
+          return true;
+        if (c.CLI_DIRECCION.toLowerCase().includes(value.toLowerCase()))
+          return true;
         return false;
       })
     );
@@ -64,7 +68,7 @@ export default function SearchClient({ handleClient, handleFormClient }) {
               </div>
             ))
           ) : (
-            <div>
+            <div className="search-list-empty">
               <span>¿No encuentra al cliente?</span>
               <button className="btn btn-primary" onClick={handleFormClient}>
                 Agregar cliente

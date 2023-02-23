@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import swal from "sweetalert";
 
-import clave2 from "../../../../Validations/Clave.ts";
+import clave2 from "../../../../functions/Clave.ts";
 
 import "./InvoiceData.css";
 
@@ -16,26 +17,22 @@ const formasDePago = [
   { value: "21", name: "ENDOSO DE TÍTULOS" },
 ];
 
-function addZero(number) {
-  return `00000000${number}`;
-}
-
-export default function InvoiceData({ invoice, handleChange }) {
+export default function InvoiceData({ invoice, handleChange, handleSetGuia }) {
   const user = useSelector((state) => state.user.userDB);
   const [guia, setGuia] = useState(false);
+  const [guiaData, setGuiaData] = useState({
+    GUIA_ESTABLECIMIENTO: 1,
+    GUIA_PTEMISION: 1,
+    GUIA_SECUENCIAL: 1,
+  });
   const [dateFormat, setFormat] = useState("");
   const [clave, setClave] = useState(0);
 
   useEffect(() => {
     const dateSplit = invoice.VEN_FECHA.split("-");
-    let date;
-
-    if (dateSplit[0].length === 2) {
-      date = `${dateSplit[2]}-${(0 + dateSplit[1]).slice(-2)}-${dateSplit[0]}`;
-    } else {
-      date = invoice.VEN_FECHA;
-    }
-    setFormat(date);
+    setFormat(
+      `${dateSplit[2]}-${("0" + dateSplit[1]).slice(-2)}-${dateSplit[0]}`
+    );
   }, [invoice]);
 
   useEffect(() => {
@@ -48,10 +45,62 @@ export default function InvoiceData({ invoice, handleChange }) {
         invoice.VEN_PTOEMISION
       )
     );
-  }, [invoice, user]);
+  }, [invoice, setClave, user]);
+
+  useEffect(() => {
+    setGuiaData({
+      GUIA_ESTABLECIMIENTO: Number(user.EMP_ESTABLECIMIENTO),
+      GUIA_PTEMISION: Number(user.EMP_PTOEMISION),
+      GUIA_SECUENCIAL: Number(user.EMP_SECUENCIAL + 1),
+    });
+  }, [user]);
+
+  useEffect(() => {
+    if (guia) {
+      const value = `${`00${guiaData.GUIA_ESTABLECIMIENTO}`.slice(
+        -3
+      )}-${`00${guiaData.GUIA_PTEMISION}`.slice(
+        -3
+      )}-${`00000000${guiaData.GUIA_SECUENCIAL}`.slice(-9)}`;
+
+      handleSetGuia(value);
+    } else {
+      handleSetGuia("-");
+    }
+  }, [guiaData, guia]);
 
   function handleActive(e) {
     setGuia(e.target.checked);
+  }
+
+  function handleChangeGuia(e) {
+    if (
+      (e.target.name === "GUIA_ESTABLECIMIENTO" && e.target.value <= 999) ||
+      (e.target.name === "GUIA_PTEMISION" && e.target.value <= 999) ||
+      (e.target.name === "GUIA_SECUENCIAL" && e.target.value <= 999999999)
+    ) {
+      setGuiaData({ ...guiaData, [e.target.name]: e.target.value });
+    }
+  }
+
+  function dateValidation(e) {
+    const newDate = new Date(e.target.value.split("-").join("/"));
+    const dateSplit = new Date().toLocaleDateString().split("/");
+    const toDay = new Date(
+      `${dateSplit[2]}/${("0" + dateSplit[1]).slice(-2)}/${dateSplit[0]}`
+    );
+
+    if (newDate <= toDay) {
+      handleChange({
+        ...e,
+        target: {
+          name: "VEN_FECHA",
+          value: e.target.value.split("-").reverse().join("-"),
+        },
+      });
+    } else {
+      swal("Error", "No se pueden agregar fechas futuras", "error");
+    }
   }
 
   return (
@@ -66,7 +115,7 @@ export default function InvoiceData({ invoice, handleChange }) {
             className="form-control"
             name="VEN_FECHA"
             value={dateFormat}
-            onChange={handleChange}
+            onChange={dateValidation}
             required
           />
           <label htmlFor="floatingInput">Fecha de emisión</label>
@@ -78,7 +127,7 @@ export default function InvoiceData({ invoice, handleChange }) {
           {user ? (
             <span>{`${user.EMP_ESTABLECIMIENTO} - ${
               user.EMP_PTOEMISION
-            } - ${addZero(user.EMP_NUMERO)}`}</span>
+            } - ${`000000000${invoice.VEN_NUMERO}`.slice(-9)}`}</span>
           ) : null}
         </div>
       </div>
@@ -92,14 +141,38 @@ export default function InvoiceData({ invoice, handleChange }) {
           </label>
           {guia ? (
             <div className="guia">
-              <input
-                className="form-control"
-                type="text"
-                name="VEN_GUIA"
-                value={invoice.VEN_GUIA}
-                onChange={handleChange}
-                required
-              />
+              <div className="">
+                <input
+                  className="form-control"
+                  type="number"
+                  name="GUIA_ESTABLECIMIENTO"
+                  value={guiaData.GUIA_ESTABLECIMIENTO}
+                  min={1}
+                  max={999}
+                  onChange={handleChangeGuia}
+                  required
+                />
+              </div>
+              <div>
+                <input
+                  className="form-control"
+                  type="number"
+                  name="GUIA_PTEMISION"
+                  value={guiaData.GUIA_PTEMISION}
+                  onChange={handleChangeGuia}
+                  required
+                />
+              </div>
+              <div>
+                <input
+                  className="form-control"
+                  type="number"
+                  name="GUIA_SECUENCIAL"
+                  value={guiaData.GUIA_SECUENCIAL}
+                  onChange={handleChangeGuia}
+                  required
+                />
+              </div>
             </div>
           ) : null}
         </div>
@@ -114,7 +187,9 @@ export default function InvoiceData({ invoice, handleChange }) {
             required
           >
             {formasDePago.map((f) => (
-              <option key={f.value} value={f.value}>{f.name}</option>
+              <option key={f.value} value={f.value}>
+                {f.name}
+              </option>
             ))}
           </select>
           <label>Forma de pago</label>

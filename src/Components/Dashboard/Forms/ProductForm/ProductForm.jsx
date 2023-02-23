@@ -78,7 +78,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
             onChange={handleChange}
             required
           />
-          <label htmFor="floatingInput">Codigo</label>
+          <label htmlFor="floatingInput">Codigo</label>
         </div>
 
         {/* DESCRIPCION */}
@@ -92,7 +92,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
             onChange={handleChange}
             required
           />
-          <label htmFor="floatingInput">Descripcion</label>
+          <label htmlFor="floatingInput">Descripcion</label>
         </div>
 
         {/* Type */}
@@ -108,7 +108,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
             <option value={0}>Producto</option>
             <option value={1}>Servicio</option>
           </select>
-          <label htmFor="floatingInput">Tipo</label>
+          <label htmlFor="floatingInput">Tipo</label>
         </div>
 
         {/* Price */}
@@ -122,7 +122,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
             onChange={handleChange}
             required
           />
-          <label htmFor="floatingInput">Precio</label>
+          <label htmlFor="floatingInput">Precio</label>
         </div>
 
         {/* Impuesto */}
@@ -138,7 +138,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
             <option value={0}>No</option>
             <option value={2}>Si</option>
           </select>
-          <label htmFor="floatingInput">Seleccione si paga inpuestos</label>
+          <label htmlFor="floatingInput">Seleccione si paga inpuestos</label>
         </div>
 
         {product.ITE_IMPUESTO === "true" ? (
@@ -151,7 +151,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
               onChange={handleChange}
               required
             />
-            <label htmFor="floatingInput">Impuesto</label>
+            <label htmlFor="floatingInput">Impuesto</label>
           </div>
         ) : null}
 

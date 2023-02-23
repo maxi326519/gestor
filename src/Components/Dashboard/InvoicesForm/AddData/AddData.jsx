@@ -33,9 +33,6 @@ export default function AddData({
             <img src={user} alt="add client" />
             <span>Clientes</span>
           </button>
-          <button className="btn btn-primary clear" onClick={handleClearClient}>
-            <span>Borrar</span>
-          </button>
           <button className="btn btn-primary add" onClick={handleAddClient}>
             <img src={square} alt="add client" />
           </button>

@@ -49,14 +49,14 @@ export default function InvoiceTable({
             value={p.VED_DESCUENTO}
             onChange={(e) => descuentoValidation(e, p.ITE_CODIGO)}
           />
+            <span>{Number(p.VED_PUNITARIO).toFixed(user.EMP_PRECISION)}</span>
           <input
             className="amount"
             type="number"
-            name="VED_PUNITARIO"
-            value={Number(p.VED_PUNITARIO).toFixed(user.EMP_PRECISION)}
+            name="VED_PUNITARIOIVA"
+            value={Number(p.VED_PUNITARIOIVA).toFixed(user.EMP_PRECISION)}
             onChange={(e) => handleChangeProduct(e, p.ITE_CODIGO)}
           />
-          <span>{Number(p.VED_PUNITARIOIVA).toFixed(user.EMP_PRECISION)}</span>
           <span>{Number(p.VED_VALOR).toFixed(2)}</span>
         </div>
       ))}

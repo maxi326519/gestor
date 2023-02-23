@@ -100,7 +100,7 @@ export function signin(user) {
         EMP_COMPROBANTES: 1 /* default */,
         EMP_DADICIONAL: 0 /* default */,
         EMP_ESTADO: 1 /* default */,
-        EMP_FECHA: new Date(),
+        EMP_FECHA: new Date().toLocaleDateString(),
         EMP_GUIAREMISION: 1 /* default */,
         EMP_LICENCIA: "NORMAL",
         EMP_MENSAJE: "" /* default */,
@@ -270,10 +270,10 @@ export function GoogleSesion() {
     try {
       const provider = new GoogleAuthProvider();
       const response = await signInWithPopup(auth, provider);
-/*       const credential = GoogleAuthProvider.credentialFromResult(response); */
+      /*       const credential = GoogleAuthProvider.credentialFromResult(response); */
 
       const user = response.user;
-/*       const token = credential.accessToken; */
+      /*       const token = credential.accessToken; */
 
       await setDoc(doc(db, "users", user.uid), {
         ruc: null,
@@ -324,6 +324,7 @@ export function updateUserData(newData) {
     try {
       if (newData.email !== auth.currentUser.email)
         await updateEmail(auth.currentUser, newData.email);
+
       await updateDoc(doc(db, "users", auth.currentUser.uid), {
         ...newData,
       });
@@ -454,7 +455,12 @@ export function postProduct(product) {
 export function postInvoice(invoice) {
   return async (dispatch) => {
     try {
-      const invoicesColl = collection(db, "users", auth.currentUser.uid, "invoices");
+      const invoicesColl = collection(
+        db,
+        "users",
+        auth.currentUser.uid,
+        "invoices"
+      );
       const newProduct = await addDoc(invoicesColl, invoice);
 
       return dispatch({
@@ -470,7 +476,12 @@ export function postInvoice(invoice) {
 export function getClients() {
   return async (dispatch) => {
     try {
-      const clientColl = collection(db, "users", auth.currentUser.uid, "clients");
+      const clientColl = collection(
+        db,
+        "users",
+        auth.currentUser.uid,
+        "clients"
+      );
       const query = await getDocs(clientColl);
 
       let clients = [];

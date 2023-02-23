@@ -32,7 +32,7 @@ export default function SearchProduct({ handleProduct, handleFormProduct }) {
           name="newProduct"
           onChange={handleSearch}
         />
-        <label htmlFor="floatingInput">Buscar product</label>
+        <label htmlFor="floatingInput">Buscar producto</label>
       </div>
       <div className="product-name">
         <div className="head search-product-row">
@@ -56,7 +56,7 @@ export default function SearchProduct({ handleProduct, handleFormProduct }) {
               </div>
             ))
           ) : (
-            <div>
+            <div className="search-list-empty">
               <span>¿No encuentra el producto?</span>
               <button className="btn btn-primary" onClick={handleFormProduct}>
                 Agregar Producto

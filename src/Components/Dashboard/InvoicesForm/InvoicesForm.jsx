@@ -44,15 +44,15 @@ const initialInvoice = {
   VEN_COMISION: 0,
   VEN_DESCUENTO: 0,
   VEN_ESTABLECIMIENTO: "001",
-  VEN_ESTADO: 3,
-  VEN_FAUTORIZA: new Date(),
+  VEN_ESTADO: 1,
+  VEN_FAUTORIZA: null,
   VEN_FECHA: new Date().toLocaleDateString().split("/").join("-"),
   VEN_FPAGO: "01",
   VEN_GUIA: "-",
   VEN_ICE: 0.0,
   VEN_IMPRESO: 0.0,
   VEN_IVA: 0.0,
-  VEN_NUMERO: "",
+  VEN_NUMERO: 1,
   VEN_PTOEMISION: "001",
   VEN_RETENCION: 0.0,
   VEN_SRI: 0.0,
@@ -82,17 +82,20 @@ export default function InvoicesForm({
   const [newProducts, setNewProduct] = useState([]);
   const [invoice, setInvoice] = useState(initialInvoice);
   const [invoicePDF, setPDF] = useState(null);
+  const [error, setError] = useState({
+    VEN_GUIA: false,
+    INFO: false,
+  });
 
   /* Valores del usuario */
   useEffect(() => {
-    console.log(user.EMP_NUMERO);
     setInvoice({
       ...invoice,
       VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
       VEN_PTOEMISION: user.EMP_PTOEMISION,
-      VEN_NUMERO: Number(user.EMP_NUMERO),
+      VEN_NUMERO: user.EMP_NUMERO + 1,
     });
-  }, [user, setInvoice]);
+  }, [user]);
 
   /* Calcular totales por cada cambio */
   useEffect(() => {
@@ -130,44 +133,53 @@ export default function InvoicesForm({
   function handleSubmit(e) {
     e.preventDefault();
 
-      if(user.EMP_SECUENCIAL < 100){
-      dispatch(openLoading());
-      const newInvoice = {
-        ...invoice,
-        ITE_DETELLES: newProducts,
-      };
-  
-      dispatch(postInvoice(newInvoice))
-        .then((d) => {
-          dispatch(
-            updateUserData({
-              EMP_NUMERO: user.EMP_NUMERO + 1,
-              EMP_SECUENCIAL: user.EMP_SECUENCIAL + 1,
-            })
-          ).then(() => {
+    if (user.EMP_SECUENCIAL < 100) {
+      if (handleValidations()) {
+        dispatch(openLoading());
+        const newInvoice = {
+          ...invoice,
+          ITE_DETELLES: newProducts,
+        };
+
+        dispatch(postInvoice(newInvoice))
+          .then((d) => {
+            dispatch(
+              updateUserData({
+                EMP_NUMERO: user.EMP_NUMERO + 1,
+                EMP_SECUENCIAL: user.EMP_SECUENCIAL + 1,
+              })
+            ).then(() => {
+              dispatch(closeLoading());
+              setPDF(newInvoice);
+              setInvoice(initialInvoice);
+              setNewProduct([]);
+              swal(
+                "Guardado!",
+                "Su factura se agrego correctamente",
+                "success"
+              );
+            });
+          })
+          .catch((e) => {
             dispatch(closeLoading());
-            setPDF(newInvoice);
-            setInvoice(initialInvoice);
-            setNewProduct([]);
-            swal("Guardado!", "Su factura se agrego correctamente", "success");
+            swal(
+              "Error",
+              "Surgio un error desconocido al agregar la factura",
+              "error"
+            );
+            console.log(e);
           });
-        })
-        .catch((e) => {
-          dispatch(closeLoading());
-          swal(
-            "Error",
-            "Surgio un error desconocido al agregar la factura",
-            "error"
-          );
-          console.log(e);
-        });
-    }else{
-      swal(
-        "¡Atencion!",
-        "Llegaste a tu limite de 100 facturas",
-        "warning"
-      );
+      } else {
+        swal("Faltan datos", "\tDebes revisar los datos: productos, guia, info adicional, etc.", "info");
+      }
+    } else {
+      swal("¡Atencion!", "Llegaste a tu limite de 100 facturas", "warning");
     }
+  }
+
+  function handleValidations() {
+    if (invoice.ITE_DETELLES && invoice.ITE_DETELLES.length <= 0) return false;
+    return true
   }
 
   function handleClear() {
@@ -255,9 +267,17 @@ export default function InvoicesForm({
     setFormClient(false);
   }
 
+  function handleSetGuia(value) {
+    if (invoice.VEN_GUIA !== value) {
+      setInvoice({
+        ...invoice,
+        VEN_GUIA: value,
+      });
+    }
+  }
+
   function handleChangeProduct(e, code) {
     const { name, value } = e.target;
-    console.log(name, value, code);
 
     setNewProduct(
       newProducts.map((p) => {
@@ -322,7 +342,11 @@ export default function InvoicesForm({
             handleAddClient={handleAddClient}
             handleClearClient={handleClearClient}
           />
-          <InvoiceData invoice={invoice} handleChange={handleChange} />
+          <InvoiceData
+            invoice={invoice}
+            handleChange={handleChange}
+            handleSetGuia={handleSetGuia}
+          />
         </div>
 
         <div className="invoice__mid">
@@ -336,16 +360,16 @@ export default function InvoicesForm({
         </div>
 
         <div className="buttons">
-          <button className="btn btn-primary" onClick={handleSubmit}>
-            Agregar factura
+          <button className="btn btn-primary" onClick={handleClear}>
+            Nueva factura
           </button>
 
-          <button className="btn btn-primary" onClick={handleClear}>
-            Vaciar factura
+          <button className="btn btn-primary" onClick={handleSubmit}>
+            Guardar factura
           </button>
 
           <button className="btn btn-primary" onClick={handleViewPDF}>
-            Ver en PDF
+            RIDE
           </button>
         </div>
 

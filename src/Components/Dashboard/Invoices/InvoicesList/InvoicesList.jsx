@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 import InvoiceCard from "./InvoiceCard/InvoiceCard";
@@ -18,7 +18,7 @@ export default function InvoicesList({
   const [invoicePDF, setPDF] = useState(null);
   const invoices = useSelector((state) => state.invoices);
   const user = useSelector((state) => state.user.userDB);
-  const [rows, setRows] = useState([]); 
+  const [rows, setRows] = useState([]);
 
   useEffect(() => {
     setRows(invoices);
@@ -29,8 +29,10 @@ export default function InvoicesList({
 
     setRows(
       invoices.filter((row) => {
-        if (row.CLI_DIRECCION.toLowerCase().includes(value.toLowerCase())) return true;
-        if (row.CLI_NOMBRE.toLowerCase().includes(value.toLowerCase())) return true;
+        if (row.CLI_NOMBRE.toLowerCase().includes(value.toLowerCase()))
+        return true;
+        if (row.CLI_IDENTIFICACION.toLowerCase().includes(value.toLowerCase()))
+          return true;
         return false;
       })
     );
@@ -72,23 +74,22 @@ export default function InvoicesList({
           <img src={exportIcon} alt="export" />
           <span>Excel</span>
         </button>
-        <span className="limit">{`${user.EMP_SECUENCIAL} de 100 facturas`}</span>
       </div>
+      <span className="limit">{`${user.EMP_SECUENCIAL} de 100 facturas`}</span>
       <div className="dashboardList__grid">
         <div className="invoice-card first-row">
           <span>Fecha</span>
+          <span>Nro</span>
           <span>Ruc / Cedula / Pasaporte</span>
           <span>Nombre cliente</span>
           <span>Descueto %</span>
-          <span>Nro</span>
-          <span>Estado</span>
           <span>Subtotal</span>
           <span>Subtotal 0%</span>
           <span>Subtotal IVA</span>
           <span>IVA</span>
           <span>Total</span>
+          <span>Estado</span>
           <span>Ver en PDF</span>
-          <span>Eliminar</span>
         </div>
         <div className="contentCard">
           {rows.length <= 0 ? (

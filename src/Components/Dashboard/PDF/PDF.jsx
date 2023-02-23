@@ -151,7 +151,7 @@ export default function PDF({ invoice, handleClosePDF }) {
                   <Text>Factura </Text>
                   <Text>
                     Nro:{" "}
-                    {`${user.EMP_ESTABLECIMIENTO}-${user.EMP_PTOEMISION}-00000000${user.EMP_SECUENCIAL}`}
+                    {`${invoice.VEN_ESTABLECIMIENTO}-${invoice.VEN_PTOEMISION}-${`00000000${invoice.VEN_NUMERO}`.slice(-9)}`}
                   </Text>
                 </View>
                 <Text style={{ marginBottom: "30px" }}>
@@ -242,7 +242,7 @@ export default function PDF({ invoice, handleClosePDF }) {
                     {p.VED_DESCUENTO}
                   </Text>
                   <Text style={{ ...styles.text, width: "80px" }}>
-                    {p.VED_VALOR}
+                    {(Number(p.VED_VALOR)).toFixed(2)}
                   </Text>
                 </View>
               ))}
@@ -280,7 +280,7 @@ export default function PDF({ invoice, handleClosePDF }) {
                         }
                       </Text>
                       <Text style={{ ...styles.text, width: "90px" }}>
-                        {invoice.VEN_TOTAL}
+                        {(Number(invoice.VEN_TOTAL)).toFixed(2)}
                       </Text>
                     </View>
                   </View>
