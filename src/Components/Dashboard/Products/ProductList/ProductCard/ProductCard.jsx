@@ -47,7 +47,7 @@ export default function ProductCard({ product }) {
           .then(() => {
             dispatch(closeLoading());
             swal(
-              "Guardado",
+              "Eliminado",
               "Su producto se elimino correctamente",
               "success"
             );

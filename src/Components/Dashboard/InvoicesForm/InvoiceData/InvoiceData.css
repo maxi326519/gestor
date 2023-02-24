@@ -9,7 +9,7 @@
 }
 
 .invoice-number span,
-input[type="date"],
+.invoice-number input[type="date"],
 .invoice-clave {
   font-weight: bold;
   font-size: 20px;

@@ -19,6 +19,10 @@ export default function InvoicesList({
   const invoices = useSelector((state) => state.invoices);
   const user = useSelector((state) => state.user.userDB);
   const [rows, setRows] = useState([]);
+  const [dateFilter, setFilter] = useState({
+    from: "",
+    to: "",
+  });
 
   useEffect(() => {
     setRows(invoices);
@@ -30,12 +34,47 @@ export default function InvoicesList({
     setRows(
       invoices.filter((row) => {
         if (row.CLI_NOMBRE.toLowerCase().includes(value.toLowerCase()))
-        return true;
-        if (row.CLI_IDENTIFICACION.toLowerCase().includes(value.toLowerCase()))
           return true;
+        if (row.CLI_IDENTIFICACION.toLowerCase().includes(value.toLowerCase()))
+          if (
+            new Date(row.VEN_FECHA) >= new Date(dateFilter.from) &&
+            new Date(row.VEN_FECHA) <= new Date(dateFilter.to)
+          )
+            return true;
         return false;
       })
     );
+  }
+
+  function handleFilterDate(e) {
+    const newDate = { ...dateFilter, [e.target.name]: e.target.value };
+
+    setFilter(newDate);
+
+    if (!(newDate.from === "") && !(newDate.to === "")) {
+      setRows(
+        invoices.filter((row) => {
+          const rowDate = row.VEN_FECHA.split("-").reverse().join("-");
+
+          /* ------------------------------------------------------------------- */
+          console.log(new Date(rowDate));
+          console.log(new Date(newDate.from));
+          console.log(new Date(newDate.to));
+          console.log(new Date(rowDate) >= new Date(newDate.from));
+          console.log(new Date(rowDate) <= new Date(newDate.to));
+          /* ------------------------------------------------------------------- */
+          
+          if (
+            new Date(rowDate) >= new Date(newDate.from) &&
+            new Date(rowDate) <= new Date(newDate.to)
+          ) {
+            console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            return true;
+          }
+          return false;
+        })
+      );
+    }
   }
 
   function handleViewPDF(i) {
@@ -74,6 +113,24 @@ export default function InvoicesList({
           <img src={exportIcon} alt="export" />
           <span>Excel</span>
         </button>
+        <div className="form-floating mb-3 date">
+          <input
+            className="form-control"
+            type="date"
+            name="from"
+            onChange={handleFilterDate}
+          />
+          <label htmlFor="floatingInput">Desde</label>
+        </div>
+        <div className="form-floating mb-3 date">
+          <input
+            className="form-control"
+            type="date"
+            name="to"
+            onChange={handleFilterDate}
+          />
+          <label htmlFor="floatingInput">Hasta</label>
+        </div>
       </div>
       <span className="limit">{`${user.EMP_SECUENCIAL} de 100 facturas`}</span>
       <div className="dashboardList__grid">
