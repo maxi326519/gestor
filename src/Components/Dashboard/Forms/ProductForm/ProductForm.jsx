@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
 import {
   postProduct,
@@ -10,6 +10,7 @@ import {
 import "../Form.css";
 
 export default function ProductForm({ addProduct, handleAddProduct }) {
+  const products = useSelector((state) => state.products);
   const dispatch = useDispatch();
   const initialState = {
     ITE_CODIGO: "",
@@ -19,31 +20,41 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
     ITE_PVP: "",
   };
   const [product, setProduct] = useState(initialState);
+  const [error, setError] = useState({
+    ITE_CODIGO: null,
+  });
 
   function handleChange(e) {
-    console.log(product);
-    setProduct({ ...product, [e.target.name]: e.target.value });
+    setProduct({ ...products, [e.target.name]: e.target.value });
+    if (e.target.name === "ITE_CODIGO") {
+      if (products.find((p) => p.ITE_CODIGO === e.target.value)) {
+        setError({ ITE_CODIGO: "Este codigo ya existe" });
+      } else {
+        setError({ ITE_CODIGO: null });
+      }
+    }
   }
 
   function handleSubmit(e) {
     e.preventDefault();
-    dispatch(openLoading());
-
-    dispatch(postProduct(product))
-      .then((d) => {
-        dispatch(closeLoading());
-        handleClose();
-        swal("Agregado", "Se agrego el nuevo producto con exito", "success");
-      })
-      .catch((e) => {
-        dispatch(closeLoading());
-        swal(
-          "Error",
-          "No se pudo agregar el producto por un error desconocido",
-          "error"
-        );
-        console.log(e);
-      });
+    if (!error.ITE_CODIGO) {
+      dispatch(openLoading());
+      dispatch(postProduct(product))
+        .then((d) => {
+          dispatch(closeLoading());
+          handleClose();
+          swal("Agregado", "Se agrego el nuevo producto con exito", "success");
+        })
+        .catch((e) => {
+          dispatch(closeLoading());
+          swal(
+            "Error",
+            "No se pudo agregar el producto por un error desconocido",
+            "error"
+          );
+          console.log(e);
+        });
+    }
   }
 
   function handleClose() {
@@ -70,8 +81,8 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
         {/* Code */}
         <div className="form-floating mb-3">
           <input
-            className="form-control"
-            id="floatingInput"
+            className={`form-control ${error.ITE_CODIGO ? "is-invalid" : ""}`}
+            id={error.ITE_CODIGO ? "floatingInputInvalid" : "floatingInput"}
             name="ITE_CODIGO"
             placeholder="C001"
             value={product.ITE_CODIGO}
@@ -79,6 +90,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
             required
           />
           <label htmlFor="floatingInput">Codigo</label>
+          <small>{error.ITE_CODIGO}</small>
         </div>
 
         {/* DESCRIPCION */}

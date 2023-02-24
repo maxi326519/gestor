@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
 import {
   postClient,
@@ -27,6 +27,7 @@ const type = [
 ];
 
 export default function ClientForm({ addClient, handleAddClient }) {
+  const clients = useSelector((state) => state.clients);
   const dispatch = useDispatch();
   const [client, setclient] = useState(initialState);
   const [error, setError] = useState({
@@ -37,34 +38,38 @@ export default function ClientForm({ addClient, handleAddClient }) {
   function handleChange(e) {
     setclient({ ...client, [e.target.name]: e.target.value });
 
-    if (
-      e.target.name === "CLI_IDENTIFICACION" &&
-      (client.CLI_TIPOIDE === "04" || client.CLI_TIPOIDE === "05")
-    ) {
-      let mensaje = validaDocumento(e.target.value).mensaje;
-      if (mensaje !== "ruc" && mensaje !== "cedula") {
-        setError({
-          ...error,
-          CLI_IDENTIFICACION: mensaje,
-        });
-      } else {
-        setError({
-          ...error,
-          CLI_IDENTIFICACION: null,
-        });
+    /* Si es el identificador */
+    if (e.target.name === "CLI_IDENTIFICACION") {
+      /* Verificamos si ya existe alguno con el mismo numero y tipo */
+      if (clients.find((c) => c.CLI_IDENTIFICACION === e.target.value)) {
+        setError({ CLI_IDENTIFICACION: "Este codigo ya existe" });
+      }else if (client.CLI_TIPOIDE === "04" || client.CLI_TIPOIDE === "05") {
+        /* Si no existe verificamos su formato */
+        let mensaje = validaDocumento(e.target.value).mensaje;
+        if (mensaje !== "ruc" && mensaje !== "cedula") {
+          setError({
+            ...error,
+            CLI_IDENTIFICACION: mensaje,
+          });
+        } else {
+          setError({
+            ...error,
+            CLI_IDENTIFICACION: null,
+          });
+        }
       }
     }
   }
 
   function handleSubmit(e) {
     e.preventDefault();
-    if(error.CLI_IDENTIFICACION === null){
+    if (error.CLI_IDENTIFICACION === null) {
       dispatch(openLoading());
       dispatch(postClient(client))
         .then((d) => {
           hanldeClose();
           dispatch(closeLoading());
-        swal("Agregado", "Se agrego el nuevo cliente con exito", "success");
+          swal("Agregado", "Se agrego el nuevo cliente con exito", "success");
         })
         .catch((e) => {
           dispatch(closeLoading());
@@ -120,11 +125,15 @@ export default function ClientForm({ addClient, handleAddClient }) {
         <div className="form-floating mb-3">
           <input
             disabled={client.type === "Tipo" ? true : false}
-            name="CLI_IDENTIFICACION"            
+            name="CLI_IDENTIFICACION"
             className={`form-control ${
               !error.CLI_IDENTIFICACION ? null : "is-invalid"
             }`}
-            id={error.CLI_IDENTIFICACION ? "floatingInputInvalid" : "floatingInput"}
+            id={
+              error.CLI_IDENTIFICACION
+                ? "floatingInputInvalid"
+                : "floatingInput"
+            }
             value={client.CLI_IDENTIFICACION}
             onChange={handleChange}
             required
@@ -149,7 +158,7 @@ export default function ClientForm({ addClient, handleAddClient }) {
           />
           <label className="form-label">Nombre</label>
         </div>
-        
+
         {/* Email*/}
         <div className="form-floating mb-3">
           <input
