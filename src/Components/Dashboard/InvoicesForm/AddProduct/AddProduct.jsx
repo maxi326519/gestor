@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
-import add from "../../../../assets/svg/add-square.svg";
+import square from "../../../../assets/svg/add-square.svg";
 import "./AddProduct.css";
 
 export default function AddProduct({
   handleFormProduct,
-  handleAdd,
+  handleProduct,
   handleRemove,
-  newProducts
+  handleAddProduct,
 }) {
   const products = useSelector((state) => state.products);
   const [productInvoice, setProduct] = useState([]);
@@ -32,8 +32,10 @@ export default function AddProduct({
     setRows(
       products.filter((row) => {
         if (value === "") return true;
-        if (row.ITE_CODIGO.toLowerCase().includes(value.toLowerCase())) return true;
-        if (row.ITE_DESCRIPCION.toLowerCase().includes(value.toLowerCase())) return true;
+        if (row.ITE_CODIGO.toLowerCase().includes(value.toLowerCase()))
+          return true;
+        if (row.ITE_DESCRIPCION.toLowerCase().includes(value.toLowerCase()))
+          return true;
         return false;
       })
     );
@@ -41,7 +43,7 @@ export default function AddProduct({
 
   return (
     <div className="form__container">
-      <form className="form">
+      <div className="form">
         <div className="form__close">
           <h4>Agregar Productos</h4>
           <button
@@ -57,6 +59,16 @@ export default function AddProduct({
             placeholder="Buscar un producto..."
             onChange={handleChange}
           />
+          <button
+            className="btn btn-primary add"
+            onClick={() => {
+              handleAddProduct();
+              handleFormProduct();
+            }}
+          >
+            <img src={square} alt="add client" />
+            Crear
+          </button>
         </div>
         <div className="product-list">
           <div className="invoice-product-card">
@@ -91,7 +103,7 @@ export default function AddProduct({
                   className="btn btn-primary"
                   onClick={() => {
                     isAdded[i].added = true;
-                    handleAdd(p);
+                    handleProduct(p);
                   }}
                 >
                   +
@@ -100,7 +112,7 @@ export default function AddProduct({
             </div>
           ))}
         </div>
-      </form>
+      </div>
     </div>
   );
 }

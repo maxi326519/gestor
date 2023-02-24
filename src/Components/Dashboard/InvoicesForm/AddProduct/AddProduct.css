@@ -25,6 +25,20 @@
     box-shadow: 0 0 20px 5px #0008;
 }
 
+.Search-product {
+  display: flex;
+}
+
+.Search-product button{
+  width: 110px;
+  margin-left: 10px;
+  margin-bottom: 20px;
+}
+
+.Search-product button img{
+  margin-right: 10px;
+}
+
 .Search-product input{
     margin-bottom: 20px;
 }

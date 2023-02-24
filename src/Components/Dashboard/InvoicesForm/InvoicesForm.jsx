@@ -108,16 +108,17 @@ export default function InvoicesForm({
       subtotal += p.VED_PUNITARIO * p.VED_CANTIDAD;
 
       if (p.VED_IMPUESTO === "2") {
-        total += p.VED_PUNITARIO * 1.12 * p.VED_CANTIDAD;
+        total += (p.VED_PUNITARIOIVA * p.VED_CANTIDAD) / (1 + (p.VED_DESCUENTO / 100));
         subtotalIVA += Number(p.VED_PUNITARIO * p.VED_CANTIDAD);
       } else {
         total += p.VED_PUNITARIO * p.VED_CANTIDAD;
-        subtotalPorcentual += Number(p.VED_PUNITARIO * p.VED_CANTIDAD);
+        subtotalPorcentual += Number(p.VED_PUNITARIO * p.VED_CANTIDAD) / (1 + (p.VED_DESCUENTO / 100));
       }
     });
 
     setInvoice({
       ...invoice,
+      
       VEN_SUBTOTAL: subtotal.toFixed(user.EMP_PRECISION),
       VEN_SUBTOTAL0: subtotalPorcentual.toFixed(user.EMP_PRECISION),
       VEN_SUBTOTAL12: subtotalIVA.toFixed(user.EMP_PRECISION),
@@ -151,7 +152,12 @@ export default function InvoicesForm({
             ).then(() => {
               dispatch(closeLoading());
               setPDF(newInvoice);
-              setInvoice(initialInvoice);
+              setInvoice({
+                ...initialInvoice,
+                VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
+                VEN_PTOEMISION: user.EMP_PTOEMISION,
+                VEN_NUMERO: user.EMP_NUMERO + 2,
+              });
               setNewProduct([]);
               swal(
                 "Guardado!",
@@ -170,7 +176,11 @@ export default function InvoicesForm({
             console.log(e);
           });
       } else {
-        swal("Faltan datos", "\tDebes revisar los datos: productos, guia, info adicional, etc.", "info");
+        swal(
+          "Faltan datos",
+          "\tDebes revisar los datos: productos, guia, info adicional, etc.",
+          "info"
+        );
       }
     } else {
       swal("¡Atencion!", "Llegaste a tu limite de 100 facturas", "warning");
@@ -179,7 +189,7 @@ export default function InvoicesForm({
 
   function handleValidations() {
     if (invoice.ITE_DETELLES && invoice.ITE_DETELLES.length <= 0) return false;
-    return true
+    return true;
   }
 
   function handleClear() {
@@ -221,8 +231,6 @@ export default function InvoicesForm({
   }
 
   function handleProduct(product) {
-    console.log(product);
-    console.log(newProducts);
     if (!newProducts.find((pi) => pi.ITE_CODIGO === product.ITE_CODIGO)) {
       setNewProduct([
         ...newProducts,
@@ -257,14 +265,11 @@ export default function InvoicesForm({
       CLI_NOMBRE: client.CLI_NOMBRE,
       CLI_TELEFONO: client.CLI_TELEFONO,
     });
+    setFormClient(false);
   }
 
   function handleRemove(p) {
     setNewProduct(newProducts.filter((pf) => pf.code !== p.code));
-  }
-
-  function handleSelect(client) {
-    setFormClient(false);
   }
 
   function handleSetGuia(value) {
@@ -282,16 +287,29 @@ export default function InvoicesForm({
     setNewProduct(
       newProducts.map((p) => {
         if (p.ITE_CODIGO === code) {
-          const newProduct = {
+          let newProduct;
+          if(name === "VED_PUNITARIOIVA"){
+          newProduct = {
             ...p,
-            [name]: value,
-            VED_PUNITARIOIVA:
-              p.VED_IMPUESTO === "2" && name === "VED_PUNITARIO"
-                ? (value * 1.12).toFixed(2)
-                : name === "VED_PUNITARIO"
-                ? value
-                : p.VED_PUNITARIOIVA,
+            VED_PUNITARIOIVA: value,
+            VED_PUNITARIO:
+              p.VED_IMPUESTO === "2"
+                ? (value / 1.12).toFixed(user.EMP_PRECISION)
+                : value
           };
+          }else{
+            newProduct = {
+              ...p,
+              [name]: value,
+              VED_PUNITARIOIVA:
+                p.VED_IMPUESTO === "2" && name === "VED_PUNITARIO"
+                  ? (value * 1.12).toFixed(user.EMP_PRECISION)
+                  : name === "VED_PUNITARIO"
+                  ? value
+                  : p.VED_PUNITARIOIVA,
+            };
+          }
+
           return {
             ...newProduct,
             VED_VALOR: (
@@ -377,9 +395,9 @@ export default function InvoicesForm({
         {formProduct ? (
           <AddProduct
             handleFormProduct={handleFormProduct}
-            handleAdd={handleProduct}
+            handleProduct={handleProduct}
             handleRemove={handleRemove}
-            newProducts={newProducts}
+            handleAddProduct={handleAddProduct}
           />
         ) : null}
 
@@ -387,8 +405,9 @@ export default function InvoicesForm({
         {formClient ? (
           <AddClient
             handleFormClient={handleFormClient}
-            handleSelect={handleSelect}
-            newProducts={newProducts}
+            handleClient={handleClient}
+            handleClearClient={handleClearClient}
+            handleAddClient={handleAddClient}
           />
         ) : null}
       </div>

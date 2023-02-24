@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
+import square from "../../../../assets/svg/add-square.svg";
 import "./AddClient.css";
 
-export default function AddClient({ handleFormClient, handleSelect }) {
+export default function AddClient({
+  handleFormClient,
+  handleClient,
+  handleAddClient,
+}) {
   const clients = useSelector((state) => state.clients);
   const [rows, setRows] = useState([]);
 
@@ -17,11 +22,12 @@ export default function AddClient({ handleFormClient, handleSelect }) {
     setRows(
       clients.filter((row) => {
         if (value === "") return true;
-        if (row.CLI_IDENTIFICACION.toLowerCase().includes(value.toLowerCase())) return true;
+        if (row.CLI_IDENTIFICACION.toLowerCase().includes(value.toLowerCase()))
+          return true;
         if (row.CLI_NOMBRE.toLowerCase().includes(value.toLowerCase()))
-        if (row.CLI_DIRECCION.toLowerCase().includes(value.toLowerCase()))
-        if (row.CLI_TELEFONO.toLowerCase().includes(value.toLowerCase()))
-          return true; 
+          if (row.CLI_DIRECCION.toLowerCase().includes(value.toLowerCase()))
+            if (row.CLI_TELEFONO.toLowerCase().includes(value.toLowerCase()))
+              return true;
         return false;
       })
     );
@@ -29,7 +35,7 @@ export default function AddClient({ handleFormClient, handleSelect }) {
 
   return (
     <div className="form__container">
-      <form className="form">
+      <div className="form">
         <div className="form__close">
           <h4>Agregar Cliente</h4>
           <button
@@ -45,6 +51,16 @@ export default function AddClient({ handleFormClient, handleSelect }) {
             placeholder="Buscar un cliente..."
             onChange={handleChange}
           />
+          <button
+            className="btn btn-primary add"
+            onClick={() => {
+              handleAddClient();
+              handleFormClient();
+            }}
+          >
+            <img src={square} alt="add client" />
+            Crear
+          </button>
         </div>
         <div className="product-list">
           <div className="invoice-product-card">
@@ -62,13 +78,13 @@ export default function AddClient({ handleFormClient, handleSelect }) {
               <span>{c.CLI_EMAIL}</span>
               <span>{c.CLI_DIRECCION}</span>
               <span>{c.CLI_TELEFONO}</span>
-              <span className="btn btn-primary" onClick={() => handleSelect(c)}>
+              <span className="btn btn-primary" onClick={() => handleClient(c)}>
                 +
               </span>
             </div>
           ))}
         </div>
-      </form>
+      </div>
     </div>
   );
 }

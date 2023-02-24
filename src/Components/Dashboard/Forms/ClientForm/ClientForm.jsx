@@ -7,7 +7,7 @@ import {
   closeLoading,
 } from "../../../../redux/actions";
 
-import validaDocumento from "../../../../Validations/Ruc-Ci.js";
+import validaDocumento from "../../../../functions/Ruc-Ci.js";
 
 import "../Form.css";
 
