@@ -55,20 +55,10 @@ export default function InvoicesList({
       setRows(
         invoices.filter((row) => {
           const rowDate = row.VEN_FECHA.split("-").reverse().join("-");
-
-          /* ------------------------------------------------------------------- */
-          console.log(new Date(rowDate));
-          console.log(new Date(newDate.from));
-          console.log(new Date(newDate.to));
-          console.log(new Date(rowDate) >= new Date(newDate.from));
-          console.log(new Date(rowDate) <= new Date(newDate.to));
-          /* ------------------------------------------------------------------- */
-          
           if (
             new Date(rowDate) >= new Date(newDate.from) &&
             new Date(rowDate) <= new Date(newDate.to)
           ) {
-            console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
             return true;
           }
           return false;
