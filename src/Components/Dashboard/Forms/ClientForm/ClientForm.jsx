@@ -13,10 +13,10 @@ import "../Form.css";
 
 const initialState = {
   CLI_DIRECCION: "",
-  CLI_EMAIL: "",
+  CLI_EMAIL: "-",
   CLI_IDENTIFICACION: "",
   CLI_NOMBRE: "",
-  CLI_TELEFONO: "",
+  CLI_TELEFONO: "-", 
   CLI_TIPOIDE: "04",
 };
 
@@ -159,18 +159,6 @@ export default function ClientForm({ addClient, handleAddClient }) {
           <label className="form-label">Nombre</label>
         </div>
 
-        {/* Email*/}
-        <div className="form-floating mb-3">
-          <input
-            className="form-control"
-            name="CLI_EMAIL"
-            value={client.CLI_EMAIL}
-            onChange={handleChange}
-            required
-          />
-          <label className="form-label">Correo electronico</label>
-        </div>
-
         {/* Adress */}
         <div className="form-floating mb-3">
           <input
@@ -183,6 +171,17 @@ export default function ClientForm({ addClient, handleAddClient }) {
           <label className="form-label">Direccion</label>
         </div>
 
+        {/* Email*/}
+        <div className="form-floating mb-3">
+          <input
+            className="form-control"
+            name="CLI_EMAIL"
+            value={client.CLI_EMAIL}
+            onChange={handleChange}
+          />
+          <label className="form-label">Correo electronico</label>
+        </div>
+
         {/* Phone */}
         <div className="form-floating mb-3">
           <input
@@ -190,7 +189,6 @@ export default function ClientForm({ addClient, handleAddClient }) {
             name="CLI_TELEFONO"
             value={client.CLI_TELEFONO}
             onChange={handleChange}
-            required
           />
           <label className="form-label">Telefono</label>
         </div>
