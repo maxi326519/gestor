@@ -45,7 +45,7 @@ const initialInvoice = {
   VEN_DESCUENTO: 0,
   VEN_ESTABLECIMIENTO: "001",
   VEN_ESTADO: 1,
-  VEN_FAUTORIZA: null,
+  VEN_FAUTORIZA: 2,
   VEN_FECHA: new Date().toLocaleDateString().split("/").join("-"),
   VEN_FPAGO: "01",
   VEN_GUIA: "-",
@@ -89,13 +89,29 @@ export default function InvoicesForm({
 
   /* Valores del usuario */
   useEffect(() => {
-    setInvoice({
-      ...invoice,
-      VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
-      VEN_PTOEMISION: user.EMP_PTOEMISION,
-      VEN_NUMERO: user.EMP_NUMERO + 1,
-    });
-  }, [user]);
+    console.log(invoice.VEN_ESTABLECIMIENTO === user.EMP_ESTABLECIMIENTO)
+    console.log(invoice.VEN_PTOEMISION === user.EMP_PTOEMISION)
+    console.log(invoice.VEN_NUMERO === user.EMP_NUMERO)
+
+    if (
+      !(invoice.VEN_ESTABLECIMIENTO === user.EMP_ESTABLECIMIENTO) ||
+      !(invoice.VEN_PTOEMISION === user.EMP_PTOEMISION) ||
+      !(invoice.VEN_NUMERO === user.EMP_NUMERO)
+    ) {
+      const update = {
+        ...invoice,
+        VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
+        VEN_PTOEMISION: user.EMP_PTOEMISION,
+        VEN_NUMERO: user.EMP_NUMERO + 1,
+      };
+      console.log(update);
+      setInvoice(update);
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log(invoice);
+  }, [invoice]);
 
   /* Calcular totales por cada cambio */
   useEffect(() => {
@@ -108,17 +124,20 @@ export default function InvoicesForm({
       subtotal += p.VED_PUNITARIO * p.VED_CANTIDAD;
 
       if (p.VED_IMPUESTO === "2") {
-        total += (p.VED_PUNITARIOIVA * p.VED_CANTIDAD) / (1 + (p.VED_DESCUENTO / 100));
+        total +=
+          (p.VED_PUNITARIOIVA * p.VED_CANTIDAD) / (1 + p.VED_DESCUENTO / 100);
         subtotalIVA += Number(p.VED_PUNITARIO * p.VED_CANTIDAD);
       } else {
         total += p.VED_PUNITARIO * p.VED_CANTIDAD;
-        subtotalPorcentual += Number(p.VED_PUNITARIO * p.VED_CANTIDAD) / (1 + (p.VED_DESCUENTO / 100));
+        subtotalPorcentual +=
+          Number(p.VED_PUNITARIO * p.VED_CANTIDAD) /
+          (1 + p.VED_DESCUENTO / 100);
       }
     });
 
     setInvoice({
       ...invoice,
-      
+
       VEN_SUBTOTAL: subtotal.toFixed(user.EMP_PRECISION),
       VEN_SUBTOTAL0: subtotalPorcentual.toFixed(user.EMP_PRECISION),
       VEN_SUBTOTAL12: subtotalIVA.toFixed(user.EMP_PRECISION),
@@ -288,16 +307,16 @@ export default function InvoicesForm({
       newProducts.map((p) => {
         if (p.ITE_CODIGO === code) {
           let newProduct;
-          if(name === "VED_PUNITARIOIVA"){
-          newProduct = {
-            ...p,
-            VED_PUNITARIOIVA: value,
-            VED_PUNITARIO:
-              p.VED_IMPUESTO === "2"
-                ? (value / 1.12).toFixed(user.EMP_PRECISION)
-                : value
-          };
-          }else{
+          if (name === "VED_PUNITARIOIVA") {
+            newProduct = {
+              ...p,
+              VED_PUNITARIOIVA: value,
+              VED_PUNITARIO:
+                p.VED_IMPUESTO === "2"
+                  ? (value / 1.12).toFixed(user.EMP_PRECISION)
+                  : value,
+            };
+          } else {
             newProduct = {
               ...p,
               [name]: value,
