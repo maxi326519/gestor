@@ -1,3 +1,4 @@
+import React, { useEffect, useState, useRef } from "react";
 import {
   Document,
   Page,
@@ -8,6 +9,8 @@ import {
   PDFViewer,
 } from "@react-pdf/renderer";
 import { useSelector } from "react-redux";
+import JsBarcode from "jsbarcode";
+import { Barcode } from "@react-pdf/renderer";
 
 import "./PDF.css";
 const styles = StyleSheet.create({
@@ -106,9 +109,26 @@ const formasDePago = [
 // Create Document Component
 export default function PDF({ invoice, handleClosePDF }) {
   const user = useSelector((state) => state.user.userDB);
+  const canvasRef = useRef(null);
+  const [barCode, setBarCode] = useState(null);
+
+  useEffect(() => {
+    if (invoice.VEN_CLAVEACCESO) {
+      JsBarcode("#barcode", invoice.VEN_CLAVEACCESO);
+      const canvas = canvasRef.current;
+      const dataUrl = canvas.toDataURL();
+      try {
+        setBarCode(canvas.toDataURL());
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }, [canvasRef]);
 
   return (
     <div className="pdf-container">
+      <canvas id="barcode" ref={canvasRef} style={{ display: "none" }} />
+      {/*       <img src={barCode}/> */}
       <div className="head">
         <h4>Visor PDF</h4>
         <button
@@ -128,7 +148,6 @@ export default function PDF({ invoice, handleClosePDF }) {
                 <Image
                   style={styles.logo}
                   src="https://res.cloudinary.com/doxph7wwq/image/upload/v1676561586/kpvt6nniodzjnrn6aqqm.png"
-                  alt="asda"
                 />
                 <Text>Nombre: {user.EMP_NOMBRE}</Text>
                 <Text>Ruc: {user.EMP_RUC}</Text>
@@ -151,7 +170,9 @@ export default function PDF({ invoice, handleClosePDF }) {
                   <Text>Factura </Text>
                   <Text>
                     Nro:{" "}
-                    {`${invoice.VEN_ESTABLECIMIENTO}-${invoice.VEN_PTOEMISION}-${`00000000${invoice.VEN_NUMERO}`.slice(-9)}`}
+                    {`${invoice.VEN_ESTABLECIMIENTO}-${
+                      invoice.VEN_PTOEMISION
+                    }-${`00000000${invoice.VEN_NUMERO}`.slice(-9)}`}
                   </Text>
                 </View>
                 <Text style={{ marginBottom: "30px" }}>
@@ -163,11 +184,23 @@ export default function PDF({ invoice, handleClosePDF }) {
                 <Text>EMISION: {user.EMP_LICENCIA}</Text>
                 <Text>AUTORIZACION Y CLAVE DE ACCESO: </Text>
                 {/* AGREGAR CODIGO DE BARRAS */}
-                <Image
-                  style={{ width: "100%", height: "100px" }}
-                  src="https://1000marcas.net/wp-content/uploads/2020/02/logo-Google.png"
-                />
-                <Text>{invoice.VEN_CLAVEACCESO}</Text>
+                <View
+                  style={{
+                    flexGrow: "1",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                  }}
+                >
+                  {invoice.VEN_CLAVEACCESO ? (
+                    <Image src={barCode} style={{ width: "250px" }} />
+                  ) : (
+                    <Text style={{ color: "red", fontSize: "25px" }}>
+                      NO REGISTRADO
+                    </Text>
+                  )}
+                </View>
+                |
               </View>
             </View>
 
@@ -242,7 +275,7 @@ export default function PDF({ invoice, handleClosePDF }) {
                     {p.VED_DESCUENTO}
                   </Text>
                   <Text style={{ ...styles.text, width: "80px" }}>
-                    {(Number(p.VED_VALOR)).toFixed(2)}
+                    {Number(p.VED_VALOR).toFixed(2)}
                   </Text>
                 </View>
               ))}
@@ -280,7 +313,7 @@ export default function PDF({ invoice, handleClosePDF }) {
                         }
                       </Text>
                       <Text style={{ ...styles.text, width: "90px" }}>
-                        {(Number(invoice.VEN_TOTAL)).toFixed(2)}
+                        {Number(invoice.VEN_TOTAL).toFixed(2)}
                       </Text>
                     </View>
                   </View>

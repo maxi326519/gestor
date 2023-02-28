@@ -79,6 +79,11 @@ export default function InvoiceTable({
           </div>
         </div>
         <div>
+          <div>
+            <label><input type="checkbox"/> %Desc</label>
+            <label><input type="number"/>$$</label>
+            <span>0.00</span>
+          </div>
           <div className="invoice-totals">
             <span>Subtotal</span>
             <span className="totals">

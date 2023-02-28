@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
+import JsBarcode from "jsbarcode";
+
+import clave2 from "../../../functions/Clave.ts";
 
 import {
   postInvoice,
@@ -39,7 +42,7 @@ const initialInvoice = {
   VEN_CAMPO1: "",
   VEN_CAMPO2: "",
   VEN_CAMPO3: "",
-  VEN_CLAVEACCESO: "",
+  VEN_CLAVEACCESO: null,
   VEN_CODIGO: 0,
   VEN_COMISION: 0,
   VEN_DESCUENTO: 0,
@@ -86,7 +89,6 @@ export default function InvoicesForm({
     VEN_GUIA: false,
     INFO: false,
   });
-
   useEffect(() => {
     handleSetUserData();
   }, [user]);
@@ -152,6 +154,13 @@ export default function InvoicesForm({
         const newInvoice = {
           ...invoice,
           ITE_DETELLES: newProducts,
+          VEN_CLAVEACCESO: clave2(
+            invoice.CLI_IDENTIFICACION,
+            invoice.VEN_FECHA,
+            `00000000${invoice.VEN_NUMERO}`.slice(-9),
+            invoice.VEN_ESTABLECIMIENTO,
+            invoice.VEN_PTOEMISION
+          )
         };
 
         dispatch(postInvoice(newInvoice))
