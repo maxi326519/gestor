@@ -31,10 +31,10 @@ export default function InvoiceTable({
 
   return (
     <div className="invoice-products">
-      <div className="invoice-row invoice-first-row">
+      <div className={`invoice-row invoice-first-row ${user.EMP_AUTOMATICO === 1 ? "detCantidad" : ""}`}>
         <span>Codigo</span>
         <span>Descripcion</span>
-        {/*         <span>Det. Cantidad</span> */}
+        {user.EMP_AUTOMATICO === 1 ? <span>Det. Cantidad</span> : null}
         <span>Cantidad</span>
         <span>Descuento %</span>
         <span>Precio unitario</span>
@@ -42,10 +42,10 @@ export default function InvoiceTable({
         <span>Valor</span>
       </div>
       {newProducts?.map((p) => (
-        <div key={p.ITE_CODIGO} className="invoice-row">
+        <div key={p.ITE_CODIGO} className={`invoice-row ${user.EMP_AUTOMATICO === 1 ? "detCantidad" : ""}`}>
           <span>{p.ITE_CODIGO}</span>
           <span>{p.ITE_DESCRIPCION}</span>
-          {/*           <span>{p.detCantidad}</span> */}
+          {user.EMP_AUTOMATICO === 1 ? <span>{p.detCantidad}</span> : null}
           <input
             className="amount"
             type="number"
