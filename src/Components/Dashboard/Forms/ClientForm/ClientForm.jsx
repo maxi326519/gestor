@@ -16,7 +16,7 @@ const initialState = {
   CLI_EMAIL: "-",
   CLI_IDENTIFICACION: "",
   CLI_NOMBRE: "",
-  CLI_TELEFONO: "-", 
+  CLI_TELEFONO: "-",
   CLI_TIPOIDE: "04",
 };
 
@@ -37,16 +37,26 @@ export default function ClientForm({ addClient, handleAddClient }) {
 
   function handleChange(e) {
     setclient({ ...client, [e.target.name]: e.target.value });
+    if (e.target.name === "CLI_IDENTIFICACION") handleVerification(e);
+  }
 
-    /* Si es el identificador */
-    if (e.target.name === "CLI_IDENTIFICACION") {
-      /* Verificamos si ya existe alguno con el mismo numero y tipo */
-      if (clients.find((c) => c.CLI_IDENTIFICACION === e.target.value)) {
-        setError({ CLI_IDENTIFICACION: "Este codigo ya existe" });
-      }else if (client.CLI_TIPOIDE === "04" || client.CLI_TIPOIDE === "05") {
-        /* Si no existe verificamos su formato */
+  function handleVerification(e) {
+    try {
+      const value = e.target.value;
+      if (clients.find((c) => c.CLI_IDENTIFICACION === e.target.value))
+        throw new Error("Este codigo ya existe");
+
+      if (client.CLI_TIPOIDE === "04" || client.CLI_TIPOIDE === "05") {
         let mensaje = validaDocumento(e.target.value).mensaje;
-        if (mensaje !== "ruc" && mensaje !== "cedula") {
+
+        /* Verificamos la cedula */
+        if (mensaje === "ruc") {
+          if (value.length !== 13)
+            throw new Error("El ruc tiene un formato incorrecto");
+        } else if (mensaje === "cedula") {
+          if (value.length !== 10)
+            throw new Error("La cedula tiene un formato incorrecto");
+        } else if (!mensaje.includes("ruc") && !mensaje.includes("cedula")) {
           setError({
             ...error,
             CLI_IDENTIFICACION: mensaje,
@@ -58,6 +68,8 @@ export default function ClientForm({ addClient, handleAddClient }) {
           });
         }
       }
+    } catch (err) {
+      setError({ CLI_IDENTIFICACION: err.message });
     }
   }
 

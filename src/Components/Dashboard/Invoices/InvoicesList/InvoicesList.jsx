@@ -23,9 +23,12 @@ export default function InvoicesList({
     from: "",
     to: "",
   });
+  const [disabled, setDisabled] = useState(true);
+  const [isCheked, setCheck] = useState([]);
 
   useEffect(() => {
     setRows(invoices);
+    setCheck(invoices.map(() => {return{name: invoices.id, check: false }}));
   }, [invoices]);
 
   function handleChange(e) {
@@ -67,6 +70,10 @@ export default function InvoicesList({
     }
   }
 
+  function handleCheck() {
+    setDisabled(!disabled);
+  }
+
   function handleViewPDF(i) {
     setPDF(i);
   }
@@ -103,6 +110,9 @@ export default function InvoicesList({
           <img src={exportIcon} alt="export" />
           <span>Excel</span>
         </button>
+        <button className="btn btn-primary" onClick={handleCheck}>
+          Estado
+        </button>
         <div className="form-floating mb-3 date">
           <input
             className="form-control"
@@ -125,6 +135,7 @@ export default function InvoicesList({
       <span className="limit">{`${user.EMP_SECUENCIAL} de 100 facturas`}</span>
       <div className="dashboardList__grid">
         <div className="invoice-card first-row">
+          <span></span>
           <span>Fecha</span>
           <span>Nro</span>
           <span>Ruc / Cedula / Pasaporte</span>
@@ -137,6 +148,7 @@ export default function InvoicesList({
           <span>Total</span>
           <span>Estado</span>
           <span>Ver en PDF</span>
+          <span>Anular</span>
         </div>
         <div className="contentCard">
           {rows.length <= 0 ? (
@@ -151,6 +163,9 @@ export default function InvoicesList({
                 viewPDF={() => {
                   handleViewPDF(i);
                 }}
+                disabled={disabled}
+                isCheked={isCheked}
+                setCheck={setCheck}
               />
             ))
           )}

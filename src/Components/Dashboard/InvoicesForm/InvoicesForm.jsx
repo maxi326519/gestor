@@ -80,21 +80,15 @@ export default function InvoicesForm({
   const [formProduct, setFormproduct] = useState(false);
   const [formClient, setFormClient] = useState(false);
   const [newProducts, setNewProduct] = useState([]);
-  const [invoice, setInvoice] = useState();
+  const [invoice, setInvoice] = useState(initialInvoice);
   const [invoicePDF, setPDF] = useState(null);
   const [error, setError] = useState({
     VEN_GUIA: false,
     INFO: false,
   });
 
-  /* Valores del usuario */
   useEffect(() => {
-    setInvoice({
-      ...initialInvoice,
-      VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
-      VEN_PTOEMISION: user.EMP_PTOEMISION,
-      VEN_NUMERO: user.EMP_NUMERO + 1,
-    });
+    handleSetUserData();
   }, [user]);
 
   /* Calcular totales por cada cambio */
@@ -121,16 +115,31 @@ export default function InvoicesForm({
 
     setInvoice({
       ...invoice,
-
       VEN_SUBTOTAL: subtotal.toFixed(user.EMP_PRECISION),
       VEN_SUBTOTAL0: subtotalPorcentual.toFixed(user.EMP_PRECISION),
       VEN_SUBTOTAL12: subtotalIVA.toFixed(user.EMP_PRECISION),
       VEN_TOTAL: total.toFixed(user.EMP_PRECISION),
     });
+    handleSetUserData();
   }, [newProducts]);
 
+  function handleSetUserData() {
+    if (user) {
+      setInvoice(
+        {
+          ...initialInvoice,
+          VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
+          VEN_PTOEMISION: user.EMP_PTOEMISION,
+          VEN_NUMERO: user.EMP_NUMERO + 1,
+        },
+        () => {
+          console.log(invoice);
+        }
+      );
+    }
+  }
+
   function handleChange(e) {
-    console.log(invoice);
     setInvoice({ ...invoice, [e.target.name]: e.target.value });
   }
 

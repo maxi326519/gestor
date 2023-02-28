@@ -1,6 +1,6 @@
 .invoice-card{
     display: grid;
-    grid-template-columns: 110px 210px 1fr 1fr  1fr 1fr 1fr repeat(4, 110px) 100px;
+    grid-template-columns: 30px 110px 210px 1fr 1fr  1fr 1fr 1fr repeat(4, 110px) 100px 100px;
     grid-template-rows: 1fr;
     gap: 10px;
     padding: 10px;
@@ -11,10 +11,20 @@
     min-width: 100px;
 }
 
+.invoice-card input[type="checkbox"]{
+    min-width: 10px;
+    width: 20px;
+}
+
 .invoice-card span{
     min-width: 100px;
     padding-left: 10px;
     border-right: 1px solid #ccc;
+}
+
+.invoice-card span:first-child{
+    min-width: 10px;
+    border-right: none;
 }
 
 .first-row{
