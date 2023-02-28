@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { toast } from "react-toastify";
 import { confirmObligaciones, openLoading, closeLoading } from "../../../../redux/actions";
 
 import "./Obligations.css";
@@ -37,7 +36,7 @@ export default function Obligations() {
     .then(() => dispatch(closeLoading()))
     .catch((e) => {
       dispatch(closeLoading());
-      toast(e.message);
+/*       toast(e.message); */
       console.log(e.message);
     })
   }

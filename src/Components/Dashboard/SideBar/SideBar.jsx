@@ -15,7 +15,6 @@ import list from "../../../assets/svg/list.svg";
 import addSquere from "../../../assets/svg/add-square.svg";
 import options from "../../../assets/svg/options.svg";
 import "./SideBar.css";
-import { toast } from "react-toastify";
 
 export default function SideBar({
   handleAddInvoice,
@@ -39,7 +38,7 @@ export default function SideBar({
       redirect("/login");
     })
     .catch((e) => {
-      toast.error(e.message);
+/*       toast.error(e.message); */
       console.log(e.message);
     })
   }

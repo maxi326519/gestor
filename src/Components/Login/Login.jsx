@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login, GoogleSesion, openLoading, closeLoading, getUserData } from "../../redux/actions";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 
 import "./Login.css";
 
@@ -52,7 +51,7 @@ export default function Signin() {
         }else if(e.message.includes("password")){
           setError({ ...error, password: "La contraseña es incorrecta" });
         }else{
-          toast(e.message);
+/*           toast(e.message); */
           console.log(e.message);
         }
       });

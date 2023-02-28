@@ -5,7 +5,6 @@ import {
   openLoading,
   closeLoading,
 } from "../../../redux/actions";
-import { toast } from "react-toastify";
 
 import SideBar from "../SideBar/SideBar";
 import DatosPersonales from "./PersonalData/PersonalData";
@@ -43,11 +42,11 @@ export default function Profile({
     dispatch(updateUserData(userData))
       .then(() => {
         dispatch(closeLoading());
-        toast.success("¡Perfil actualizado exitosamente!");
+/*         toast.success("¡Perfil actualizado exitosamente!"); */
       })
       .catch((e) => {
         dispatch(closeLoading());
-        toast.error(e.message);
+/*         toast.error(e.message); */
         console.log(e.message);
       });
   }

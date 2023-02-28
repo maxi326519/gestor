@@ -5,7 +5,6 @@ import {
   closeLoading,
   confirmDatosPersonales,
 } from "../../../../redux/actions";
-import { toast } from "react-toastify";
 
 import "./PersonalData.css";
 
@@ -81,11 +80,11 @@ export default function PersonalData() {
       dispatch(confirmDatosPersonales(user))
       .then(() => {
         dispatch(closeLoading());
-        toast.success("Registro exitoso");
+/*         toast.success("Registro exitoso"); */
       })
       .catch((e) => {
         dispatch(closeLoading());
-        toast.error(e.message);
+/*         toast.error(e.message); */
         console.log(e);
       });
     }

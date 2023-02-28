@@ -1,5 +1,4 @@
 import { useDispatch } from "react-redux";
-import { toast } from "react-toastify";
 import { changePassword, Alert } from "../../../../redux/actions";
 
 export default function PersonalData({ disabled, userData, handleChange }) {
@@ -7,7 +6,7 @@ export default function PersonalData({ disabled, userData, handleChange }) {
 
   function handleChangePassword() {
     dispatch(changePassword()).then(() => {
-      toast.info("Se envio a tu correo un link para cambiar la contraseña");
+/*       toast.info("Se envio a tu correo un link para cambiar la contraseña"); */
     });
   }
 
