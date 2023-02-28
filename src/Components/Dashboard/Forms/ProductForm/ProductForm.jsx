@@ -25,7 +25,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
   });
 
   function handleChange(e) {
-    setProduct({ ...products, [e.target.name]: e.target.value });
+    setProduct({ ...product, [e.target.name]: e.target.value });
     if (e.target.name === "ITE_CODIGO") {
       if (products.find((p) => p.ITE_CODIGO === e.target.value)) {
         setError({ ITE_CODIGO: "Este codigo ya existe" });
@@ -37,9 +37,12 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
 
   function handleSubmit(e) {
     e.preventDefault();
+
+    console.log(product);
+
     if (!error.ITE_CODIGO) {
       dispatch(openLoading());
-      dispatch(postProduct(product))
+      dispatch(postProduct(product[0]))
         .then((d) => {
           dispatch(closeLoading());
           handleClose();

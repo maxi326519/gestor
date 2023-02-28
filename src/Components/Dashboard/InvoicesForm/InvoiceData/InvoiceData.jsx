@@ -38,7 +38,7 @@ export default function InvoiceData({ invoice, handleChange, handleSetGuia }) {
   useEffect(() => {
     setClave(
       clave2(
-        user ? user.EMP_RUC : null,
+        user ? user.EMP_RUC : "999999999",
         invoice.VEN_FECHA.split("/").join(""),
         invoice.VEN_NUMERO,
         invoice.VEN_ESTABLECIMIENTO,

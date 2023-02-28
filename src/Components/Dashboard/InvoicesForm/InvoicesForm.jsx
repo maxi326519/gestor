@@ -45,7 +45,7 @@ const initialInvoice = {
   VEN_DESCUENTO: 0,
   VEN_ESTABLECIMIENTO: "001",
   VEN_ESTADO: 1,
-  VEN_FAUTORIZA: 2,
+  VEN_FAUTORIZA: 1,
   VEN_FECHA: new Date().toLocaleDateString().split("/").join("-"),
   VEN_FPAGO: "01",
   VEN_GUIA: "-",
@@ -80,7 +80,7 @@ export default function InvoicesForm({
   const [formProduct, setFormproduct] = useState(false);
   const [formClient, setFormClient] = useState(false);
   const [newProducts, setNewProduct] = useState([]);
-  const [invoice, setInvoice] = useState(initialInvoice);
+  const [invoice, setInvoice] = useState();
   const [invoicePDF, setPDF] = useState(null);
   const [error, setError] = useState({
     VEN_GUIA: false,
@@ -89,29 +89,13 @@ export default function InvoicesForm({
 
   /* Valores del usuario */
   useEffect(() => {
-    console.log(invoice.VEN_ESTABLECIMIENTO === user.EMP_ESTABLECIMIENTO)
-    console.log(invoice.VEN_PTOEMISION === user.EMP_PTOEMISION)
-    console.log(invoice.VEN_NUMERO === user.EMP_NUMERO)
-
-    if (
-      !(invoice.VEN_ESTABLECIMIENTO === user.EMP_ESTABLECIMIENTO) ||
-      !(invoice.VEN_PTOEMISION === user.EMP_PTOEMISION) ||
-      !(invoice.VEN_NUMERO === user.EMP_NUMERO)
-    ) {
-      const update = {
-        ...invoice,
-        VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
-        VEN_PTOEMISION: user.EMP_PTOEMISION,
-        VEN_NUMERO: user.EMP_NUMERO + 1,
-      };
-      console.log(update);
-      setInvoice(update);
-    }
-  }, []);
-
-  useEffect(() => {
-    console.log(invoice);
-  }, [invoice]);
+    setInvoice({
+      ...initialInvoice,
+      VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
+      VEN_PTOEMISION: user.EMP_PTOEMISION,
+      VEN_NUMERO: user.EMP_NUMERO + 1,
+    });
+  }, [user]);
 
   /* Calcular totales por cada cambio */
   useEffect(() => {
