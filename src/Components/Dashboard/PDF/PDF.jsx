@@ -200,7 +200,6 @@ export default function PDF({ invoice, handleClosePDF }) {
                     </Text>
                   )}
                 </View>
-                |
               </View>
             </View>
 

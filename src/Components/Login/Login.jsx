@@ -1,6 +1,15 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { login, GoogleSesion, openLoading, closeLoading, getUserData } from "../../redux/actions";
+import {
+  login,
+  GoogleSesion,
+  openLoading,
+  closeLoading,
+  getUserData,
+  getProducts,
+  getClients,
+  getInvoices,
+} from "../../redux/actions";
 import { Link, useNavigate } from "react-router-dom";
 
 import "./Login.css";
@@ -46,43 +55,53 @@ export default function Signin() {
       })
       .catch((e) => {
         dispatch(closeLoading());
-        if(e.message.includes("EMP_RUC")){
-          setError({ ...error, EMP_RUC: "No existe ningun usuario con ese EMP_RUC" });
-        }else if(e.message.includes("password")){
+        if (e.message.includes("EMP_RUC")) {
+          setError({
+            ...error,
+            EMP_RUC: "No existe ningun usuario con ese EMP_RUC",
+          });
+        } else if (e.message.includes("password")) {
           setError({ ...error, password: "La contraseña es incorrecta" });
-        }else{
-/*           toast(e.message); */
+        } else {
+          /*           toast(e.message); */
           console.log(e.message);
         }
       });
   }
 
-  function handlVerifyRegister(){
+  function handlVerifyRegister() {
     dispatch(getUserData()).then((d) => {
-    if (!d.payload.complete) {
-      dispatch(closeLoading());
-      redirect("/signin/user");
-    } else {
-      dispatch(closeLoading());
-      redirect("/dashboard/invoices/add");
-    }
+      if (
+        !d.payload.EMP_PERFIL.FACTURA_ELECTRONICA ||
+        !d.payload.EMP_PERFIL.OBLIGACIONES ||
+        !d.payload.EMP_PERFIL.DATOS_PERSONALES
+        ) {
+        dispatch(closeLoading());
+        redirect("/signin/user");
+      } else {
+        dispatch(getProducts());
+        dispatch(getClients());
+        dispatch(getInvoices());
+        dispatch(closeLoading());
+        redirect("/dashboard/invoices/add");
+      }
     });
   }
 
   function handleValidation(name, value) {
-    if(name === "EMP_RUC"){
-      if(value === ""){
-        setError({ ...error, EMP_RUC: "Debes completar el campo"});
-      } else{
-        setError({ ...error, EMP_RUC: null});
+    if (name === "EMP_RUC") {
+      if (value === "") {
+        setError({ ...error, EMP_RUC: "Debes completar el campo" });
+      } else {
+        setError({ ...error, EMP_RUC: null });
       }
     }
 
-    if(name === "password"){
-      if(value === ""){
-        setError({ ...error, password: "Debes completar el campo"});
-      } else{
-        setError({ ...error, password: null});
+    if (name === "password") {
+      if (value === "") {
+        setError({ ...error, password: "Debes completar el campo" });
+      } else {
+        setError({ ...error, password: null });
       }
     }
   }

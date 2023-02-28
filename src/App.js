@@ -8,7 +8,7 @@ import {
   getClients,
   getInvoices,
   openLoading,
-  closeLoading
+  closeLoading,
 } from "./redux/actions";
 import { getAuth } from "firebase/auth";
 
@@ -43,13 +43,15 @@ function App() {
         const user = auth.currentUser;
         dispatch(persistence(user));
         dispatch(getUserData()).then((d) => {
-          if (d.payload.EMP_PERFIL.DATOS_PERSONALES &&
+          if (
+            d.payload.EMP_PERFIL.DATOS_PERSONALES &&
             d.payload.EMP_PERFIL.OBLIGACIONES &&
-            d.payload.EMP_PERFIL.FACTURA_ELECTRONICA) {
+            d.payload.EMP_PERFIL.FACTURA_ELECTRONICA
+          ) {
+            dispatch(getProducts());
+            dispatch(getClients());
+            dispatch(getInvoices());
             redirect("/dashboard/invoices/add");
-            dispatch(getProducts(user.uid));
-            dispatch(getClients(user.uid));
-            dispatch(getInvoices(user.uid));
             dispatch(closeLoading());
           } else {
             dispatch(closeLoading());

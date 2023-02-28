@@ -85,64 +85,63 @@ export default function InvoicesForm({
   const [newProducts, setNewProduct] = useState([]);
   const [invoice, setInvoice] = useState(initialInvoice);
   const [invoicePDF, setPDF] = useState(null);
+  const [discount, setDiscount] = useState(0);
   const [error, setError] = useState({
     VEN_GUIA: false,
     INFO: false,
   });
-  useEffect(() => {
-    handleSetUserData();
-  }, [user]);
 
   /* Calcular totales por cada cambio */
   useEffect(() => {
+    setInvoice({
+      ...invoice,
+      ...update(),
+    });
+  }, [newProducts, user, discount]);
+
+  function handleChange(e) {
+    if (e.target.name === "VEN_DESCUENTO_POR") {
+      if (Number(e.target.value) <= 100 && Number(e.target.value) >= 0)
+      setDiscount(Number(e.target.value));
+    } else {
+      setInvoice({ ...invoice, [e.target.name]: e.target.value });
+    }
+  }
+
+  function update() {
     let subtotal = 0;
     let subtotalPorcentual = 0;
     let subtotalIVA = 0;
     let total = 0;
 
     newProducts.forEach((p) => {
-      subtotal += p.VED_PUNITARIO * p.VED_CANTIDAD;
+      subtotal +=
+        p.VED_PUNITARIO * p.VED_CANTIDAD * (1 - p.VED_DESCUENTO / 100);
 
       if (p.VED_IMPUESTO === "2") {
         total +=
-          (p.VED_PUNITARIOIVA * p.VED_CANTIDAD) / (1 + p.VED_DESCUENTO / 100);
-        subtotalIVA += Number(p.VED_PUNITARIO * p.VED_CANTIDAD);
+          p.VED_PUNITARIOIVA * p.VED_CANTIDAD * (1 - p.VED_DESCUENTO / 100);
+        subtotalIVA +=
+          p.VED_PUNITARIO * p.VED_CANTIDAD * (1 - p.VED_DESCUENTO / 100);
       } else {
-        total += p.VED_PUNITARIO * p.VED_CANTIDAD;
+        total += p.VED_PUNITARIO * p.VED_CANTIDAD * (1 - p.VED_DESCUENTO / 100);
         subtotalPorcentual +=
-          Number(p.VED_PUNITARIO * p.VED_CANTIDAD) /
-          (1 + p.VED_DESCUENTO / 100);
+          p.VED_PUNITARIO * p.VED_CANTIDAD * (1 - p.VED_DESCUENTO / 100);
       }
     });
 
-    setInvoice({
-      ...invoice,
+    return {
+      VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
+      VEN_PTOEMISION: user.EMP_PTOEMISION,
+      VEN_NUMERO: user.EMP_NUMERO + 1,
+      VEN_DESCUENTO: total * (discount / 100),
       VEN_SUBTOTAL: subtotal.toFixed(user.EMP_PRECISION),
       VEN_SUBTOTAL0: subtotalPorcentual.toFixed(user.EMP_PRECISION),
       VEN_SUBTOTAL12: subtotalIVA.toFixed(user.EMP_PRECISION),
-      VEN_TOTAL: total.toFixed(user.EMP_PRECISION),
-    });
-    handleSetUserData();
-  }, [newProducts]);
-
-  function handleSetUserData() {
-    if (user) {
-      setInvoice(
-        {
-          ...initialInvoice,
-          VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
-          VEN_PTOEMISION: user.EMP_PTOEMISION,
-          VEN_NUMERO: user.EMP_NUMERO + 1,
-        },
-        () => {
-          console.log(invoice);
-        }
-      );
-    }
-  }
-
-  function handleChange(e) {
-    setInvoice({ ...invoice, [e.target.name]: e.target.value });
+      VEN_TOTAL: (total * (1 - discount / 100)).toFixed(
+        user.EMP_PRECISION
+      ),
+    };
   }
 
   function handleSubmit(e) {
@@ -160,7 +159,7 @@ export default function InvoicesForm({
             `00000000${invoice.VEN_NUMERO}`.slice(-9),
             invoice.VEN_ESTABLECIMIENTO,
             invoice.VEN_PTOEMISION
-          )
+          ),
         };
 
         dispatch(postInvoice(newInvoice))
@@ -253,6 +252,7 @@ export default function InvoicesForm({
 
   function handleProduct(product) {
     if (!newProducts.find((pi) => pi.ITE_CODIGO === product.ITE_CODIGO)) {
+
       setNewProduct([
         ...newProducts,
         {
@@ -303,12 +303,13 @@ export default function InvoicesForm({
   }
 
   function handleChangeProduct(e, code) {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
 
     setNewProduct(
       newProducts.map((p) => {
         if (p.ITE_CODIGO === code) {
           let newProduct;
+
           if (name === "VED_PUNITARIOIVA") {
             newProduct = {
               ...p,
@@ -319,6 +320,8 @@ export default function InvoicesForm({
                   : value,
             };
           } else {
+            if((name === "VED_CANTIDAD")  &&  (e.target.value < 1)) value = 1;
+
             newProduct = {
               ...p,
               [name]: value,
@@ -392,6 +395,8 @@ export default function InvoicesForm({
           <InvoiceTable
             user={user}
             invoice={invoice}
+            discount={discount}
+            setDiscount={setDiscount}
             newProducts={newProducts}
             handleChangeProduct={handleChangeProduct}
             handleChange={handleChange}
