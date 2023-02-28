@@ -18,6 +18,7 @@ import {
   GET_INVOICES,
   UPDATE_CLIENT,
   UPDATE_PRODUCT,
+  UPDATE_INVOICE,
   DELETE_CLIENT,
   DELETE_PRODUCT,
   DELETE_INVOICE,
@@ -173,6 +174,14 @@ export const Reducer = (state = initialState, action) => {
         ...state,
         products: state.products.map((p) =>
           p.ITE_CODIGO === action.payload.ITE_CODIGO ? action.payload : p
+        ),
+      };
+
+    case UPDATE_INVOICE:
+      return {
+        ...state,
+        invoices: state.invoices.map((i) =>
+          i.id === action.payload.id ? action.payload : i
         ),
       };
 

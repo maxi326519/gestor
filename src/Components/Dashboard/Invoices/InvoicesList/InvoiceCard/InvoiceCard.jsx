@@ -3,6 +3,7 @@ import swal from "sweetalert";
 import {
   deleteInvoice,
   updateUserData,
+  updateInvoice,
   openLoading,
   closeLoading,
 } from "../../../../../redux/actions";
@@ -20,51 +21,41 @@ export default function InvoiceCard({
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.userDB);
 
-  function handleRemove() {
-    dispatch(openLoading());
-    dispatch(deleteInvoice(invoice.id))
-      .then(() => {
-        dispatch(
-          updateUserData({
-            EMP_NUMERO: user.EMP_NUMERO - 1,
-            EMP_SECUENCIAL: user.EMP_SECUENCIAL - 1,
-          })
-        )
-          .then(() => {
-            swal("Eliminado", "Su factura se elimino con exito", "success");
-            dispatch(closeLoading());
-          })
-          .catch(() => {
-            swal(
-              "Error",
-              "Surgio un error al actualizar los datos del usuario, al eliminar la factura",
-              "error"
-            );
-          });
-      })
-      .catch((e) => {
-        swal(
-          "Error",
-          "Surgio un error desconocido al eliminar la factura",
-          "error"
-        );
-        dispatch(closeLoading());
-        console.log(e);
-      });
-  }
-
   function anular() {
     swal({
       title: "¡Atencion!",
       text: "¿Seguro  que quiere anular esta factura?",
       icon: "warning",
       buttons: { confirm: true, cancel: true },
+    }).then((r) => {
+      if (r) {
+        dispatch(openLoading());
+        dispatch(updateInvoice(invoice.id, { ...invoice, VEN_ESTADO: 2 }))
+          .then(() => {
+            dispatch(closeLoading());
+            swal("Factura anulada", "Se anulo a factura con exito", "success");
+          })
+          .catch((e) => {
+            dispatch(closeLoading());
+            swal(
+              "Error",
+              "Surgio un error desconocido al anular la factura",
+              "error"
+            );
+            console.log(e);
+          });
+      }
     });
   }
 
   return (
     <div className="invoice-card">
-      <input type="checkbox" checked={isCheked} disabled={disabled} onChange={setCheck}/>
+      <input
+        type="checkbox"
+        checked={isCheked}
+        disabled={disabled}
+        onChange={setCheck}
+      />
       <span>{invoice.VEN_FECHA}</span>
       <span>{`${invoice.VEN_ESTABLECIMIENTO}-${
         invoice.VEN_PTOEMISION

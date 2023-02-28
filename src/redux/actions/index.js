@@ -610,6 +610,29 @@ export function updateProduct(productData) {
   };
 }
 
+export function updateInvoice(id, invoiceData) {
+  return async (dispatch) => {
+    try {
+      console.log(invoiceData);
+      const invoiceColl = collection(
+        db,
+        "users",
+        auth.currentUser.uid,
+        "invoices"
+      );
+      await updateDoc(doc(invoiceColl, id), invoiceData);
+
+      dispatch({
+        type: UPDATE_INVOICE,
+        payload: invoiceData,
+      });
+    } catch (err) {
+      console.log(err);
+      throw new Error(err);
+    }
+  };
+}
+
 export function deleteClient(id) {
   return async (dispatch) => {
     try {
