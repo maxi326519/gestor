@@ -41,7 +41,17 @@ export default function Signin() {
       })
       .catch((e) => {
         dispatch(closeLoading());
-        console.log(e.message);
+        if (e.message.includes("EMP_RUC")) {
+          setError({
+            ...error,
+            EMP_RUC: "No existe ningun usuario con ese EMP_RUC",
+          });
+        } else if (e.message.includes("password")) {
+          setError({ ...error, password: "La contraseña es incorrecta" });
+        } else {
+          /*           toast(e.message); */
+          console.log(e.message);
+        }
       });
   }
 
@@ -75,7 +85,7 @@ export default function Signin() {
         !d.payload.EMP_PERFIL.FACTURA_ELECTRONICA ||
         !d.payload.EMP_PERFIL.OBLIGACIONES ||
         !d.payload.EMP_PERFIL.DATOS_PERSONALES
-        ) {
+      ) {
         dispatch(closeLoading());
         redirect("/signin/user");
       } else {

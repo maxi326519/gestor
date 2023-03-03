@@ -42,7 +42,7 @@ export default function Obligations() {
   }
 
   return (
-    <form className="obligations" onSubmit={handleSubmit}>
+    <form className="obligations to-left" onSubmit={handleSubmit}>
       <hr></hr>
       <h5>Obligaciones</h5>
       <div className="form-floating mb-3">

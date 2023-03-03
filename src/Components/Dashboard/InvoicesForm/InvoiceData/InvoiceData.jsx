@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import swal from "sweetalert";
 
-import clave2 from "../../../../functions/Clave.ts";
+import clave2 from "../../../../functions/Clave";
 
 import "./InvoiceData.css";
 
@@ -25,20 +25,13 @@ export default function InvoiceData({ invoice, handleChange, handleSetGuia }) {
     GUIA_PTEMISION: 1,
     GUIA_SECUENCIAL: 1,
   });
-  const [dateFormat, setFormat] = useState("");
+  const [dateFormat, setFormat] = useState(invoice.VEN_FECHA);
   const [clave, setClave] = useState(0);
-
-  useEffect(() => {
-    const dateSplit = invoice.VEN_FECHA.split("-");
-    setFormat(
-      `${dateSplit[2]}-${("0" + dateSplit[1]).slice(-2)}-${dateSplit[0]}`
-    );
-  }, [invoice]);
 
   useEffect(() => {
     setClave(
       clave2(
-        invoice.CLI_IDENTIFICACION,
+        user.EMP_RUC,
         invoice.VEN_FECHA,
         `00000000${invoice.VEN_NUMERO}`.slice(-9),
         invoice.VEN_ESTABLECIMIENTO,
@@ -87,15 +80,20 @@ export default function InvoiceData({ invoice, handleChange, handleSetGuia }) {
     const newDate = new Date(e.target.value.split("-").join("/"));
     const dateSplit = new Date().toLocaleDateString().split("/");
     const toDay = new Date(
-      `${dateSplit[2]}/${("0" + dateSplit[1]).slice(-2)}/${dateSplit[0]}`
+      `${dateSplit[2]}/${(("0" + dateSplit[1])).slice(-2)}/${dateSplit[0]}`
     );
 
+    const date = e.target.value.split("-");
+    const format = `${date[0]}-${("0" + date[1]).slice(-2)}-${("0" + date[2]).slice(-2)}`;
+    console.log(format);
+
     if (newDate <= toDay) {
+      setFormat(format);
       handleChange({
         ...e,
         target: {
           name: "VEN_FECHA",
-          value: e.target.value.split("-").reverse().join("-"),
+          value: format,
         },
       });
     } else {
@@ -105,7 +103,10 @@ export default function InvoiceData({ invoice, handleChange, handleSetGuia }) {
 
   return (
     <div className="buscadores">
-      <h2>Factura</h2>
+      <div>
+        <button className="btn btn-primary">b</button>
+        <h2>Factura</h2>
+      </div>
       <span className="invoice-clave">{clave}</span>
       <div className="invoice-data">
         {/* DATE */}

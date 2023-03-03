@@ -8,12 +8,30 @@
   color: grey;
 }
 
-.dashboardList__searchBar .date{
-  margin-bottom: 0 !important;
-  margin-left: 10px;
-}
-
 .dashboardList__searchBar a{
   display: flex;
   align-items: center;
+  margin-left: 0 !important;
+}
+
+.dashboardList__searchBar .controls,
+.dashboardList__searchBar .dateFilter{
+  display: flex;
+  padding: 5px;
+  margin-left: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.dashboardList__searchBar .controls button {
+  height: 100%;
+}
+
+.dashboardList__searchBar .date{
+  margin-bottom: 0 !important;
+}
+
+.dashboardList__searchBar .date:nth-child(2),
+.dashboardList__searchBar .btn{
+  margin-left: 5px;
 }

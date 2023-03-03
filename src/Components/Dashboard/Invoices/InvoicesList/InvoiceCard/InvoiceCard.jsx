@@ -15,7 +15,7 @@ export default function InvoiceCard({
   invoice,
   viewPDF,
   disabled,
-  isCheked,
+  isChecked,
   setCheck,
 }) {
   const dispatch = useDispatch();
@@ -30,7 +30,7 @@ export default function InvoiceCard({
     }).then((r) => {
       if (r) {
         dispatch(openLoading());
-        dispatch(updateInvoice(invoice.id, { ...invoice, VEN_ESTADO: 2 }))
+        dispatch(updateInvoice(invoice.VEN_CODIGO, { ...invoice, VEN_ESTADO: 2 }))
           .then(() => {
             dispatch(closeLoading());
             swal("Factura anulada", "Se anulo a factura con exito", "success");
@@ -48,13 +48,21 @@ export default function InvoiceCard({
     });
   }
 
+  function handleChecked(id){
+    if(isChecked.some((c) => c === invoice.VEN_CODIGO)){
+      setCheck(isChecked.filter((c) => c !== invoice.VEN_CODIGO))
+    }else{
+      setCheck([ ...isChecked, id])
+    }
+  }
+
   return (
     <div className="invoice-card">
       <input
         type="checkbox"
-        checked={isCheked}
+        checked={isChecked.some((c) => c === invoice.VEN_CODIGO)}
         disabled={disabled}
-        onChange={setCheck}
+        onChange={() => handleChecked(invoice.VEN_CODIGO)}
       />
       <span>{invoice.VEN_FECHA}</span>
       <span>{`${invoice.VEN_ESTABLECIMIENTO}-${

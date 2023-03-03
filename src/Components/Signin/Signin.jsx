@@ -120,17 +120,23 @@ export default function Signin() {
       })
       .catch((e) => {
         dispatch(closeLoading());
-/*         toast.error(e); */
-        console.log(e);
+        if (e.message.includes("EMP_EMAIL-already-in-use")) {
+          setError({ ...error, EMP_EMAIL: "El correo ya esta en uso" });
+        } else {
+          /*           toast(e.message); */
+          console.log(e.message);
+        }
+        if (e.message.includes("EMP_RUC")) {
+          setError({ ...error, EMP_RUC: "El ruc ya esta en uso" });
+        } else {
+          /*           toast(e.message); */
+          console.log(e.message);
+        }
       });
   }
 
   function handleSubmit(e) {
     e.preventDefault();
-
-    console.log('submit');
-    console.log(user);
-
     for (const data in user) {
       handleVerification(data, user[data]);
     }
@@ -152,13 +158,13 @@ export default function Signin() {
         if (e.message.includes("EMP_EMAIL-already-in-use")) {
           setError({ ...error, EMP_EMAIL: "El correo ya esta en uso" });
         } else {
-/*           toast(e.message); */
+          /*           toast(e.message); */
           console.log(e.message);
         }
         if (e.message.includes("EMP_RUC")) {
           setError({ ...error, EMP_RUC: "El ruc ya esta en uso" });
         } else {
-/*           toast(e.message); */
+          /*           toast(e.message); */
           console.log(e.message);
         }
       });

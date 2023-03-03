@@ -165,7 +165,7 @@ export const Reducer = (state = initialState, action) => {
       return {
         ...state,
         clients: state.clients.map((c) =>
-          c.id === action.payload.id ? action.payload : c
+          c.CLI_CODIGO === action.payload.CLI_CODIGO ? action.payload : c
         ),
       };
 
@@ -181,34 +181,20 @@ export const Reducer = (state = initialState, action) => {
       return {
         ...state,
         invoices: state.invoices.map((i) =>
-          i.id === action.payload.id ? action.payload : i
+          i.VEN_CODIGO === action.payload.VEN_CODIGO ? action.payload : i
         ),
       };
 
     case DELETE_CLIENT:
       return {
         ...state,
-        clients: state.clients.filter((c) => c.id !== action.payload),
+        clients: state.clients.filter((c) => c.CLI_CODIGO !== action.payload),
       };
 
     case DELETE_PRODUCT:
       return {
         ...state,
         products: state.products.filter((p) => p.ITE_CODIGO !== action.payload),
-      };
-
-    case DELETE_INVOICE:
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          userDB: {
-            ...state.user.userDB,
-            EMP_NUMERO: state.user.userDB.EMP_NUMERO - 1,
-            EMP_SECUENCIAL: state.user.userDB.EMP_SECUENCIAL - 1,
-          },
-        },
-        invoices: state.invoices.filter((i) => i.id !== action.payload),
       };
 
     default:

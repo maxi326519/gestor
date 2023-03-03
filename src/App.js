@@ -29,6 +29,7 @@ import UserForm from "./Components/Signin/UserForm/UserForm";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
+import swal from "sweetalert";
 
 function App() {
   const redirect = useNavigate();
@@ -50,13 +51,17 @@ function App() {
           ) {
             dispatch(getProducts());
             dispatch(getClients());
-            dispatch(getInvoices());
+            dispatch(getInvoices(new Date().toLocaleDateString()));
             redirect("/dashboard/invoices/add");
             dispatch(closeLoading());
           } else {
             dispatch(closeLoading());
             redirect("/signin/user");
           }
+        })
+        .catch(()=>{
+            dispatch(closeLoading());
+            swal("Error", "Hubo un error desconocido al iniciar sesion", "error");
         });
       } else {
         dispatch(closeLoading());

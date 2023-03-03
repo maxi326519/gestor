@@ -40,7 +40,7 @@ export default function ElectronicInvoice() {
   }
 
   return (
-    <form className="electronicInvoice" onSubmit={handleSubmit}>
+    <form className="electronicInvoice to-left" onSubmit={handleSubmit}>
       <hr></hr>
       <h5>Facturacion electronica</h5>
 

@@ -49,7 +49,7 @@ const initialInvoice = {
   VEN_ESTABLECIMIENTO: "001",
   VEN_ESTADO: 1,
   VEN_FAUTORIZA: 1,
-  VEN_FECHA: new Date().toLocaleDateString().split("/").join("-"),
+  VEN_FECHA: format(new Date().toLocaleDateString()),
   VEN_FPAGO: "01",
   VEN_GUIA: "-",
   VEN_ICE: 0.0,
@@ -71,6 +71,12 @@ const initialInvoice = {
   VEN_VALOR2: "",
   VEN_VALOR3: "",
 };
+
+function format(date){
+  const dateSplit = date.split("/");
+  const format = `${dateSplit[2]}-${("0" + dateSplit[1]).slice(-2)}-${"0" + dateSplit[0].slice(-2)}`;
+  return format;
+}
 
 export default function InvoicesForm({
   addInvoice,
@@ -107,7 +113,7 @@ export default function InvoicesForm({
       setInvoice({ ...invoice, [e.target.name]: e.target.value });
     }
   }
-
+  
   function update() {
     let subtotal = 0;
     let subtotalPorcentual = 0;
@@ -149,10 +155,11 @@ export default function InvoicesForm({
 
     if (user.EMP_SECUENCIAL < 100) {
       if (handleValidations()) {
+        console.log("post");
         dispatch(openLoading());
         const newInvoice = {
           ...invoice,
-          ITE_DETELLES: newProducts,
+          ITE_DETALLES: newProducts,
           VEN_CLAVEACCESO: clave2(
             invoice.CLI_IDENTIFICACION,
             invoice.VEN_FECHA,
@@ -208,7 +215,14 @@ export default function InvoicesForm({
   }
 
   function handleValidations() {
-    if (invoice.ITE_DETELLES && invoice.ITE_DETELLES.length <= 0) return false;
+    if (newProducts.length <= 0) return false;
+    if (invoice.VEN_CAMPO1 !== "" && invoice.VEN_VALOR1 === "") return false;
+    if (invoice.VEN_CAMPO2 !== "" && invoice.VEN_VALOR2 === "") return false;
+    if (invoice.VEN_CAMPO3 !== "" && invoice.VEN_VALOR3 === "") return false;
+    if (invoice.VEN_CAMPO1 === "" && invoice.VEN_VALOR1 !== "") return false;
+    if (invoice.VEN_CAMPO2 === "" && invoice.VEN_VALOR2 !== "") return false;
+    if (invoice.VEN_CAMPO3 === "" && invoice.VEN_VALOR3 !== "") return false;
+
     return true;
   }
 

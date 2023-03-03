@@ -1,11 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+import {
+  closeLoading,
+  openLoading,
+  updateInvoice,
+  getInvoicesForDate,
+} from "../../../../redux/actions";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import swal from "sweetalert";
 
 import InvoiceCard from "./InvoiceCard/InvoiceCard";
+import Excel from "../Excel/Excel";
 import PDF from "../../PDF/PDF";
 
-import exportIcon from "../../../../assets/svg/export.svg";
 import addSquare from "../../../../assets/svg/add-square.svg";
 
 import "../../Dashboard.css";
@@ -19,16 +26,25 @@ export default function InvoicesList({
   const invoices = useSelector((state) => state.invoices);
   const user = useSelector((state) => state.user.userDB);
   const [rows, setRows] = useState([]);
-  const [dateFilter, setFilter] = useState({
-    from: "",
-    to: "",
-  });
   const [disabled, setDisabled] = useState(true);
-  const [isCheked, setCheck] = useState([]);
+  const [isChecked, setCheck] = useState([]);
+  const [years, setYears] = useState([]);
+  const dispatch = useDispatch();
+  const [filter, setFilter] = useState({
+    year: new Date().toLocaleDateString().split("/")[2],
+    month: `0${new Date().toLocaleDateString().split("/")[1]}`.slice(-2),
+  });
 
   useEffect(() => {
     setRows(invoices);
-    setCheck(invoices.map(() => {return{name: invoices.id, check: false }}));
+    let years = [];
+    let toDay = Number(new Date().toLocaleDateString().split("/")[2]);
+    for (let i = 10; i >= 0; i--) {
+      years.push(toDay);
+      toDay--;
+    }
+
+    setYears(years);
   }, [invoices]);
 
   function handleChange(e) {
@@ -38,36 +54,72 @@ export default function InvoicesList({
       invoices.filter((row) => {
         if (row.CLI_NOMBRE.toLowerCase().includes(value.toLowerCase()))
           return true;
-        if (row.CLI_IDENTIFICACION.toLowerCase().includes(value.toLowerCase()))
-          if (
-            new Date(row.VEN_FECHA) >= new Date(dateFilter.from) &&
-            new Date(row.VEN_FECHA) <= new Date(dateFilter.to)
-          )
-            return true;
+        if (row.CLI_IDENTIFICACION === value) return true;
+        if (row.VEN_NUMERO === value) return true;
         return false;
       })
     );
   }
 
-  function handleFilterDate(e) {
-    const newDate = { ...dateFilter, [e.target.name]: e.target.value };
+  async function handleAuth() {
+    let error = 0;
 
-    setFilter(newDate);
-
-    if (!(newDate.from === "") && !(newDate.to === "")) {
-      setRows(
-        invoices.filter((row) => {
-          const rowDate = row.VEN_FECHA.split("-").reverse().join("-");
-          if (
-            new Date(rowDate) >= new Date(newDate.from) &&
-            new Date(rowDate) <= new Date(newDate.to)
-          ) {
-            return true;
-          }
-          return false;
+    for (let i = 0; i < isChecked.length; i++) {
+      dispatch(openLoading());
+      await dispatch(
+        updateInvoice(isChecked[i], {
+          ...invoices.find((i) => isChecked.some((c) => c === i.VEN_CODIGO)),
+          VEN_ESTADO: 3,
         })
+      ).catch(() => error++);
+    }
+
+    dispatch(closeLoading());
+
+    if (error === 1) {
+      swal(
+        "Error",
+        `Surgio un error al intentar autorizar una factura`,
+        "error"
+      );
+    } else if (error >= 1) {
+      swal(
+        "Error",
+        `Surgieron ${error} errores al intentar autorizar las facturas`,
+        "error"
+      );
+    } else {
+      swal(
+        "Actualizado",
+        `Se actualizaron ${isChecked.length} facturas con exito`,
+        "success"
       );
     }
+
+    handleCheck();
+    setCheck([]);
+  }
+
+  function handleFilterDate() {
+    dispatch(openLoading());
+    dispatch(getInvoicesForDate(filter.year, filter.month))
+    .then(() => {
+      dispatch(closeLoading());
+    })
+    .catch((e) => {
+      dispatch(closeLoading());
+      console.log(e);
+      swal(
+        "Error",
+        `Surgio un error al intentar traer las facturas`,
+        "error"
+      );
+    })
+  }
+
+  function handleChangeFilter(e) {
+    setFilter({ ...filter, [e.target.name]: e.target.value });
+    console.log(filter);
   }
 
   function handleCheck() {
@@ -94,42 +146,67 @@ export default function InvoicesList({
           placeholder="Buscar factura"
           onChange={handleChange}
         />
-        <Link
-          to="/dashboard/invoices/add"
-          className="btn btn-primary invoicesList__export"
-        >
-          <img src={addSquare} alt="export" />
-          <span>Factura</span>
-        </Link>
-        <button
-          className="btn btn-primary"
-          onClick={() => {
-            handleExportInvoice();
-          }}
-        >
-          <img src={exportIcon} alt="export" />
-          <span>Excel</span>
-        </button>
-        <button className="btn btn-primary" onClick={handleCheck}>
-          Estado
-        </button>
-        <div className="form-floating mb-3 date">
-          <input
-            className="form-control"
-            type="date"
-            name="from"
-            onChange={handleFilterDate}
-          />
-          <label htmlFor="floatingInput">Desde</label>
+        <div className="controls">
+          <Link
+            to="/dashboard/invoices/add"
+            className="btn btn-primary invoicesList__export"
+          >
+            <img src={addSquare} alt="export" />
+            <span>Factura</span>
+          </Link>
+          <Excel invoices={rows} />
+          <button
+            className={`btn btn-${disabled ? "primary" : "success"}`}
+            onClick={disabled ? handleCheck : handleAuth}
+          >
+            Autorizar
+          </button>
         </div>
-        <div className="form-floating mb-3 date">
-          <input
-            className="form-control"
-            type="date"
-            name="to"
-            onChange={handleFilterDate}
-          />
-          <label htmlFor="floatingInput">Hasta</label>
+        <div className="dateFilter">
+          <div className="form-floating mb-3 date">
+            <select
+              className="form-select"
+              name="year"
+              value={filter.year}
+              onChange={handleChangeFilter}
+            >
+              {years.map((y) => (
+                <option key={y} value={y}>
+                  {y}
+                </option>
+              ))}
+            </select>
+            <label htmlFor="floatingInput">Año</label>
+          </div>
+          <div className="form-floating mb-3 date">
+            <select
+              className="form-select"
+              name="month"
+              value={filter.month}
+              onChange={handleChangeFilter}
+            >
+              <option value="01">Enero</option>
+              <option value="02">Febrero</option>
+              <option value="03">Marzo</option>
+              <option value="04">Abril</option>
+              <option value="05">Mayo</option>
+              <option value="06">Junio</option>
+              <option value="07">Julio</option>
+              <option value="08">Agosto</option>
+              <option value="09">Septiembre</option>
+              <option value="10">Octubre</option>
+              <option value="11">Noviembre</option>
+              <option value="12">Diciembre</option>
+            </select>
+            <label htmlFor="floatingInput">Mes</label>
+          </div>
+          <button
+            className="btn btn-success"
+            type="button"
+            onClick={handleFilterDate}
+          >
+            Aplicar
+          </button>
         </div>
       </div>
       <span className="limit">{`${user.EMP_SECUENCIAL} de 100 facturas`}</span>
@@ -147,7 +224,7 @@ export default function InvoicesList({
           <span>IVA</span>
           <span>Total</span>
           <span>Estado</span>
-          <span>Ver en PDF</span>
+          <span>PDF</span>
           <span>Anular</span>
         </div>
         <div className="contentCard">
@@ -156,15 +233,15 @@ export default function InvoicesList({
               <span>No hay Facturas</span>
             </div>
           ) : (
-            rows?.map((i) => (
+            rows?.map((invoice, i) => (
               <InvoiceCard
-                key={i.id}
-                invoice={i}
+                key={invoice.VEN_CODIGO}
+                invoice={invoice}
                 viewPDF={() => {
-                  handleViewPDF(i);
+                  handleViewPDF(invoice);
                 }}
                 disabled={disabled}
-                isCheked={isCheked}
+                isChecked={isChecked}
                 setCheck={setCheck}
               />
             ))

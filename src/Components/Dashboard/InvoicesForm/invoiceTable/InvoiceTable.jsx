@@ -31,7 +31,11 @@ export default function InvoiceTable({
 
   return (
     <div className="invoice-products">
-      <div className={`invoice-row invoice-first-row ${user.EMP_AUTOMATICO === 1 ? "detCantidad" : ""}`}>
+      <div
+        className={`invoice-row invoice-first-row ${
+          user.EMP_AUTOMATICO === 1 ? "detCantidad" : ""
+        }`}
+      >
         <span>Codigo</span>
         <span>Descripcion</span>
         {user.EMP_AUTOMATICO === 1 ? <span>Det. Cantidad</span> : null}
@@ -42,7 +46,12 @@ export default function InvoiceTable({
         <span>Valor</span>
       </div>
       {newProducts?.map((p) => (
-        <div key={p.ITE_CODIGO} className={`invoice-row ${user.EMP_AUTOMATICO === 1 ? "detCantidad" : ""}`}>
+        <div
+          key={p.ITE_CODIGO}
+          className={`invoice-row ${
+            user.EMP_AUTOMATICO === 1 ? "detCantidad" : ""
+          }`}
+        >
           <span>{p.ITE_CODIGO}</span>
           <span>{p.ITE_DESCRIPCION}</span>
           {user.EMP_AUTOMATICO === 1 ? <span>{p.detCantidad}</span> : null}
@@ -66,7 +75,7 @@ export default function InvoiceTable({
             className="amount"
             type="number"
             name="VED_PUNITARIOIVA"
-            value={Number(p.VED_PUNITARIOIVA).toFixed(user.EMP_PRECISION)}
+            value={p.VED_PUNITARIOIVA}
             onChange={(e) => handleChangeProduct(e, p.ITE_CODIGO)}
           />
           <span>{Number(p.VED_VALOR).toFixed(2)}</span>
@@ -77,14 +86,22 @@ export default function InvoiceTable({
           <h5>Informacion Adicional:</h5>
           <div className="aditional-input-container">
             <input
-              className="form-control"
+              className={`form-control ${
+                invoice.VEN_CAMPO1 === "" && invoice.VEN_VALOR1 !== ""
+                  ? "is-invalid"
+                  : ""
+              }`}
               name="VEN_CAMPO1"
               value={invoice.VEN_CAMPO1}
               placeholder="Nombre"
               onChange={handleChange}
             />
             <input
-              className="form-control"
+              className={`form-control ${
+                invoice.VEN_CAMPO1 !== "" && invoice.VEN_VALOR1 === ""
+                  ? "is-invalid"
+                  : ""
+              }`}
               name="VEN_VALOR1"
               value={invoice.VEN_VALOR1}
               placeholder="Valor"
@@ -94,14 +111,22 @@ export default function InvoiceTable({
 
           <div className="aditional-input-container">
             <input
-              className="form-control"
+              className={`form-control ${
+                invoice.VEN_CAMPO2 === "" && invoice.VEN_VALOR2 !== ""
+                  ? "is-invalid"
+                  : ""
+              }`}
               name="VEN_CAMPO2"
               value={invoice.VEN_CAMPO2}
               placeholder="Nombre"
               onChange={handleChange}
             />
             <input
-              className="form-control"
+              className={`form-control ${
+                invoice.VEN_CAMPO2 !== "" && invoice.VEN_VALOR2 == ""
+                  ? "is-invalid"
+                  : ""
+              }`}
               name="VEN_VALOR2"
               value={invoice.VEN_VALOR2}
               placeholder="Valor"
@@ -111,14 +136,22 @@ export default function InvoiceTable({
 
           <div className="aditional-input-container">
             <input
-              className="form-control"
+              className={`form-control ${
+                invoice.VEN_CAMPO3 === "" && invoice.VEN_VALOR3 !== ""
+                  ? "is-invalid"
+                  : ""
+              }`}
               name="VEN_CAMPO3"
               value={invoice.VEN_CAMPO3}
               placeholder="Nombre"
               onChange={handleChange}
             />
             <input
-              className="form-control"
+              className={`form-control ${
+                invoice.VEN_CAMPO3 !== "" && invoice.VEN_VALOR3 === ""
+                  ? "is-invalid"
+                  : ""
+              }`}
               name="VEN_VALOR3"
               value={invoice.VEN_VALOR3}
               placeholder="Valor"

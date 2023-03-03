@@ -7,17 +7,20 @@ import {
   closeLoading,
 } from "../../../../redux/actions";
 
-import validaDocumento from "../../../../functions/Ruc-Ci.js";
+import validaDocumento from "../../../../functions/Ruc-Ci";
 
 import "../Form.css";
 
 const initialState = {
+  CLI_CODIGO: 0,
   CLI_DIRECCION: "",
-  CLI_EMAIL: "-",
+  CLI_EMAIL: "",
+  CLI_ESTADO: 1,
   CLI_IDENTIFICACION: "",
   CLI_NOMBRE: "",
-  CLI_TELEFONO: "-",
+  CLI_TELEFONO: "",
   CLI_TIPOIDE: "04",
+  LOC_CODIGO: 0,
 };
 
 const type = [
@@ -36,8 +39,12 @@ export default function ClientForm({ addClient, handleAddClient }) {
   });
 
   function handleChange(e) {
-    setclient({ ...client, [e.target.name]: e.target.value });
-    if (e.target.name === "CLI_IDENTIFICACION") handleVerification(e);
+    if(e.target.name === "CLI_EMAIL"){
+      setclient({ ...client, [e.target.name]: e.target.value.replace( /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i, '') });
+    }else{
+      if (e.target.name === "CLI_IDENTIFICACION") handleVerification(e);
+      setclient({ ...client, [e.target.name]: e.target.value.replace(/[^a-zA-Z0-9]/g, '') });
+    }
   }
 
   function handleVerification(e) {
@@ -137,6 +144,7 @@ export default function ClientForm({ addClient, handleAddClient }) {
         <div className="form-floating mb-3">
           <input
             disabled={client.type === "Tipo" ? true : false}
+            type="number"
             name="CLI_IDENTIFICACION"
             className={`form-control ${
               !error.CLI_IDENTIFICACION ? null : "is-invalid"

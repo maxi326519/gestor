@@ -176,7 +176,7 @@ export default function PDF({ invoice, handleClosePDF }) {
                   </Text>
                 </View>
                 <Text style={{ marginBottom: "30px" }}>
-                  FECHA Y HORA DE AUTORIZACION: {invoice.VEN_FECHA}
+                  FECHA Y HORA DE AUTORIZACION:
                 </Text>
                 <Text>
                   AMBIENTE: {user.EMP_CODIGO === 1 ? "Pueba" : "Produccion"}
@@ -317,9 +317,9 @@ export default function PDF({ invoice, handleClosePDF }) {
                     </View>
                   </View>
 
-                  {invoice.VEN_CAMPO1 !== "" &&
-                  invoice.VEN_CAMPO1 !== "" &&
-                  invoice.VEN_CAMPO1 !== "" ? (
+                  {invoice.VEN_CAMPO1 !== "" ||
+                  invoice.VEN_CAMPO2 !== "" ||
+                  invoice.VEN_CAMPO3 !== "" ? (
                     <View style={{ ...styles.table, width: "95%" }}>
                       <View
                         style={{
@@ -362,7 +362,7 @@ export default function PDF({ invoice, handleClosePDF }) {
                         </View>
                       ) : null}
 
-                      {invoice.VEN_CAMPO3 ? (
+                      {invoice.VEN_CAMPO2 ? (
                         <View style={{ ...styles.tablaRows, width: "100%" }}>
                           <Text
                             style={{

@@ -269,17 +269,38 @@ export function GoogleSesion() {
   return async (dispatch) => {
     try {
       const provider = new GoogleAuthProvider();
-      const response = await signInWithPopup(auth, provider);
+      const response = await signInWithPopup(auth, provider); 
       /*       const credential = GoogleAuthProvider.credentialFromResult(response); */
 
       const user = response.user;
       /*       const token = credential.accessToken; */
 
-      await setDoc(doc(db, "users", user.uid), {
-        ruc: null,
-        email: user.email,
-        complete: false,
-      });
+      const userDB = {
+/*         EMP_EMAIL: user.EMP_EMAIL, */
+        EMP_AUTOMATICO: 1 /* default */,
+        EMP_CODIGO: 1 /* default */,
+        EMP_COMPROBANTES: 1 /* default */,
+        EMP_DADICIONAL: 0 /* default */,
+        EMP_ESTADO: 1 /* default */,
+        EMP_FECHA: new Date().toLocaleDateString(),
+        EMP_GUIAREMISION: 1 /* default */,
+        EMP_LICENCIA: "NORMAL",
+        EMP_MENSAJE: "" /* default */,
+        EMP_MULTILOCAL: 1 /* default */,
+        EMP_MULTIUSUARIO: 0 /* default */,
+        EMP_NCE: 100 /* Limite de factura */,
+        EMP_NOTIFICACION: 0 /* default */,
+        EMP_USUKEY: user.uid /* Id del usuarios */,
+        EMP_SECUENCIAL: 1 /* Numero de facturas en DB */,
+        EMP_IMPUESTO: 0,
+        EMP_PERFIL: {
+          DATOS_PERSONALES: false,
+          OBLIGACIONES: false,
+          FACTURA_ELECTRONICA: false,
+        },
+      };
+
+      await setDoc(doc(db, "users", user.uid), userDB);
 
       return dispatch({
         type: SIGN_IN,
@@ -395,17 +416,14 @@ export function postClient(client) {
       const clients = collection(db, "users", auth.currentUser.uid, "clients");
       const newCLient = await addDoc(clients, {
         ...client,
-        CLI_CODIGO: 0,
-        CLI_ESTADO: 1,
-        LOC_CODIGO: 0,
         USU_KEY: auth.currentUser.uid,
       });
 
       if (!newCLient) throw new Error("Error al agregar el cliente");
 
       const saveCLient = {
-        id: newCLient.id,
         ...client,
+        CLI_CODIGO: newCLient.id,
       };
 
       return dispatch({
@@ -430,16 +448,12 @@ export function postProduct(product) {
 
       const newProduct = {
         ...product,
-        ITE_BARRAS: "CLI20",
-        ITE_ESTADO: 1,
-        ITE_ICE: 0,
-        LOC_CODIGO: 0,
         USU_KEY: auth.currentUser.uid,
-        VED_CANTIDAD: 0,
       };
 
       await setDoc(doc(productColl, product.ITE_CODIGO), {
-        ...newProduct,
+        ...product,
+        USU_KEY: auth.currentUser.uid,
       });
 
       return dispatch({
@@ -455,17 +469,28 @@ export function postProduct(product) {
 export function postInvoice(invoice) {
   return async (dispatch) => {
     try {
-      const invoicesColl = collection(
+      const date = invoice.VEN_FECHA.split("-");
+      const year = date[0];
+      const month = date[1];
+
+      console.log(date);
+      const invoiceRef = collection(
         db,
         "users",
         auth.currentUser.uid,
         "invoices"
       );
-      const newProduct = await addDoc(invoicesColl, invoice);
+      const yearDoc = doc(invoiceRef, year);
+      const query = await addDoc(collection(yearDoc, month), invoice);
+
+      const newInvoice = {
+        ...invoice,
+        VEN_CODIGO: query.id,
+      };
 
       return dispatch({
         type: POST_INVOICE,
-        payload: invoice,
+        payload: newInvoice,
       });
     } catch (err) {
       throw new Error(err);
@@ -489,8 +514,8 @@ export function getClients() {
       if (!query.empty) {
         query.forEach((doc) => {
           clients.push({
-            id: doc.id,
             ...doc.data(),
+            CLI_CODIGO: doc.id,
           });
         });
       }
@@ -520,9 +545,7 @@ export function getProducts() {
 
       if (!query.empty) {
         query.forEach((doc) => {
-          products.push({
-            ...doc.data(),
-          });
+          products.push(doc.data());
         });
       }
 
@@ -539,29 +562,83 @@ export function getProducts() {
 export function getInvoices() {
   return async (dispatch) => {
     try {
+      const date = new Date().toLocaleDateString().split("/");
+      const year = date[2];
+      const currentMonth = `0${date[1]}`.slice(-2);
+      let lastMonth = "";
+
+      if (Number(date[1]) - 1 <= 0) {
+        lastMonth = "12";
+      } else {
+        lastMonth = `0${Number(date[1]) - 1}`.slice(-2);
+      }
+
       const invoiceColl = collection(
         db,
         "users",
         auth.currentUser.uid,
         "invoices"
-      );
-      const query = await getDocs(invoiceColl);
+      ); // Accedemos a las colecciones de todas las facturas
+      const yearDoc = doc(invoiceColl, year); // Accedemos a las facturas de un año en especifico
+      const currentMonthDoc = collection(yearDoc, currentMonth); // Accedemos a las facturas de un mes en especifico
+      const lastMonthDoc = collection(yearDoc, lastMonth); // Accedemos a las facturas de un mes en especifico
+
+      const query1 = await getDocs(currentMonthDoc);
+      const query2 = await getDocs(lastMonthDoc);
+
+      let invoices = [];
+
+      if (!query1.empty) {
+        query1.forEach((doc) => {
+          invoices.push({ ...doc.data(), VEN_CODIGO: doc.id });
+        });
+      }
+
+      if (!query2.empty) {
+        query2.forEach((doc) => {
+          invoices.push({ ...doc.data(), VEN_CODIGO: doc.id });
+        });
+      }
+
+      return dispatch({
+        type: GET_INVOICES,
+        payload: invoices,
+      });
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
+}
+
+export function getInvoicesForDate(year, month) {
+  return async (dispatch) => {
+    try {
+
+      console.log(year, month);
+
+      const invoiceColl = collection(
+        db,
+        "users",
+        auth.currentUser.uid,
+        "invoices"
+      ); // Accedemos a las colecciones de todas las facturas
+      const yearDoc = doc(invoiceColl, year); // Accedemos a las facturas de un año en especifico
+      const monthDoc = collection(yearDoc, month); // Accedemos a las facturas de un mes en especifico
+
+      const query1 = await getDocs(monthDoc);
 
       let invoices = [];
 
       if (!query.empty) {
-        query.forEach((doc) => {
-          invoices.push({
-            id: doc.id,
-            ...doc.data(),
-          });
-        });
-
-        return dispatch({
-          type: GET_INVOICES,
-          payload: invoices,
+        query1.forEach((doc) => {
+          invoices.push(doc.data());
         });
       }
+
+      return dispatch({
+        type: GET_INVOICES,
+        payload: invoices,
+      });
     } catch (err) {
       throw new Error(err);
     }
@@ -613,14 +690,20 @@ export function updateProduct(productData) {
 export function updateInvoice(id, invoiceData) {
   return async (dispatch) => {
     try {
-      console.log(invoiceData);
+      const dateSplit = invoiceData.VEN_FECHA.split("-");
+      const year = dateSplit[0];
+      const month = `0${dateSplit[1]}`.slice(-2);
+
       const invoiceColl = collection(
         db,
         "users",
         auth.currentUser.uid,
         "invoices"
-      );
-      await updateDoc(doc(invoiceColl, id), invoiceData);
+      ); // Accedemos a las colecciones de todas las facturas
+      const yearDoc = doc(invoiceColl, year); // Accedemos a las facturas de un año en especifico
+      const monthDoc = collection(yearDoc, month); // Accedemos a las facturas de un mes en especifico
+
+      await updateDoc(doc(monthDoc, id), invoiceData);
 
       dispatch({
         type: UPDATE_INVOICE,

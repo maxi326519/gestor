@@ -13,11 +13,17 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
   const products = useSelector((state) => state.products);
   const dispatch = useDispatch();
   const initialState = {
+    ITE_BARRAS: "",
     ITE_CODIGO: "",
     ITE_DESCRIPCION: "",
-    ITE_TIPO: 0,
+    ITE_ESTADO: 1,
+    ITE_ICE: 0,
     ITE_IMPUESTO: "0",
     ITE_PVP: "",
+    ITE_TIPO: 0,
+    LOC_CODIGO: 0,
+    USU_KEY: "",
+    VED_CANTIDAD: 0,
   };
   const [product, setProduct] = useState(initialState);
   const [error, setError] = useState({
@@ -25,7 +31,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
   });
 
   function handleChange(e) {
-    setProduct({ ...product, [e.target.name]: e.target.value });
+    setProduct({ ...product, [e.target.name]: e.target.value.replace(/[^a-zA-Z0-9]/g, '') });
     if (e.target.name === "ITE_CODIGO") {
       if (products.find((p) => p.ITE_CODIGO === e.target.value)) {
         setError({ ITE_CODIGO: "Este codigo ya existe" });
@@ -38,11 +44,9 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
   function handleSubmit(e) {
     e.preventDefault();
 
-    console.log(product);
-
     if (!error.ITE_CODIGO) {
       dispatch(openLoading());
-      dispatch(postProduct(product[0]))
+      dispatch(postProduct(product))
         .then((d) => {
           dispatch(closeLoading());
           handleClose();

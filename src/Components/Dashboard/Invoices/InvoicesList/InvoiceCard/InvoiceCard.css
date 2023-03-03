@@ -1,6 +1,6 @@
 .invoice-card{
     display: grid;
-    grid-template-columns: 30px 110px 210px 1fr 1fr  1fr 1fr 1fr repeat(4, 110px) 100px 100px;
+    grid-template-columns: 30px 110px 180px 150px repeat(4, 1fr) repeat(4, 110px) repeat(2, 80px);
     grid-template-rows: 1fr;
     gap: 10px;
     padding: 10px;

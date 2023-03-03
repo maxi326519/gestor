@@ -14,6 +14,7 @@ export default function PersonalData() {
   const [imageUrl, setImageUrl] = useState("");
   const [file, setFile] = useState(null);
   const [user, setUser] = useState({
+    EMP_RUC: userData.EMP_RUC ? userData.EMP_RUC : "",
     EMP_NOMBRE: "",
     EMP_DIRECCION: "",
     EMP_TELEFONO: "",
@@ -22,6 +23,7 @@ export default function PersonalData() {
   });
 
   const [error, setError] = useState({
+    EMP_RUC: null,
     EMP_NOMBRE: null,
     EMP_DIRECCION: null,
     EMP_TELEFONO: null,
@@ -30,6 +32,7 @@ export default function PersonalData() {
   });
 
   const [isValid, setIsValid] = useState({
+    EMP_RUC: "",
     EMP_NOMBRE: "",
     EMP_DIRECCION: "",
     EMP_TELEFONO: "",
@@ -145,15 +148,15 @@ export default function PersonalData() {
           <div className="form-floating mb-3 ">
             <input
               type="text"
-              name="ruc"
-              value={user.ruc}
+              name="EMP_RUC"
+              value={userData.EMP_RUC}
               className={`form-control ${
-                !error.ruc ? isValid.ruc : "is-invalid"
+                !error.EMP_RUC ? isValid.EMP_RUC : "is-invalid"
               }`}
               id={
-                error.ruc
+                error.EMP_RUC
                   ? `floatingInputInvalid ${
-                      isValid.ruc.length > 0 ? "validationServer01" : null
+                      isValid.EMP_RUC.length > 0 ? "validationServer01" : null
                     }`
                   : "floatingInput"
               }
@@ -162,7 +165,7 @@ export default function PersonalData() {
               required
             />
             <label htmlFor="floatingInput">Ruc</label>
-            {!error.ruc ? null : <small>{error.ruc}</small>}
+            {!error.EMP_RUC ? null : <small>{error.EMP_RUC}</small>}
           </div>
         )}
 
