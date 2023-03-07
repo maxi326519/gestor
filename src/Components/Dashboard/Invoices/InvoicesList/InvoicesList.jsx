@@ -3,7 +3,7 @@ import {
   closeLoading,
   openLoading,
   updateInvoice,
-  getInvoicesForDate,
+  getInvoices,
 } from "../../../../redux/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -29,23 +29,39 @@ export default function InvoicesList({
   const [disabled, setDisabled] = useState(true);
   const [isChecked, setCheck] = useState([]);
   const [years, setYears] = useState([]);
+  const [days, setDays] = useState([]);
   const dispatch = useDispatch();
   const [filter, setFilter] = useState({
     year: new Date().toLocaleDateString().split("/")[2],
     month: `0${new Date().toLocaleDateString().split("/")[1]}`.slice(-2),
+    day: "00"
   });
 
   useEffect(() => {
     setRows(invoices);
     let years = [];
-    let toDay = Number(new Date().toLocaleDateString().split("/")[2]);
+    let date = new Date().toLocaleDateString().split("/");
+    let toYear = Number(date[2]);
+    let toMonth = date[1];
+    var days = new Date(toYear, toMonth, 0).getDate();
+    let dayArr = [];
+    
     for (let i = 10; i >= 0; i--) {
-      years.push(toDay);
-      toDay--;
+      years.push(toYear);
+      toYear--;
     }
-
+    
+    for(let i=1; i <= days; i++){
+      dayArr.push(i);
+    }
+    
     setYears(years);
+    setDays(dayArr);
   }, [invoices]);
+
+  useEffect(() => {
+
+  }, [filter])
 
   function handleChange(e) {
     const value = e.target.value;
@@ -71,7 +87,7 @@ export default function InvoicesList({
           ...invoices.find((i) => isChecked.some((c) => c === i.VEN_CODIGO)),
           VEN_ESTADO: 3,
         })
-      ).catch(() => error++);
+      ).catch(error++);
     }
 
     dispatch(closeLoading());
@@ -79,16 +95,10 @@ export default function InvoicesList({
     if (error === 1) {
       swal(
         "Error",
-        `Surgio un error al intentar autorizar una factura`,
+        `Hubo un inconveniente al intentar autorizar una factura, intentelo mas tarde`,
         "error"
       );
-    } else if (error >= 1) {
-      swal(
-        "Error",
-        `Surgieron ${error} errores al intentar autorizar las facturas`,
-        "error"
-      );
-    } else {
+    } else{
       swal(
         "Actualizado",
         `Se actualizaron ${isChecked.length} facturas con exito`,
@@ -101,8 +111,13 @@ export default function InvoicesList({
   }
 
   function handleFilterDate() {
+    let { year, month, day } = filter;
+
+    if(day === "00") day = null;
+    if(month === "00") month = null;
+
     dispatch(openLoading());
-    dispatch(getInvoicesForDate(filter.year, filter.month))
+    dispatch(getInvoices(year, month, day))
     .then(() => {
       dispatch(closeLoading());
     })
@@ -185,7 +200,7 @@ export default function InvoicesList({
               value={filter.month}
               onChange={handleChangeFilter}
             >
-              <option value="01">Todos</option>
+              <option value="00">Todos</option>
               <option value="01">Enero</option>
               <option value="02">Febrero</option>
               <option value="03">Marzo</option>
@@ -204,11 +219,14 @@ export default function InvoicesList({
           <div className="form-floating mb-3 date">
             <select
               className="form-select"
-              name="month"
-              value={filter.month}
+              name="day"
+              value={filter.day}
               onChange={handleChangeFilter}
             >
-              <option value="01">Todos</option>
+              <option value="00">Todos</option>
+              {
+                days.map((day) => <option key={day} value={`0${day}`.slice(-2)}>{`0${day}`.slice(-2)}</option>)
+              }
             </select>
             <label htmlFor="floatingInput">Dia</label>
           </div>

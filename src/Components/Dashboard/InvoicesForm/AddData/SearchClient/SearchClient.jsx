@@ -49,7 +49,7 @@ export default function SearchClient({ handleClient, handleFormClient }) {
           {rows.length > 0 ? (
             rows?.map((c) => (
               <div
-                key={c.id}
+                key={c.CLI_CODIGO}
                 className="search-client-row"
                 onClick={() => handleClient(c)}
               >

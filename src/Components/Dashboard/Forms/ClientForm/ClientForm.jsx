@@ -51,6 +51,7 @@ export default function ClientForm({ addClient, handleAddClient }) {
   }
 
   function handleVerification(e) {
+    return true;
     try {
       const value = e.target.value;
       if (clients.find((c) => c.CLI_IDENTIFICACION === e.target.value))

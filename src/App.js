@@ -38,6 +38,10 @@ function App() {
   const auth = getAuth();
 
   useEffect(() => {
+   const date = new Date().toLocaleDateString().split("/");
+   const year = date[2];
+   const month = `0${date[1]}`.slice(-2);
+
     dispatch(openLoading());
     setTimeout(() => {
       if (auth.currentUser) {
@@ -49,9 +53,9 @@ function App() {
             d.payload.EMP_PERFIL.OBLIGACIONES &&
             d.payload.EMP_PERFIL.FACTURA_ELECTRONICA
           ) {
-            dispatch(getProducts());
-            dispatch(getClients());
-            dispatch(getInvoices(new Date().toLocaleDateString()));
+            dispatch(getProducts()).catch((e) => console.log(e));
+            dispatch(getClients()).catch((e) => console.log(e));
+            dispatch(getInvoices(year, month)).catch((e) => console.log(e));
             redirect("/dashboard/invoices/add");
             dispatch(closeLoading());
           } else {

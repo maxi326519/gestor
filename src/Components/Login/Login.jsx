@@ -61,7 +61,9 @@ export default function Signin() {
     dispatch(openLoading());
     dispatch(login(user))
       .then(() => {
+        console.log("1");
         handlVerifyRegister();
+        console.log("2");
       })
       .catch((e) => {
         dispatch(closeLoading());

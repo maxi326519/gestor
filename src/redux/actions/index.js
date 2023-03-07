@@ -10,6 +10,7 @@ import {
   deleteDoc,
   query,
   where,
+  collectionGroup,
 } from "firebase/firestore";
 
 /* Firebase */
@@ -223,9 +224,10 @@ export function login(userData) {
       // Verificamo que exista un usuario con ese ruc
       const queryInstance = query(
         collection(db, "users"),
-        where("EMP_RUC", "==", userData.EMP_RUC)
+        where("EMP_RUC", "==", `${userData.EMP_RUC}`)
       );
       const dbUser = await getDocs(queryInstance);
+
       if (dbUser.empty) throw new Error("El ruc no existe");
 
       // Si existe nos traemos el email y hacemos la Auth
@@ -269,14 +271,14 @@ export function GoogleSesion() {
   return async (dispatch) => {
     try {
       const provider = new GoogleAuthProvider();
-      const response = await signInWithPopup(auth, provider); 
+      const response = await signInWithPopup(auth, provider);
       /*       const credential = GoogleAuthProvider.credentialFromResult(response); */
 
       const user = response.user;
       /*       const token = credential.accessToken; */
 
       const userDB = {
-/*         EMP_EMAIL: user.EMP_EMAIL, */
+        /*         EMP_EMAIL: user.EMP_EMAIL, */
         EMP_AUTOMATICO: 1 /* default */,
         EMP_CODIGO: 1 /* default */,
         EMP_COMPROBANTES: 1 /* default */,
@@ -559,80 +561,91 @@ export function getProducts() {
   };
 }
 
-export function getInvoices() {
+export function getInvoices(year, month, day) {
   return async (dispatch) => {
     try {
-      const date = new Date().toLocaleDateString().split("/");
-      const year = date[2];
-      const currentMonth = `0${date[1]}`.slice(-2);
-      let lastMonth = "";
+      console.log(year, month, day);
 
-      if (Number(date[1]) - 1 <= 0) {
-        lastMonth = "12";
+      let invoices = [];
+      let invoicesMonth = [];
+      const invoiceColl = collection(
+        db,
+        "users",
+        auth.currentUser.uid,
+        "invoices"
+      ); // Accedemos a las colecciones de todas las facturas
+
+      if (day && month && year) {
+        console.log("day");
+        const yearDoc = doc(invoiceColl, year); // Accedemos a las facturas de un año en especifico
+        const monthDoc = collection(yearDoc, month); // Accedemos a las facturas de un mes en especifico
+        const date = `${year}-${month}-${day}`;
+
+        const q = query(monthDoc, where("VEN_FECHA", "==", date))
+
+        const response = await getDocs(q);
+
+        if (!response.empty) {
+         response.forEach((doc) => {
+            invoices.push(doc.data());
+          });
+        }
+      } else if (month && year) {
+        console.log("month");
+        const yearDoc = doc(invoiceColl, year); // Accedemos a las facturas de un año en especifico
+        const monthDoc = collection(yearDoc, month); // Accedemos a las facturas de un mes en especifico
+
+        const query = await getDocs(monthDoc);
+
+        if (!query.empty) {
+          query.forEach((doc) => {
+            invoices.push(doc.data());
+          });
+        }
+      } else if (year) {
+        console.log("year");
+        const yearDoc = doc(invoiceColl, year); // Accedemos a las facturas de un año en especifico
+
+        const enero = await getDocs(collection(yearDoc, "01"));
+        const febrero = await getDocs(collection(yearDoc, "02"));
+        const marzo = await getDocs(collection(yearDoc, "03"));
+        const abril = await getDocs(collection(yearDoc, "04"));
+        const mayo = await getDocs(collection(yearDoc, "05"));
+        const junio = await getDocs(collection(yearDoc, "06"));
+        const julio = await getDocs(collection(yearDoc, "07"));
+        const agosto = await getDocs(collection(yearDoc, "08"));
+        const septiembre = await getDocs(collection(yearDoc, "09"));
+        const octubre = await getDocs(collection(yearDoc, "10"));
+        const noviembre = await getDocs(collection(yearDoc, "11"));
+        const diciembre = await getDocs(collection(yearDoc, "12"));
+
+        invoicesMonth.push(enero);
+        invoicesMonth.push(febrero);
+        invoicesMonth.push(marzo);
+        invoicesMonth.push(abril);
+        invoicesMonth.push(mayo);
+        invoicesMonth.push(junio);
+        invoicesMonth.push(julio);
+        invoicesMonth.push(agosto);
+        invoicesMonth.push(septiembre);
+        invoicesMonth.push(octubre);
+        invoicesMonth.push(noviembre);
+        invoicesMonth.push(diciembre);
+
+        invoicesMonth
+          .filter((month) => {
+            if (month.empty) return false;
+            console.log(month.empty);
+            console.log(month);
+            return true
+          })
+          .forEach((month) => {
+            month.forEach((doc)=>{
+               invoices.push(doc.data())
+            })
+         });
       } else {
-        lastMonth = `0${Number(date[1]) - 1}`.slice(-2);
-      }
-
-      const invoiceColl = collection(
-        db,
-        "users",
-        auth.currentUser.uid,
-        "invoices"
-      ); // Accedemos a las colecciones de todas las facturas
-      const yearDoc = doc(invoiceColl, year); // Accedemos a las facturas de un año en especifico
-      const currentMonthDoc = collection(yearDoc, currentMonth); // Accedemos a las facturas de un mes en especifico
-      const lastMonthDoc = collection(yearDoc, lastMonth); // Accedemos a las facturas de un mes en especifico
-
-      const query1 = await getDocs(currentMonthDoc);
-      const query2 = await getDocs(lastMonthDoc);
-
-      let invoices = [];
-
-      if (!query1.empty) {
-        query1.forEach((doc) => {
-          invoices.push({ ...doc.data(), VEN_CODIGO: doc.id });
-        });
-      }
-
-      if (!query2.empty) {
-        query2.forEach((doc) => {
-          invoices.push({ ...doc.data(), VEN_CODIGO: doc.id });
-        });
-      }
-
-      return dispatch({
-        type: GET_INVOICES,
-        payload: invoices,
-      });
-    } catch (err) {
-      throw new Error(err);
-    }
-  };
-}
-
-export function getInvoicesForDate(year, month) {
-  return async (dispatch) => {
-    try {
-
-      console.log(year, month);
-
-      const invoiceColl = collection(
-        db,
-        "users",
-        auth.currentUser.uid,
-        "invoices"
-      ); // Accedemos a las colecciones de todas las facturas
-      const yearDoc = doc(invoiceColl, year); // Accedemos a las facturas de un año en especifico
-      const monthDoc = collection(yearDoc, month); // Accedemos a las facturas de un mes en especifico
-
-      const query1 = await getDocs(monthDoc);
-
-      let invoices = [];
-
-      if (!query.empty) {
-        query1.forEach((doc) => {
-          invoices.push(doc.data());
-        });
+        throw new Error("Faltan parametros para acceder a 'invoices'");
       }
 
       return dispatch({

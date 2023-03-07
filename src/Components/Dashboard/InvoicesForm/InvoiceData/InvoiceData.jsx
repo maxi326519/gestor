@@ -37,9 +37,6 @@ export default function InvoiceData({ invoice, handleChange, handleSetGuia }) {
       invoice.VEN_PTOEMISION,
       Number(user.EMP_CODIGO)
     )
-
-    console.log(clave.length);
-
     setClave(clave);
 
   }, [invoice, setClave, user]);
@@ -89,7 +86,6 @@ export default function InvoiceData({ invoice, handleChange, handleSetGuia }) {
 
     const date = e.target.value.split("-");
     const format = `${date[0]}-${("0" + date[1]).slice(-2)}-${("0" + date[2]).slice(-2)}`;
-    console.log(format);
 
     if (newDate <= toDay) {
       setFormat(format);
