@@ -10,7 +10,6 @@ import {
 } from "@react-pdf/renderer";
 import { useSelector } from "react-redux";
 import JsBarcode from "jsbarcode";
-import { Barcode } from "@react-pdf/renderer";
 
 import "./PDF.css";
 const styles = StyleSheet.create({
@@ -43,7 +42,7 @@ const styles = StyleSheet.create({
   },
   invoicingData: {
     padding: 10,
-    paddingLeft: "20px",
+    paddingLeft: "10px",
   },
   invoiceHead: {
     display: "flex",
@@ -114,7 +113,7 @@ export default function PDF({ invoice, handleClosePDF }) {
 
   useEffect(() => {
     if (invoice.VEN_CLAVEACCESO) {
-      JsBarcode("#barcode", invoice.VEN_CLAVEACCESO);
+      JsBarcode("#barcode", invoice.VEN_CLAVEACCESO, {  displayValue: false });
       const canvas = canvasRef.current;
       const dataUrl = canvas.toDataURL();
       try {
@@ -193,7 +192,12 @@ export default function PDF({ invoice, handleClosePDF }) {
                   }}
                 >
                   {invoice.VEN_CLAVEACCESO ? (
-                    <Image src={barCode} style={{ width: "250px" }} />
+                    <View>
+                      <Image src={barCode} style={{ width: "270px" }} />
+                      <Text style={{ fontSize: "10px" }}>
+                       { invoice.VEN_CLAVEACCESO }
+                      </Text>
+                    </View>
                   ) : (
                     <Text style={{ color: "red", fontSize: "25px" }}>
                       NO REGISTRADO

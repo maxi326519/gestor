@@ -28,13 +28,14 @@ export default function InvoicesList({
   const [rows, setRows] = useState([]);
   const [disabled, setDisabled] = useState(true);
   const [isChecked, setCheck] = useState([]);
+  const [checkAll, setAll] = useState(false);
   const [years, setYears] = useState([]);
   const [days, setDays] = useState([]);
   const dispatch = useDispatch();
   const [filter, setFilter] = useState({
     year: new Date().toLocaleDateString().split("/")[2],
     month: `0${new Date().toLocaleDateString().split("/")[1]}`.slice(-2),
-    day: "00"
+    day: "00",
   });
 
   useEffect(() => {
@@ -45,23 +46,21 @@ export default function InvoicesList({
     let toMonth = date[1];
     var days = new Date(toYear, toMonth, 0).getDate();
     let dayArr = [];
-    
+
     for (let i = 10; i >= 0; i--) {
       years.push(toYear);
       toYear--;
     }
-    
-    for(let i=1; i <= days; i++){
+
+    for (let i = 1; i <= days; i++) {
       dayArr.push(i);
     }
-    
+
     setYears(years);
     setDays(dayArr);
   }, [invoices]);
 
-  useEffect(() => {
-
-  }, [filter])
+  useEffect(() => console.log(isChecked), [isChecked]);
 
   function handleChange(e) {
     const value = e.target.value;
@@ -77,68 +76,104 @@ export default function InvoicesList({
     );
   }
 
-  async function handleAuth() {
-    let error = 0;
+  function handleCheckAll() {
+    if (checkAll) {
+      setCheck([]);
+      setAll(false);
+    } else {
+      setCheck(
+        rows.filter((i) => i.VEN_ESTADO === 1).map((i) =>{
+          return i.VEN_CODIGO})
+      );
+      setAll(true);
+    }
+  }
 
-    for (let i = 0; i < isChecked.length; i++) {
-      dispatch(openLoading());
-      await dispatch(
-        updateInvoice(isChecked[i], {
-          ...invoices.find((i) => isChecked.some((c) => c === i.VEN_CODIGO)),
-          VEN_ESTADO: 3,
+  function handleAuth() {
+    if (isChecked.length > 0) {
+      swal({
+        text: `¿Seguro que quiere autorizar ${isChecked.length} facturas?`,
+        icon: "info",
+        buttons: { confirm: true, cancel: true },
+      })
+        .then(async (r) => {
+          if (r) {
+            let error = 0;
+
+            for (let i = 0; i < isChecked.length; i++) {
+              const invoiceAuth = rows.find((invoice) => invoice.VEN_CODIGO === isChecked[i]);
+              
+              dispatch(openLoading());
+              await dispatch(
+                updateInvoice(isChecked[i], {
+                  ...invoiceAuth,
+                  VEN_ESTADO: 3,
+                })
+              ).catch(error++);
+            }
+
+            dispatch(closeLoading());
+
+            if (error === 1) {
+              swal(
+                "Error",
+                `Hubo un inconveniente al intentar autorizar una factura, intentelo mas tarde`,
+                "error"
+              );
+            } else {
+              swal(
+                "Actualizado",
+                `Se actualizaron ${isChecked.length} facturas con exito`,
+                "success"
+              );
+            }
+            setAll(false);
+            setCheck([]);
+            handleCheck();
+          }
         })
-      ).catch(error++);
+        .catch((e) => {
+          dispatch(closeLoading());
+          swal(
+            "Error",
+            `Hubo un inconveniente al intentar autorizar una factura, intentelo mas tarde`,
+            "error"
+          );
+          console.log(e);
+        });
+    } else {
+      handleCheck();
     }
+  }
 
-    dispatch(closeLoading());
-
-    if (error === 1) {
-      swal(
-        "Error",
-        `Hubo un inconveniente al intentar autorizar una factura, intentelo mas tarde`,
-        "error"
-      );
-    } else{
-      swal(
-        "Actualizado",
-        `Se actualizaron ${isChecked.length} facturas con exito`,
-        "success"
-      );
-    }
-
-    handleCheck();
-    setCheck([]);
+  function handleCheck() {
+    setDisabled(!disabled);
   }
 
   function handleFilterDate() {
     let { year, month, day } = filter;
 
-    if(day === "00") day = null;
-    if(month === "00") month = null;
+    if (day === "00") day = null;
+    if (month === "00") month = null;
 
     dispatch(openLoading());
     dispatch(getInvoices(year, month, day))
-    .then(() => {
-      dispatch(closeLoading());
-    })
-    .catch((e) => {
-      dispatch(closeLoading());
-      console.log(e);
-      swal(
-        "Error",
-        `Surgio un error al intentar traer las facturas`,
-        "error"
-      );
-    })
+      .then(() => {
+        dispatch(closeLoading());
+      })
+      .catch((e) => {
+        dispatch(closeLoading());
+        console.log(e);
+        swal(
+          "Error",
+          `Surgio un error al intentar traer las facturas`,
+          "error"
+        );
+      });
   }
 
   function handleChangeFilter(e) {
     setFilter({ ...filter, [e.target.name]: e.target.value });
-    console.log(filter);
-  }
-
-  function handleCheck() {
-    setDisabled(!disabled);
   }
 
   function handleViewPDF(i) {
@@ -224,9 +259,11 @@ export default function InvoicesList({
               onChange={handleChangeFilter}
             >
               <option value="00">Todos</option>
-              {
-                days.map((day) => <option key={day} value={`0${day}`.slice(-2)}>{`0${day}`.slice(-2)}</option>)
-              }
+              {days.map((day) => (
+                <option key={day} value={`0${day}`.slice(-2)}>
+                  {`0${day}`.slice(-2)}
+                </option>
+              ))}
             </select>
             <label htmlFor="floatingInput">Dia</label>
           </div>
@@ -242,7 +279,13 @@ export default function InvoicesList({
       <span className="limit">{`${user.EMP_SECUENCIAL} de 100 facturas`}</span>
       <div className="dashboardList__grid">
         <div className="invoice-card first-row">
-          <span></span>
+          <input
+            type="checkbox"
+            name="checkAll"
+            checked={checkAll}
+            onChange={handleCheckAll}
+            disabled={disabled}
+          />
           <span>Fecha</span>
           <span>Nro</span>
           <span>Ruc / Cedula / Pasaporte</span>
@@ -273,6 +316,7 @@ export default function InvoicesList({
                 disabled={disabled}
                 isChecked={isChecked}
                 setCheck={setCheck}
+                setAll={setAll}
               />
             ))
           )}

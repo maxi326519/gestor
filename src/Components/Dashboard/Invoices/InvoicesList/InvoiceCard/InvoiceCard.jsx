@@ -1,14 +1,11 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import swal from "sweetalert";
 import {
-  deleteInvoice,
-  updateUserData,
   updateInvoice,
   openLoading,
   closeLoading,
 } from "../../../../../redux/actions";
 
-import removeIcon from "../../../../../assets/svg/remove.svg";
 import "./InvoiceCard.css";
 
 export default function InvoiceCard({
@@ -17,9 +14,9 @@ export default function InvoiceCard({
   disabled,
   isChecked,
   setCheck,
+  setAll,
 }) {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.userDB);
 
   function anular() {
     swal({
@@ -30,7 +27,9 @@ export default function InvoiceCard({
     }).then((r) => {
       if (r) {
         dispatch(openLoading());
-        dispatch(updateInvoice(invoice.VEN_CODIGO, { ...invoice, VEN_ESTADO: 2 }))
+        dispatch(
+          updateInvoice(invoice.VEN_CODIGO, { ...invoice, VEN_ESTADO: 2 })
+        )
           .then(() => {
             dispatch(closeLoading());
             swal("Factura anulada", "Se anulo a factura con exito", "success");
@@ -48,22 +47,28 @@ export default function InvoiceCard({
     });
   }
 
-  function handleChecked(id){
-    if(isChecked.some((c) => c === invoice.VEN_CODIGO)){
-      setCheck(isChecked.filter((c) => c !== invoice.VEN_CODIGO))
-    }else{
-      setCheck([ ...isChecked, id])
+  function handleChecked() {
+    setAll(false);
+    if (isChecked.some((c) => c === invoice.VEN_CODIGO)) {
+      console.log("Borrando");
+      setCheck(isChecked.filter((c) => c !== invoice.VEN_CODIGO));
+    } else {
+      console.log("Guardando");
+      console.log(invoice.VEN_CODIGO);
+      setCheck([...isChecked, invoice.VEN_CODIGO]);
     }
   }
 
   return (
     <div className="invoice-card">
-      <input
-        type="checkbox"
-        checked={isChecked.some((c) => c === invoice.VEN_CODIGO)}
-        disabled={disabled}
-        onChange={() => handleChecked(invoice.VEN_CODIGO)}
-      />
+      {(invoice.VEN_ESTADO === 2) || invoice.VEN_ESTADO === 3 ? <input type="checkbox" disabled/> : (
+        <input
+          type="checkbox"
+          checked={isChecked.some((c) => c === invoice.VEN_CODIGO)}
+          disabled={disabled}
+          onChange={handleChecked}
+        />
+      )}
       <span>{invoice.VEN_FECHA}</span>
       <span>{`${invoice.VEN_ESTABLECIMIENTO}-${
         invoice.VEN_PTOEMISION

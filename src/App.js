@@ -53,9 +53,9 @@ function App() {
             d.payload.EMP_PERFIL.OBLIGACIONES &&
             d.payload.EMP_PERFIL.FACTURA_ELECTRONICA
           ) {
-/*             dispatch(getProducts()).catch((e) => console.log(e));
+            dispatch(getProducts()).catch((e) => console.log(e));
             dispatch(getClients()).catch((e) => console.log(e));
-            dispatch(getInvoices(year, month)).catch((e) => console.log(e)); */
+            dispatch(getInvoices(year, month)).catch((e) => console.log(e));
             redirect("/dashboard/invoices/add");
             dispatch(closeLoading());
           } else {

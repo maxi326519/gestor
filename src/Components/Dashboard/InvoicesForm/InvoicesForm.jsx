@@ -165,7 +165,8 @@ export default function InvoicesForm({
             invoice.VEN_FECHA,
             `00000000${invoice.VEN_NUMERO}`.slice(-9),
             invoice.VEN_ESTABLECIMIENTO,
-            invoice.VEN_PTOEMISION
+            invoice.VEN_PTOEMISION,
+            user.EMP_CODIGO
           ),
         };
 

@@ -581,13 +581,16 @@ export function getInvoices(year, month, day) {
         const monthDoc = collection(yearDoc, month); // Accedemos a las facturas de un mes en especifico
         const date = `${year}-${month}-${day}`;
 
-        const q = query(monthDoc, where("VEN_FECHA", "==", date))
+        const q = query(monthDoc, where("VEN_FECHA", "==", date));
 
         const response = await getDocs(q);
 
         if (!response.empty) {
-         response.forEach((doc) => {
-            invoices.push(doc.data());
+          response.forEach((doc) => {
+            invoices.push({
+              ...doc.data(),
+              VEN_CODIGO: doc.id,
+            });
           });
         }
       } else if (month && year) {
@@ -599,7 +602,10 @@ export function getInvoices(year, month, day) {
 
         if (!query.empty) {
           query.forEach((doc) => {
-            invoices.push(doc.data());
+            invoices.push({
+              ...doc.data(),
+              VEN_CODIGO: doc.id,
+            });
           });
         }
       } else if (year) {
@@ -635,15 +641,16 @@ export function getInvoices(year, month, day) {
         invoicesMonth
           .filter((month) => {
             if (month.empty) return false;
-            console.log(month.empty);
-            console.log(month);
-            return true
+            return true;
           })
           .forEach((month) => {
-            month.forEach((doc)=>{
-               invoices.push(doc.data())
-            })
-         });
+            month.forEach((doc) => {
+              invoices.push({
+                ...doc.data(),
+                VEN_CODIGO: doc.id,
+              });
+            });
+          });
       } else {
         throw new Error("Faltan parametros para acceder a 'invoices'");
       }
@@ -703,6 +710,7 @@ export function updateProduct(productData) {
 export function updateInvoice(id, invoiceData) {
   return async (dispatch) => {
     try {
+      console.log("Action",id, invoiceData);
       const dateSplit = invoiceData.VEN_FECHA.split("-");
       const year = dateSplit[0];
       const month = `0${dateSplit[1]}`.slice(-2);
