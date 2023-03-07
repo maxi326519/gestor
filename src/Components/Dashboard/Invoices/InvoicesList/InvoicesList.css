@@ -2,12 +2,6 @@
   margin-left: 20px;
 }
 
-.dashboardList .limit{
-  margin-left: 10px;
-  margin-bottom: 5px;
-  color: grey;
-}
-
 .dashboardList__searchBar a{
   display: flex;
   align-items: center;
@@ -35,4 +29,20 @@
 .dashboardList__searchBar .date:nth-child(3),
 .dashboardList__searchBar .btn{
   margin-left: 5px;
+}
+
+.consolidado{
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+
+.consolidado .limit{
+  color: grey;
+}
+
+.consolidado input{
+  margin-left: 30px;
+  margin-right: 5px;
 }

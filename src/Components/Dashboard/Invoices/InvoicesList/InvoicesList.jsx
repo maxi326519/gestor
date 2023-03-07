@@ -31,6 +31,7 @@ export default function InvoicesList({
   const [checkAll, setAll] = useState(false);
   const [years, setYears] = useState([]);
   const [days, setDays] = useState([]);
+  const [consolidado, setConsolidado] = useState(false);
   const dispatch = useDispatch();
   const [filter, setFilter] = useState({
     year: new Date().toLocaleDateString().split("/")[2],
@@ -82,8 +83,11 @@ export default function InvoicesList({
       setAll(false);
     } else {
       setCheck(
-        rows.filter((i) => i.VEN_ESTADO === 1).map((i) =>{
-          return i.VEN_CODIGO})
+        rows
+          .filter((i) => i.VEN_ESTADO === 1)
+          .map((i) => {
+            return i.VEN_CODIGO;
+          })
       );
       setAll(true);
     }
@@ -101,8 +105,10 @@ export default function InvoicesList({
             let error = 0;
 
             for (let i = 0; i < isChecked.length; i++) {
-              const invoiceAuth = rows.find((invoice) => invoice.VEN_CODIGO === isChecked[i]);
-              
+              const invoiceAuth = rows.find(
+                (invoice) => invoice.VEN_CODIGO === isChecked[i]
+              );
+
               dispatch(openLoading());
               await dispatch(
                 updateInvoice(isChecked[i], {
@@ -276,7 +282,18 @@ export default function InvoicesList({
           </button>
         </div>
       </div>
-      <span className="limit">{`${user.EMP_SECUENCIAL} de 100 facturas`}</span>
+      <div className="consolidado">
+        <span className="limit">{`${user.EMP_SECUENCIAL} de 100 facturas`}</span>
+        <input
+          id="consolidado"
+          type="checkbox"
+          checked={consolidado}
+          onChange={() => setConsolidado(!consolidado)}
+        />
+        <label htmlFor="consolidado">
+          Consolidado
+        </label>
+      </div>
       <div className="dashboardList__grid">
         <div className="invoice-card first-row">
           <input
