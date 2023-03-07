@@ -25,7 +25,6 @@ export default function ClientCard({ client }) {
   }
 
   function handleChange(e) {
-    console.log(editClient);
     setProduct({ ...editClient, [e.target.name]: e.target.value });
   }
 
@@ -41,7 +40,7 @@ export default function ClientCard({ client }) {
     }).then((r) => {
       if (r) {
         dispatch(openLoading());
-        dispatch(deleteClient(client.id))
+        dispatch(deleteClient(client.CLI_CODIGO))
           .then(() => {
             dispatch(closeLoading());
             swal(
@@ -72,7 +71,7 @@ export default function ClientCard({ client }) {
     }).then((r) => {
       if (r) {
         dispatch(openLoading());
-        dispatch(updateClient(client.id, editClient))
+        dispatch(updateClient(client.CLI_CODIGO, editClient))
           .then(() => {
             dispatch(closeLoading());
             swal(

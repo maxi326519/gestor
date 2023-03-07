@@ -1,5 +1,5 @@
 export default function validaDocumento(documento: String): Array<any> {
-  var respuesta: any = {};
+  var respuesta: any = [];
   var Suma: number = 0;
   var Residuo: number = 0;
   var Natural: boolean = false;
@@ -84,7 +84,7 @@ export default function validaDocumento(documento: String): Array<any> {
         Suma = p1 + p2 + p3 + p4 + p5 + p6 + p7 + p8 + p9 + P10;
         Residuo = Suma % 10;
 
-        if (documento.length == 10) {
+        if (documento.length === 10) {
           if (Residuo == 0) {
             respuesta["correcto"] = "S";
             respuesta["mensaje"] = "cedula";
@@ -93,16 +93,15 @@ export default function validaDocumento(documento: String): Array<any> {
             respuesta["mensaje"] = "Cédula no valida";
           }
         } else if (documento.length > 10) {
-          if (Residuo == 0) {
+          if (Residuo === 0) {
             if (
-              Number(documento.substr(10, 3)) == 1 &&
-              String(documento.substr(10, 3)).length == 3
+              Number(documento.substr(10, 3)) === 1 &&
+              String(documento.substr(10, 3)).length === 3
             ) {
               if (
-                String(documento.substr(10, 3)).length ==
-                String(documento.substr(10, 3)).length
+                String(documento.substr(10, 3)).length === 3
               ) {
-                if (String(documento).length == 13) {
+                if (String(documento).length === 13) {
                   respuesta["correcto"] = "S";
                   respuesta["mensaje"] = "ruc";
                 } else {
@@ -123,8 +122,7 @@ export default function validaDocumento(documento: String): Array<any> {
           } else {
             if (Residuo == 0) {
               if (
-                String(documento.substr(10, 3)).length ==
-                String(documento.substr(10, 3)).length
+                String(documento.substr(10, 3)).length === 3
               ) {
                 if (String(documento).length == 13) {
                   respuesta["correcto"] = "S";

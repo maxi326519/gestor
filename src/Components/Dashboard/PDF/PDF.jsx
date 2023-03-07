@@ -256,7 +256,7 @@ export default function PDF({ invoice, handleClosePDF }) {
                   Valor
                 </Text>
               </View>
-              {invoice.ITE_DETELLES?.map((p) => (
+              {invoice.ITE_DETALLES?.map((p) => (
                 <View style={styles.tablaRows}>
                   <Text style={{ ...styles.text, width: "60px" }}>
                     {p.ITE_CODIGO}

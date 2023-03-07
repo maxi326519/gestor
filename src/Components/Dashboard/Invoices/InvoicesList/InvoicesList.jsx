@@ -185,6 +185,7 @@ export default function InvoicesList({
               value={filter.month}
               onChange={handleChangeFilter}
             >
+              <option value="01">Todos</option>
               <option value="01">Enero</option>
               <option value="02">Febrero</option>
               <option value="03">Marzo</option>
@@ -199,6 +200,17 @@ export default function InvoicesList({
               <option value="12">Diciembre</option>
             </select>
             <label htmlFor="floatingInput">Mes</label>
+          </div>
+          <div className="form-floating mb-3 date">
+            <select
+              className="form-select"
+              name="month"
+              value={filter.month}
+              onChange={handleChangeFilter}
+            >
+              <option value="01">Todos</option>
+            </select>
+            <label htmlFor="floatingInput">Dia</label>
           </div>
           <button
             className="btn btn-success"

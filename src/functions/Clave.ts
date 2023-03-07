@@ -3,7 +3,8 @@ export default function clave2(
   fecha: string,
   numero: string,
   est: string,
-  pto: string
+  pto: string,
+  empCodigo: number
 ) {
   var ca = "";
   var cad = "";
@@ -11,7 +12,7 @@ export default function clave2(
   var verificador = 0;
   var numerico = "12345678";
   var ruc = ruce;
-  var ambiente = Number(1/* parentApplication.emp_codigo */);
+  var ambiente = empCodigo;
   var emision = 1;
   var array = fecha.split("-");
   var dia = array[0];

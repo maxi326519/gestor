@@ -29,15 +29,19 @@ export default function InvoiceData({ invoice, handleChange, handleSetGuia }) {
   const [clave, setClave] = useState(0);
 
   useEffect(() => {
-    setClave(
-      clave2(
-        user.EMP_RUC,
-        invoice.VEN_FECHA,
-        `00000000${invoice.VEN_NUMERO}`.slice(-9),
-        invoice.VEN_ESTABLECIMIENTO,
-        invoice.VEN_PTOEMISION
-      )
-    );
+    const clave = clave2(
+      user.EMP_RUC,
+      invoice.VEN_FECHA.split("-").reverse().join("-"),
+      `00000000${invoice.VEN_NUMERO}`.slice(-9),
+      invoice.VEN_ESTABLECIMIENTO,
+      invoice.VEN_PTOEMISION,
+      Number(user.EMP_CODIGO)
+    )
+
+    console.log(clave.length);
+
+    setClave(clave);
+
   }, [invoice, setClave, user]);
 
   useEffect(() => {
