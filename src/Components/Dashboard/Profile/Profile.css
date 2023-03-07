@@ -23,9 +23,13 @@
 }
 
 .profile-container input{
-  width: 300px;
+  width: 400px;
 }
 
 .profile-container .left-content{
   margin-right: 30px;
+}
+
+small {
+  color: red;
 }

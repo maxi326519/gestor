@@ -68,7 +68,6 @@ export default function Invoicing({ disabled, userData, handleChange }) {
           accept="image/*"
           className="form-control"
           /*         onChange={handleFile} */
-          required
         />
 
         {/* CLAVE DE LA FIRMA */}
@@ -80,7 +79,6 @@ export default function Invoicing({ disabled, userData, handleChange }) {
             disabled={disabled}
             value={userData.EMP_KEY}
             onChange={handleChange}
-            required
           />
           <label htmlFor="floatingInput">Clave de la firma</label>
         </div>

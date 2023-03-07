@@ -7,7 +7,7 @@ import {
   closeLoading,
 } from "../../../../redux/actions";
 
-import validaDocumento from "../../../../functions/Ruc-Ci";
+import validation from "../../../../functions/Ruc-Ci.ts";
 
 import "../Form.css";
 
@@ -51,36 +51,25 @@ export default function ClientForm({ addClient, handleAddClient }) {
   }
 
   function handleVerification(e) {
-    return true;
     try {
       const value = e.target.value;
+      /* Si ya existe devolvemos error */
       if (clients.find((c) => c.CLI_IDENTIFICACION === e.target.value))
         throw new Error("Este codigo ya existe");
 
       if (client.CLI_TIPOIDE === "04" || client.CLI_TIPOIDE === "05") {
-        let mensaje = validaDocumento(e.target.value).mensaje;
+        if (client.CLI_TIPOIDE === "04" && value.length !== 13)   // Si es ruc y no tiene el tamaño correcto devolvemos error
+          throw new Error("El formato del Ruc es incorrecto");
+        if (client.CLI_TIPOIDE === "05" && value.length !== 10)   // Si es cedula y no tiene el tamaño correcto devolvemos error
+          throw new Error("El formato de la Cédula es incorrecto");
 
-        /* Verificamos la cedula */
-        if (mensaje === "ruc") {
-          if (value.length !== 13)
-            throw new Error("El ruc tiene un formato incorrecto");
-        } else if (mensaje === "cedula") {
-          if (value.length !== 10)
-            throw new Error("La cedula tiene un formato incorrecto");
-        } else if (!mensaje.includes("ruc") && !mensaje.includes("cedula")) {
-          setError({
-            ...error,
-            CLI_IDENTIFICACION: mensaje,
-          });
-        } else {
-          setError({
-            ...error,
-            CLI_IDENTIFICACION: null,
-          });
-        }
+        let id = validation(e.target.value);              // Si todo lo anterior esta bien, validamos el numero
+        console.log(id);
+        if (id.message !== "") throw new Error(id.message);       // Si tenemos un error de parte de la validacion la devolvemos
       }
+      setError({ ...error, CLI_IDENTIFICACION: null });
     } catch (err) {
-      setError({ CLI_IDENTIFICACION: err.message });
+      setError({ ...error, CLI_IDENTIFICACION: err.message });
     }
   }
 

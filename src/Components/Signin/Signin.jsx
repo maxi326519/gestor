@@ -7,6 +7,7 @@ import {
   closeLoading,
 } from "../../redux/actions";
 import { Link, useNavigate } from "react-router-dom";
+import validation from "../../functions/Ruc-Ci.ts";
 
 import "./Signin.css";
 
@@ -49,10 +50,26 @@ export default function Signin() {
     handleVerification(e.target.name, e.target.value);
   }
 
+  function handleVerification(value) {}
+
   function handleVerification(name, value) {
     if (name === "EMP_RUC") {
       if (value !== "") {
-        setIsValid({ ...isValid, EMP_RUC: "is-valid" });
+        try {
+          if (value.length !== 13)
+            throw new Error("El formato del Ruc es incorrecto");
+
+          let id = validation(value);
+
+          // Si tenemos un error de parte de la validacion la devolvemos
+          if (id.message !== "") throw new Error(id.message);
+
+          setError({ ...error, EMP_RUC: null });
+          setIsValid({ ...isValid, EMP_RUC: "is-invalid" });
+        } catch (err) {
+          setError({ ...error, EMP_RUC: err.message });
+          setIsValid({ ...isValid, EMP_RUC: "is-valid" });
+        }
       } else {
         setIsValid({ ...isValid, EMP_RUC: "" });
       }
