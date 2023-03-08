@@ -1,4 +1,4 @@
-import { db } from "../../firebase";
+import { db, auth } from "../../firebase";
 import {
   collection,
   doc,
@@ -10,11 +10,7 @@ import {
   deleteDoc,
   query,
   where,
-  collectionGroup,
 } from "firebase/firestore";
-
-/* Firebase */
-import { initializeApp } from "firebase/app";
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -25,23 +21,6 @@ import {
   updateEmail,
   signOut,
 } from "firebase/auth";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyC7nrIyKS4VQLew6pM1O2jP37zjhtuH6EY",
-  authDomain: "gesto-e26ab.firebaseapp.com",
-  databaseURL: "https://gesto-e26ab-default-rtdb.firebaseio.com",
-  projectId: "gesto-e26ab",
-  storageBucket: "gesto-e26ab.appspot.com",
-  messagingSenderId: "340558224805",
-  appId: "1:340558224805:web:f8bb36140eed40b2c71c4c",
-};
-
-// Initialize Firebase
-const fe = initializeApp(firebaseConfig);
-
-// Initialize Firebase Authentication and get a reference to the service
-const auth = getAuth(fe);
-/* Firebase */
 
 export const SIGN_IN = "SIGN_IN";
 export const LOG_IN = "LOG_IN";
