@@ -15,7 +15,7 @@ const firebaseConfigDeveloper = {
   appId: "1:340558224805:web:f8bb36140eed40b2c71c4c"
 };
 
-const firebaseConfigProduction = {
+/* const firebaseConfigProduction = {
    apiKey: "AIzaSyCM6q26hiY5DHxrKVSqbJbG9evYe6MTWK4",
    authDomain: "demofv-a9565.firebaseapp.com",
    projectId: "demofv-a9565",
@@ -24,9 +24,9 @@ const firebaseConfigProduction = {
    appId: "1:405831152707:web:a01efc602f037c4671d0f6",
    measurementId: "G-T4Y36P45HR"
  };
-
+ */
 // Initialize Firebase
-const fs = initializeApp(firebaseConfigProduction);
+const fs = initializeApp(firebaseConfigDeveloper);
 
 // Initilize FireStore Database
 export const db = getFirestore(fs);
