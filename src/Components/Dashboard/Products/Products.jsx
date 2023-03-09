@@ -9,6 +9,7 @@ export default function Products({
   handleAddInvoice,
   handleAddProduct,
   handleAddClient,
+  handleProfile,
 }) {
   return (
     <div className="dashboard">
@@ -18,7 +19,10 @@ export default function Products({
         handleAddClient={handleAddClient}
       />
       <div className="dashboard__container to-left">
-        <ProductList handleAddProduct={handleAddProduct}/>
+        <ProductList
+          handleAddProduct={handleAddProduct}
+          handleProfile={handleProfile}
+        />
       </div>
     </div>
   );

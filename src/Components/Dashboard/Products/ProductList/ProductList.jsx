@@ -5,7 +5,8 @@ import ProductCard from "./ProductCard/ProductCard";
 
 import addSquare from "../../../../assets/svg/add-square.svg";
 
-export default function ProductList({ handleAddProduct }) {
+export default function ProductList({ handleAddProduct, handleProfile }) {
+  const user = useSelector((state) => state.user.userDB);
   const products = useSelector((state) => state.products);
   const [rows, setRows] = useState([]);
 
@@ -34,7 +35,12 @@ export default function ProductList({ handleAddProduct }) {
 
   return (
     <div className="dashboardList">
-      <h3>Listado de Productos</h3>
+      <div className="perfil">
+        <h3>Listado de Productos</h3>
+        <button type="button" onClick={handleProfile}>
+          <img src={user.EMP_LOGO} alt="logo" />
+        </button>
+      </div>
       <div className="dashboardList__searchBar">
         <input
           className="form-control"
@@ -62,7 +68,7 @@ export default function ProductList({ handleAddProduct }) {
               <span>No hay productos</span>
             </div>
           ) : (
-            rows?.map(p => <ProductCard key={p.ITE_CODIGO} product={p} />)
+            rows?.map((p) => <ProductCard key={p.ITE_CODIGO} product={p} />)
           )}
         </div>
       </div>

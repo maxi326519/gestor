@@ -17,7 +17,7 @@ const formasDePago = [
   { value: "21", name: "ENDOSO DE TÍTULOS" },
 ];
 
-export default function InvoiceData({ invoice, handleChange, handleSetGuia }) {
+export default function InvoiceData({ invoice, handleChange, handleSetGuia, handleProfile}) {
   const user = useSelector((state) => state.user.userDB);
   const [guia, setGuia] = useState(false);
   const [guiaData, setGuiaData] = useState({
@@ -36,9 +36,8 @@ export default function InvoiceData({ invoice, handleChange, handleSetGuia }) {
       invoice.VEN_ESTABLECIMIENTO,
       invoice.VEN_PTOEMISION,
       Number(user.EMP_CODIGO)
-    )
+    );
     setClave(clave);
-
   }, [invoice, setClave, user]);
 
   useEffect(() => {
@@ -81,11 +80,13 @@ export default function InvoiceData({ invoice, handleChange, handleSetGuia }) {
     const newDate = new Date(e.target.value.split("-").join("/"));
     const dateSplit = new Date().toLocaleDateString().split("/");
     const toDay = new Date(
-      `${dateSplit[2]}/${(("0" + dateSplit[1])).slice(-2)}/${dateSplit[0]}`
+      `${dateSplit[2]}/${("0" + dateSplit[1]).slice(-2)}/${dateSplit[0]}`
     );
 
     const date = e.target.value.split("-");
-    const format = `${date[0]}-${("0" + date[1]).slice(-2)}-${("0" + date[2]).slice(-2)}`;
+    const format = `${date[0]}-${("0" + date[1]).slice(-2)}-${(
+      "0" + date[2]
+    ).slice(-2)}`;
 
     if (newDate <= toDay) {
       setFormat(format);
@@ -103,9 +104,11 @@ export default function InvoiceData({ invoice, handleChange, handleSetGuia }) {
 
   return (
     <div className="buscadores">
-      <div>
-        <button className="btn btn-primary">b</button>
+      <div className="perfil">
         <h2>Factura</h2>
+        <button type="button" onClick={handleProfile}>
+          <img src={user.EMP_LOGO} alt="logo" />
+        </button>
       </div>
       <span className="invoice-clave">{clave}</span>
       <div className="invoice-data">

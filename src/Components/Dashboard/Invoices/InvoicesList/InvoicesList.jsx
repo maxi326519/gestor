@@ -21,6 +21,7 @@ import "./InvoicesList.css";
 export default function InvoicesList({
   handleAddInvoice,
   handleExportInvoice,
+  handleProfile,
 }) {
   const [invoicePDF, setPDF] = useState(null);
   const invoices = useSelector((state) => state.invoices);
@@ -195,7 +196,12 @@ export default function InvoicesList({
       {invoicePDF ? (
         <PDF invoice={invoicePDF} handleClosePDF={handleClosePDF}></PDF>
       ) : null}
-      <h3>Listado de Facturas</h3>
+      <div className="perfil">
+        <h3>Listado de Facturas</h3>
+        <button type="button" onClick={handleProfile}>
+          <img src={user.EMP_LOGO} alt="logo" />
+        </button>
+      </div>
       <div className="dashboardList__searchBar">
         <input
           className="form-control"
@@ -290,9 +296,7 @@ export default function InvoicesList({
           checked={consolidado}
           onChange={() => setConsolidado(!consolidado)}
         />
-        <label htmlFor="consolidado">
-          Consolidado
-        </label>
+        <label htmlFor="consolidado">Consolidado</label>
       </div>
       <div className="dashboardList__grid">
         <div className="invoice-card first-row">

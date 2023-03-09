@@ -3,7 +3,12 @@ import ClientList from "./ClientList/ClientList";
 
 import "../Dashboard.css";
 
-export default function Client({ handleAddInvoice, handleAddProduct, handleAddClient }) {
+export default function Client({
+  handleAddInvoice,
+  handleAddProduct,
+  handleAddClient,
+  handleProfile,
+}) {
   return (
     <div className="dashboard">
       <SideBar
@@ -12,7 +17,10 @@ export default function Client({ handleAddInvoice, handleAddProduct, handleAddCl
         handleAddClient={handleAddClient}
       />
       <div className="dashboard__container to-left">
-        <ClientList handleAddClient={handleAddClient} />
+        <ClientList
+          handleAddClient={handleAddClient}
+          handleProfile={handleProfile}
+        />
       </div>
     </div>
   );

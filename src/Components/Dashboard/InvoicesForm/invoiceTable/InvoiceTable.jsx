@@ -24,7 +24,7 @@ export default function InvoiceTable({
   }
 
   return (
-    <div className="invoice-products">
+    <div className="invoice-table">
       <div
         className={`invoice-row invoice-first-row ${
           user.EMP_AUTOMATICO === 1 ? "detCantidad" : ""
@@ -39,42 +39,44 @@ export default function InvoiceTable({
         <span>Precio unitario + IVA</span>
         <span>Valor</span>
       </div>
-      {newProducts?.map((p) => (
-        <div
-          key={p.ITE_CODIGO}
-          className={`invoice-row ${
-            user.EMP_AUTOMATICO === 1 ? "detCantidad" : ""
-          }`}
-        >
-          <span>{p.ITE_CODIGO}</span>
-          <span>{p.ITE_DESCRIPCION}</span>
-          {user.EMP_AUTOMATICO === 1 ? <span>{p.detCantidad}</span> : null}
-          <input
-            className="amount"
-            type="number"
-            name="VED_CANTIDAD"
-            value={p.VED_CANTIDAD}
-            min={1}
-            onChange={(e) => handleChangeProduct(e, p.ITE_CODIGO)}
-          />
-          <input
-            className="amount"
-            type="number"
-            name="VED_DESCUENTO"
-            value={p.VED_DESCUENTO}
-            onChange={(e) => descuentoValidation(e, p.ITE_CODIGO)}
-          />
-          <span>{Number(p.VED_PUNITARIO).toFixed(user.EMP_PRECISION)}</span>
-          <input
-            className="amount"
-            type="number"
-            name="VED_PUNITARIOIVA"
-            value={p.VED_PUNITARIOIVA}
-            onChange={(e) => handleChangeProduct(e, p.ITE_CODIGO)}
-          />
-          <span>{Number(p.VED_VALOR).toFixed(2)}</span>
-        </div>
-      ))}
+      <div className="data-table">
+        {newProducts?.map((p) => (
+          <div
+            key={p.ITE_CODIGO}
+            className={`invoice-row ${
+              user.EMP_AUTOMATICO === 1 ? "detCantidad" : ""
+            }`}
+          >
+            <span>{p.ITE_CODIGO}</span>
+            <span>{p.ITE_DESCRIPCION}</span>
+            {user.EMP_AUTOMATICO === 1 ? <span>{p.detCantidad}</span> : null}
+            <input
+              className="amount"
+              type="number"
+              name="VED_CANTIDAD"
+              value={p.VED_CANTIDAD}
+              min={1}
+              onChange={(e) => handleChangeProduct(e, p.ITE_CODIGO)}
+            />
+            <input
+              className="amount"
+              type="number"
+              name="VED_DESCUENTO"
+              value={p.VED_DESCUENTO}
+              onChange={(e) => descuentoValidation(e, p.ITE_CODIGO)}
+            />
+            <span>{Number(p.VED_PUNITARIO).toFixed(user.EMP_PRECISION)}</span>
+            <input
+              className="amount"
+              type="number"
+              name="VED_PUNITARIOIVA"
+              value={p.VED_PUNITARIOIVA}
+              onChange={(e) => handleChangeProduct(e, p.ITE_CODIGO)}
+            />
+            <span>{Number(p.VED_VALOR).toFixed(2)}</span>
+          </div>
+        ))}
+      </div>
       <div className="adicional">
         <div className="data-aditional">
           <h5>Informacion Adicional:</h5>

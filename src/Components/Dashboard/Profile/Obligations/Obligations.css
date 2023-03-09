@@ -1,20 +1,24 @@
-.profile-obligations select{
-    width: 100%;
+.profile-obligations {
+  margin-right: 30px;
 }
 
-.profile-obligations label{
-    text-align: left;
+.profile-obligations select {
+  width: 100%;
 }
 
-.profile-obligations input[type="checkbox"]{
-    width: 50px;
+.profile-obligations label {
+  text-align: left;
 }
 
-.obligations-check{
-    display: flex;
-    flex-direction: column;
+.profile-obligations input[type="checkbox"] {
+  width: 50px;
 }
 
-.left-content{
-    flex-grow: 1;
+.obligations-check {
+  display: flex;
+  flex-direction: column;
+}
+
+.left-content {
+  flex-grow: 1;
 }

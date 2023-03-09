@@ -1,35 +1,32 @@
 .dashboard__invoice {
-  width: 100%;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
   margin: 20px;
   padding: 20px;
   border-radius: 20px;
-  overflow-y: scroll;
   background-color: white;
 }
 
-.invoice__top{
+.invoice__top {
   display: flex;
   width: 100%;
 }
 
-.invoice__mid{
+.invoice__mid {
   display: flex;
 }
 
-.dashboard__invoice .buttons button{
+.dashboard__invoice .buttons button {
   margin-right: 20px;
 }
 
 /* adasda */
-.invoice-data__client-data{
+.invoice-data__client-data {
   margin-right: 40px;
 }
 
-.buscadores{
-  flex-grow: 1;
-}
-
-.invoice-products{
+.buscadores {
   flex-grow: 1;
 }
 
@@ -60,7 +57,7 @@
   display: flex;
 }
 
-.invoice-data__client-data .grid{
+.invoice-data__client-data .grid {
   display: grid;
   gap: 10px;
   grid-template-columns: 1fr 1fr;
@@ -82,7 +79,7 @@
   width: 300px;
 }
 
-.formas-de-pago .form-floating input{
+.formas-de-pago .form-floating input {
   margin-bottom: 0px;
   width: 100%;
 }
@@ -92,7 +89,7 @@
   margin-left: 20px;
 }
 
-.flex-2{
+.flex-2 {
   display: flex;
 }
 
@@ -100,30 +97,30 @@
   margin-top: 30px;
 }
 
-.datas{
-  displaY: flex;
+.datas {
+  display: flex;
   justify-content: space-between;
 }
 
-.data-left{
+.data-left {
   display: flex;
   flex-direction: column;
 }
 
-.adicional{
+.adicional {
   display: flex;
   width: 100%;
 }
 
-.aditional-input-container{
+.aditional-input-container {
   display: flex;
 }
 
-.data-aditional{
+.data-aditional {
   flex-grow: 1;
 }
 
-.data-aditional input{
+.data-aditional input {
   flex-grow: 1;
   margin-right: 20px;
 }

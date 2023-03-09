@@ -35,38 +35,44 @@ function App() {
   const redirect = useNavigate();
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.loading);
+  const [profile, setProfile] = useState(false);
   const auth = getAuth();
 
   useEffect(() => {
-   const date = new Date().toLocaleDateString().split("/");
-   const year = date[2];
-   const month = `0${date[1]}`.slice(-2);
+    const date = new Date().toLocaleDateString().split("/");
+    const year = date[2];
+    const month = `0${date[1]}`.slice(-2);
 
     dispatch(openLoading());
     setTimeout(() => {
       if (auth.currentUser) {
         const user = auth.currentUser;
         dispatch(persistence(user));
-        dispatch(getUserData()).then((d) => {
-          if (
-            d.payload.EMP_PERFIL.DATOS_PERSONALES &&
-            d.payload.EMP_PERFIL.OBLIGACIONES &&
-            d.payload.EMP_PERFIL.FACTURA_ELECTRONICA
-          ) {
-            dispatch(getProducts()).catch((e) => console.log(e));
-            dispatch(getClients()).catch((e) => console.log(e));
-            dispatch(getInvoices(year, month)).catch((e) => console.log(e));
-            redirect("/dashboard/invoices/add");
+        dispatch(getUserData())
+          .then((d) => {
+            if (
+              d.payload.EMP_PERFIL.DATOS_PERSONALES &&
+              d.payload.EMP_PERFIL.OBLIGACIONES &&
+              d.payload.EMP_PERFIL.FACTURA_ELECTRONICA
+            ) {
+              dispatch(getProducts()).catch((e) => console.log(e));
+              dispatch(getClients()).catch((e) => console.log(e));
+              dispatch(getInvoices(year, month)).catch((e) => console.log(e));
+              redirect("/dashboard/invoices/add");
+              dispatch(closeLoading());
+            } else {
+              dispatch(closeLoading());
+              redirect("/signin/user");
+            }
+          })
+          .catch(() => {
             dispatch(closeLoading());
-          } else {
-            dispatch(closeLoading());
-            redirect("/signin/user");
-          }
-        })
-        .catch(()=>{
-            dispatch(closeLoading());
-            swal("Error", "Hubo un error desconocido al iniciar sesion", "error");
-        });
+            swal(
+              "Error",
+              "Hubo un error desconocido al iniciar sesion",
+              "error"
+            );
+          });
       } else {
         dispatch(closeLoading());
         redirect("/login");
@@ -82,6 +88,10 @@ function App() {
     addClient: false,
   };
   const [form, setForm] = useState(initialState);
+
+  function handleProfile() {
+    setProfile(!profile);
+  }
 
   function handleAddInvoice() {
     setForm({ ...initialState, addInvoice: !form.addInvoice });
@@ -103,8 +113,8 @@ function App() {
   return (
     <div className="App">
       {loading ? <Loading /> : null}
+      {profile ? <Profile handleProfile={handleProfile} /> : null}
       <Routes>
-        <Route path="/dashboard/profile" element={<Profile />} />
         <Route
           path="/dashboard/products"
           element={
@@ -112,6 +122,7 @@ function App() {
               handleAddInvoice={handleAddInvoice}
               handleAddProduct={handleAddProduct}
               handleAddClient={handleAddClient}
+              handleProfile={handleProfile}
             />
           }
         />
@@ -122,6 +133,7 @@ function App() {
               handleAddInvoice={handleAddInvoice}
               handleAddProduct={handleAddProduct}
               handleAddClient={handleAddClient}
+              handleProfile={handleProfile}
             />
           }
         />
@@ -133,6 +145,7 @@ function App() {
               handleAddInvoice={handleAddInvoice}
               handleAddProduct={handleAddProduct}
               handleAddClient={handleAddClient}
+              handleProfile={handleProfile}
             />
           }
         />
@@ -145,6 +158,7 @@ function App() {
               handleAddInvoice={handleAddInvoice}
               handleAddProduct={handleAddProduct}
               handleAddClient={handleAddClient}
+              handleProfile={handleProfile}
             />
           }
         />

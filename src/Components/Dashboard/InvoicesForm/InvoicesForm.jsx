@@ -21,6 +21,7 @@ import AddClient from "./AddClient/AddClient";
 import PDF from "../PDF/PDF";
 
 import "./InvoicesForm.css";
+import { Link } from "react-router-dom";
 
 const initialInvoice = {
   CLI_CODIGO: 0,
@@ -72,9 +73,11 @@ const initialInvoice = {
   VEN_VALOR3: "",
 };
 
-function format(date){
+function format(date) {
   const dateSplit = date.split("/");
-  const format = `${dateSplit[2]}-${("0" + dateSplit[1]).slice(-2)}-${"0" + dateSplit[0].slice(-2)}`;
+  const format = `${dateSplit[2]}-${("0" + dateSplit[1]).slice(-2)}-${
+    "0" + dateSplit[0].slice(-2)
+  }`;
   return format;
 }
 
@@ -83,6 +86,7 @@ export default function InvoicesForm({
   handleAddInvoice,
   handleAddProduct,
   handleAddClient,
+  handleProfile,
 }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.userDB);
@@ -108,12 +112,12 @@ export default function InvoicesForm({
   function handleChange(e) {
     if (e.target.name === "VEN_DESCUENTO_POR") {
       if (Number(e.target.value) <= 100 && Number(e.target.value) >= 0)
-      setDiscount(Number(e.target.value));
+        setDiscount(Number(e.target.value));
     } else {
       setInvoice({ ...invoice, [e.target.name]: e.target.value });
     }
   }
-  
+
   function update() {
     let subtotal = 0;
     let subtotalPorcentual = 0;
@@ -144,9 +148,7 @@ export default function InvoicesForm({
       VEN_SUBTOTAL: subtotal.toFixed(user.EMP_PRECISION),
       VEN_SUBTOTAL0: subtotalPorcentual.toFixed(user.EMP_PRECISION),
       VEN_SUBTOTAL12: subtotalIVA.toFixed(user.EMP_PRECISION),
-      VEN_TOTAL: (total * (1 - discount / 100)).toFixed(
-        user.EMP_PRECISION
-      ),
+      VEN_TOTAL: (total * (1 - discount / 100)).toFixed(user.EMP_PRECISION),
     };
   }
 
@@ -267,7 +269,6 @@ export default function InvoicesForm({
 
   function handleProduct(product) {
     if (!newProducts.find((pi) => pi.ITE_CODIGO === product.ITE_CODIGO)) {
-
       setNewProduct([
         ...newProducts,
         {
@@ -335,7 +336,7 @@ export default function InvoicesForm({
                   : value,
             };
           } else {
-            if((name === "VED_CANTIDAD")  &&  (e.target.value < 1)) value = 1;
+            if (name === "VED_CANTIDAD" && e.target.value < 1) value = 1;
 
             newProduct = {
               ...p,
@@ -382,11 +383,10 @@ export default function InvoicesForm({
         handleAddProduct={handleAddProduct}
         handleAddClient={handleAddClient}
       />
-
-      <div className="dashboard__invoice  to-left">
+      <div className="dashboard__invoice to-left">
         {invoicePDF ? (
           <PDF invoice={invoicePDF} handleClosePDF={handleClosePDF}></PDF>
-        ) : null}
+        ) : null}{" "}
         <div className="invoice__top">
           <AddData
             invoice={invoice}
@@ -403,21 +403,18 @@ export default function InvoicesForm({
             invoice={invoice}
             handleChange={handleChange}
             handleSetGuia={handleSetGuia}
+            handleProfile={handleProfile}
           />
         </div>
-
-        <div className="invoice__mid">
-          <InvoiceTable
-            user={user}
-            invoice={invoice}
-            discount={discount}
-            setDiscount={setDiscount}
-            newProducts={newProducts}
-            handleChangeProduct={handleChangeProduct}
-            handleChange={handleChange}
-          />
-        </div>
-
+        <InvoiceTable
+          user={user}
+          invoice={invoice}
+          discount={discount}
+          setDiscount={setDiscount}
+          newProducts={newProducts}
+          handleChangeProduct={handleChangeProduct}
+          handleChange={handleChange}
+        />
         <div className="buttons">
           <button className="btn btn-primary" onClick={handleClear}>
             Nueva factura
@@ -431,7 +428,6 @@ export default function InvoicesForm({
             RIDE
           </button>
         </div>
-
         {/* VENTANA PARA AGREGAR PRODUCTOS */}
         {formProduct ? (
           <AddProduct
@@ -441,7 +437,6 @@ export default function InvoicesForm({
             handleAddProduct={handleAddProduct}
           />
         ) : null}
-
         {/* VENTANA PARA AGREGAR CLIENTES */}
         {formClient ? (
           <AddClient

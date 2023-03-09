@@ -1,18 +1,6 @@
-import { useState } from "react";
-
 import "./Obligations.css";
 
 export default function Obligations({ disabled, userData, handleChange }) {
-  const [file, setFile] = useState(null);
-
-  function handleFile(e) {
-    /*         if (e.target.files.length > 0) {w
-          setFile(e.target.files[0]);
-          const url = URL.createObjectURL(e.target.files[0]);
-          setUser({ ...userData, logo: url });
-        } */
-  }
-
   return (
     <div className="profile-obligations">
       <hr></hr>

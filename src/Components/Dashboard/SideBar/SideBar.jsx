@@ -1,13 +1,8 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { logOut } from "../../../redux/actions";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import dashboard from "../../../assets/svg/dashboard.svg";
 import arrowDown from "../../../assets/svg/arrow-down.svg";
-import account from "../../../assets/svg/account.svg";
-import profile from "../../../assets/svg/profile.svg";
-import logout from "../../../assets/svg/logout.svg";
 import users from "../../../assets/svg/users.svg";
 import products from "../../../assets/svg/products.svg";
 import invoices from "../../../assets/svg/invoices.svg";
@@ -21,8 +16,6 @@ export default function SideBar({
   handleAddProduct,
   handleAddClient,
 }) {
-  const dispatch = useDispatch();
-  const redirect = useNavigate();
   const initialState = {
     user: false,
     invoices: false,
@@ -31,17 +24,6 @@ export default function SideBar({
   };
   const [accordion, setAccordion] = useState(initialState);
   const [isOpen, setOpen] = useState(false);
-
-  function handleLogOut() {
-    dispatch(logOut())
-    .then(() => {
-      redirect("/login");
-    })
-    .catch((e) => {
-/*       toast.error(e.message); */
-      console.log(e.message);
-    })
-  }
 
   function handleAccordion(name) {
     setAccordion({ ...initialState, [name]: !accordion[name] });
@@ -69,34 +51,6 @@ export default function SideBar({
               onClick={handleOpen}
             />
           </div>
-        </div>
-
-        {/* USER */}
-        <button onClick={() => handleAccordion("user")}>
-          <img className="sideBar__icon" src={account} alt="account" />
-          <span name="user" className="sideBar__text">
-            Cuenta
-          </span>
-          <img className="sideBar__down" src={arrowDown} alt="arrowDown" />
-        </button>
-
-        <div
-          className="sideBar__accordion"
-          style={accordion.user ? { display: "block" } : { display: "none" }}
-        >
-          <Link to="/dashboard/profile">
-            <button>
-              <img className="sideBar__icon" src={profile} alt="profile" />
-              <span className="sideBar__text">Perfil</span>
-            </button>
-          </Link>
-
-          <button onClick={handleLogOut}>
-            <img className="sideBar__icon" src={logout} alt="logout" />
-            <span name="user" className="sideBar__text">
-              Cerrar sesión
-            </span>
-          </button>
         </div>
 
         {/* INVOICES */}

@@ -6,7 +6,8 @@ import ClientCard from "./ClientCard/ClientCard";
 import addSquare from "../../../../assets/svg/add-square.svg";
 import "./ClientList.css";
 
-export default function ClientList({ handleAddClient }) {
+export default function ClientList({ handleAddClient, handleProfile }) {
+  const user = useSelector((state) => state.user.userDB);
   const clients = useSelector((state) => state.clients);
   const [rows, setRows] = useState([]);
 
@@ -37,7 +38,12 @@ export default function ClientList({ handleAddClient }) {
 
   return (
     <div className="dashboardList">
-      <h3>Listado de clientes</h3>
+      <div className="perfil">
+        <h3>Listado de clientes</h3>
+        <button type="button" onClick={handleProfile}>
+          <img src={user.EMP_LOGO} alt="logo" />
+        </button>
+      </div>
       <div className="dashboardList__searchBar">
         <input
           className="form-control"

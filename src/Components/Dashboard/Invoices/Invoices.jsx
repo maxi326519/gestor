@@ -8,6 +8,7 @@ export default function Invoices({
   handleExportInvoice,
   handleAddProduct,
   handleAddClient,
+  handleProfile,
 }) {
   return (
     <div className="dashboard">
@@ -20,6 +21,7 @@ export default function Invoices({
         <InvoicesList
           handleAddInvoice={handleAddInvoice}
           handleExportInvoice={handleExportInvoice}
+          handleProfile={handleProfile}
         />
       </div>
     </div>

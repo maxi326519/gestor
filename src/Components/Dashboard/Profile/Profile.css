@@ -1,35 +1,76 @@
 .dashboard_profile {
   flex-grow: 1;
+  position: fixed;
+  z-index: 1500;
+  top: 0;
+  left: 0;
   display: flex;
   justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
   padding: 20px;
   overflow-y: scroll;
+  background-color: #0003;
 }
 
-.profile{
+.profile {
   height: max-content;
   padding: 30px;
   border-radius: 20px;
   background-color: white;
 }
 
-.profile h2{
+.close-button {
+  display: flex;
+}
+
+.close-button h2 {
+  flex-grow: 1;
   text-align: center;
   margin-bottom: 30px;
 }
 
-.profile-container{
+.close-button .close {
+  width: 40px;
+  height: 40px;
+}
+
+
+.profile-top-container {
   display: flex;
 }
 
-.profile-container input{
-  width: 400px;
-}
-
-.profile-container .left-content{
+.profile-top-container .left-content {
   margin-right: 30px;
 }
 
-small {
-  color: red;
+.profile-top-container input {
+  width: 300px;
+}
+
+.profile-top-container .pers-data-left {
+  margin-right: 20px;
+}
+
+
+.profile-bottom-container {
+  display: flex;
+}
+
+.datosPersonales .flex {
+  display: flex;
+}
+
+.profile-btn-back{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.profile-btn-back .btn-sesion span{
+  margin-left: 10px;
+}
+
+.profile-btn-container{
+  flex-grow: 1;
 }

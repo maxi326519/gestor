@@ -6,7 +6,6 @@ import {
   closeLoading,
 } from "../../../redux/actions";
 
-import SideBar from "../SideBar/SideBar";
 import DatosPersonales from "./PersonalData/PersonalData";
 import Obligations from "./Obligations/Obligations";
 
@@ -16,11 +15,7 @@ import Invoicing from "./Invoicing/Invoicing";
 import Buttons from "./Buttons/Buttons";
 import ProfileLogo from "./ProfileLogo/ProfileLogo";
 
-export default function Profile({
-  handleAddInvoice,
-  handleAddProduct,
-  handleAddClient,
-}) {
+export default function Profile({ handleProfile }) {
   const user = useSelector((state) => state.user.userDB);
   const [userData, setUser] = useState({});
   const [disabled, setDisabled] = useState(true);
@@ -42,11 +37,11 @@ export default function Profile({
     dispatch(updateUserData(userData))
       .then(() => {
         dispatch(closeLoading());
-/*         toast.success("¡Perfil actualizado exitosamente!"); */
+        /*         toast.success("¡Perfil actualizado exitosamente!"); */
       })
       .catch((e) => {
         dispatch(closeLoading());
-/*         toast.error(e.message); */
+        /*         toast.error(e.message); */
         console.log(e.message);
       });
   }
@@ -56,45 +51,44 @@ export default function Profile({
   }
 
   return (
-    <div className="dashboard">
-      <SideBar
-        handleAddInvoice={handleAddInvoice}
-        handleAddProduct={handleAddProduct}
-        handleAddClient={handleAddClient}
-      />
-      <div className="dashboard_profile">
-        <form onSubmit={handleSubmit} className="profile">
+    <div className="dashboard_profile">
+      <form onSubmit={handleSubmit} className="profile">
+        <div className="close-button" onClick={handleProfile}>
           <h2>Mi perfil</h2>
-          <div className="profile-container">
-            <div className="left-content">
-              <ProfileLogo
-                userData={userData}
-                disabled={disabled}
-                handleChange={handleChange}
-              />
-
-              <Obligations
-                disabled={disabled}
-                userData={userData}
-                handleChange={handleChange}
-              />
-            </div>
-
-            <DatosPersonales
-              disabled={disabled}
+          <button className="btn btn-danger close" type="button">
+            x
+          </button>
+        </div>
+        <div className="profile-top-container">
+          <div className="left-content">
+            <ProfileLogo
               userData={userData}
+              disabled={disabled}
               handleChange={handleChange}
             />
           </div>
-          
+
+          <DatosPersonales
+            disabled={disabled}
+            userData={userData}
+            handleChange={handleChange}
+          />
+        </div>
+
+        <div className="profile-bottom-container">
+          <Obligations
+            disabled={disabled}
+            userData={userData}
+            handleChange={handleChange}
+          />
           <Invoicing
             disabled={disabled}
             userData={userData}
             handleChange={handleChange}
           />
-          <Buttons disabled={disabled} handleDisabled={handleDisabled} />
-        </form>
-      </div>
+        </div>
+        <Buttons disabled={disabled} handleDisabled={handleDisabled} />
+      </form>
     </div>
   );
 }
