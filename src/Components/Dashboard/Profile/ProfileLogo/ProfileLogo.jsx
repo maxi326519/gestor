@@ -4,7 +4,7 @@ import "./ProfileLogo.css";
 
 export default function ProfileLogo({ userData, disabled }) {
 
-    const [file, setFile] = useState();
+  const [file, setFile] = useState();
 
   return (
     <div className="profile_logo_container">

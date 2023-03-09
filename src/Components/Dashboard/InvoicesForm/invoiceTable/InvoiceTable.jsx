@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./InvoiceTable.css";
 
 export default function InvoiceTable({
@@ -11,12 +11,6 @@ export default function InvoiceTable({
   handleChange,
 }) {
   const [isDisabled, setDisabled] = useState(true);
-  const [total, setTotal] = useState({
-    VEN_SUBTOTAL: 0,
-    VEN_SUBTOTAL0: 0,
-    VEN_SUBTOTAL12: 0,
-    VEN_TOTAL: 0,
-  });
 
   function descuentoValidation(e, code) {
     if (Number(e.target.value) <= 100 && Number(e.target.value) >= 0) {

@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import swal from "sweetalert";
+import { storage } from "../../../../firebase";
+import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import {
   confirmFacturaElectronica,
   openLoading,
@@ -7,28 +10,41 @@ import {
 } from "../../../../redux/actions";
 import "./ElectronicInvoice.css";
 
+const initialState = {
+  EMP_ESTABLECIMIENTO: "001",
+  EMP_PTOEMISION: "001",
+  EMP_NUMERO: 1,
+  EMP_PRECISION: 2,
+  EMP_ARCHIVO: "",
+  EMP_KEY: "",
+};
+
 export default function ElectronicInvoice() {
   const dispatch = useDispatch();
-  const initialState = {
-    EMP_ESTABLECIMIENTO: "001",
-    EMP_PTOEMISION: "001",
-    EMP_NUMERO: 1,
-    EMP_PRECISION: 2,
-    EMP_ARCHIVO: "",
-    EMP_KEY: "",
-  };
-
+  const user = useSelector(state => state.user.userDB);
+  const [file, setFile] = useState(null);
   const [facturacion, setFacturacion] = useState(initialState);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     dispatch(openLoading());
-    dispatch(confirmFacturaElectronica(facturacion))
-    .then(() => {
-      dispatch(closeLoading);
-    })
-    .catch(() => {
-      dispatch(closeLoading);
+    await UploadFile().then((fileUrl) => {
+      dispatch(confirmFacturaElectronica({
+        ...facturacion,
+        EMP_ARCHIVO: fileUrl
+        }))
+      .then(() => {
+        dispatch(closeLoading());
+      })
+      .catch((err) => {
+        dispatch(closeLoading());
+        swal("Error", "Ocurrió un error desconocido, vuelva a intentar mas tarde", "error");
+        console.log(err);
+      })
+    }).catch((err) => {
+      dispatch(closeLoading());
+      swal("Error", "Ocurrió un error desconocido al cargar el archivo, vuelva a intentar mas tarde", "error");
+      console.log(err);
     })
   }
 
@@ -37,6 +53,23 @@ export default function ElectronicInvoice() {
       ...facturacion,
       [e.target.name]: e.target.value,
     });
+  }
+
+  const UploadFile = async () => {
+    try{
+      console.log(user);
+      const dir = `users/${user.EMP_USUKEY}/firma`
+
+      const storageRef = ref(storage, dir);
+      const imageQuery = await uploadBytes(storageRef, file);
+  
+      // GET invoice image url 
+      const fileUrl = await getDownloadURL(imageQuery.ref);
+
+      return fileUrl;
+    }catch(e){
+      throw new Error(e);
+    }
   }
 
   return (
@@ -100,9 +133,9 @@ export default function ElectronicInvoice() {
       <input
         type="file"
         name="file"
-        accept="image/*"
+        accept=".p12"
         className="form-control"
-        onChange={handleChange}
+        onChange={(e) => setFile(e.target.files?.[0])}
         required
       />
 

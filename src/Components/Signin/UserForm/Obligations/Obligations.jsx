@@ -1,13 +1,18 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { confirmObligaciones, openLoading, closeLoading } from "../../../../redux/actions";
+import swal from "sweetalert";
+import {
+  confirmObligaciones,
+  openLoading,
+  closeLoading,
+} from "../../../../redux/actions";
 
 import "./Obligations.css";
 
 export default function Obligations() {
   const dispatch = useDispatch();
   const initialState = {
-    EMP_REGIMEN: 0,
+    EMP_REGIMEN: 1,
     EMP_SOCIEDAD: false,
     EMP_AGENTE_RETENCION: false,
     EMP_INCLUYEIVA: false,
@@ -33,12 +38,16 @@ export default function Obligations() {
     e.preventDefault();
     dispatch(openLoading());
     dispatch(confirmObligaciones(obligaciones))
-    .then(() => dispatch(closeLoading()))
-    .catch((e) => {
-      dispatch(closeLoading());
-/*       toast(e.message); */
-      console.log(e.message);
-    })
+      .then(() => dispatch(closeLoading()))
+      .catch((e) => {
+        dispatch(closeLoading());
+        swal(
+          "Error",
+          "Ocurrió un error desconocido, vuelva a intentar mas tarde",
+          "error"
+        );
+        console.log(e.message);
+      });
   }
 
   return (
@@ -50,10 +59,10 @@ export default function Obligations() {
           className="form-select select-input"
           id="floatingInput"
           name="EMP_REGIMEN"
+          value={obligaciones.EMP_REGIMEN}
           onChange={handleChange}
           required
         >
-          <option value="0">Seleccionar</option>
           <option value="1">General</option>
           <option value="2">Emprendedor</option>
         </select>
@@ -61,12 +70,18 @@ export default function Obligations() {
       </div>
       <div className="check-container">
         <label>
-          <input name="EMP_SOCIEDAD" type="checkbox" onChange={handleCheck} />
+          <input
+            type="checkbox"
+            name="EMP_SOCIEDAD"
+            value={obligaciones.EMP_AGENTE_RETENCION}
+            onChange={handleCheck}
+          />
           Obligado a llevar contabilidad
         </label>
         <label>
           <input
             name="EMP_AGENTE_RETENCION"
+            value={obligaciones.EMP_AGENTE_RETENCION}
             type="checkbox"
             onChange={handleCheck}
           />
@@ -74,8 +89,9 @@ export default function Obligations() {
         </label>
         <label>
           <input
-            name="EMP_INCLUYEIVA"
             type="checkbox"
+            name="EMP_INCLUYEIVA"
+            value={obligaciones.EMP_INCLUYEIVA}
             onChange={handleCheck}
           />
           Incluir IVA

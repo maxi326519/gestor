@@ -72,7 +72,7 @@ function App() {
         redirect("/login");
       }
     }, 1000);
-  }, [dispatch]);
+  }, [auth, dispatch]);
 
   /* FORMS */
   const initialState = {

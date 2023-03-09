@@ -256,36 +256,43 @@ export function GoogleSesion() {
       const user = response.user;
       /*       const token = credential.accessToken; */
 
-      const userDB = {
-        /*         EMP_EMAIL: user.EMP_EMAIL, */
-        EMP_AUTOMATICO: 1 /* default */,
-        EMP_CODIGO: 1 /* default */,
-        EMP_COMPROBANTES: 1 /* default */,
-        EMP_DADICIONAL: 0 /* default */,
-        EMP_ESTADO: 1 /* default */,
-        EMP_FECHA: new Date().toLocaleDateString(),
-        EMP_GUIAREMISION: 1 /* default */,
-        EMP_LICENCIA: "NORMAL",
-        EMP_MENSAJE: "" /* default */,
-        EMP_MULTILOCAL: 1 /* default */,
-        EMP_MULTIUSUARIO: 0 /* default */,
-        EMP_NCE: 100 /* Limite de factura */,
-        EMP_NOTIFICACION: 0 /* default */,
-        EMP_USUKEY: user.uid /* Id del usuarios */,
-        EMP_SECUENCIAL: 1 /* Numero de facturas en DB */,
-        EMP_IMPUESTO: 0,
-        EMP_PERFIL: {
-          DATOS_PERSONALES: false,
-          OBLIGACIONES: false,
-          FACTURA_ELECTRONICA: false,
-        },
-      };
+      const dataUser = await getDoc(doc(db, "users", auth.currentUser.uid));
+      let userDB = dataUser.data();
 
-      await setDoc(doc(db, "users", user.uid), userDB);
+      if (userDB) {
+        userDB = dataUser.data();
+      } else {
+        userDB = {
+          EMP_EMAIL: user.email,
+          EMP_AUTOMATICO: 1 /* default */,
+          EMP_CODIGO: 1 /* default */,
+          EMP_COMPROBANTES: 1 /* default */,
+          EMP_DADICIONAL: 0 /* default */,
+          EMP_ESTADO: 1 /* default */,
+          EMP_FECHA: new Date().toLocaleDateString(),
+          EMP_GUIAREMISION: 1 /* default */,
+          EMP_LICENCIA: "NORMAL",
+          EMP_MENSAJE: "" /* default */,
+          EMP_MULTILOCAL: 1 /* default */,
+          EMP_MULTIUSUARIO: 0 /* default */,
+          EMP_NCE: 100 /* Limite de factura */,
+          EMP_NOTIFICACION: 0 /* default */,
+          EMP_USUKEY: user.uid /* Id del usuarios */,
+          EMP_SECUENCIAL: 1 /* Numero de facturas en DB */,
+          EMP_IMPUESTO: 0,
+          EMP_PERFIL: {
+            DATOS_PERSONALES: false,
+            OBLIGACIONES: false,
+            FACTURA_ELECTRONICA: false,
+          },
+        };
+
+        await setDoc(doc(db, "users", user.uid), userDB);
+      }
 
       return dispatch({
         type: SIGN_IN,
-        payload: user,
+        payload: { ...user, userDB},
       });
     } catch (err) {
       throw new Error(err);
@@ -454,7 +461,6 @@ export function postInvoice(invoice) {
       const year = date[0];
       const month = date[1];
 
-      console.log(date);
       const invoiceRef = collection(
         db,
         "users",
@@ -543,8 +549,6 @@ export function getProducts() {
 export function getInvoices(year, month, day) {
   return async (dispatch) => {
     try {
-      console.log(year, month, day);
-
       let invoices = [];
       let invoicesMonth = [];
       const invoiceColl = collection(
@@ -555,7 +559,6 @@ export function getInvoices(year, month, day) {
       ); // Accedemos a las colecciones de todas las facturas
 
       if (day && month && year) {
-        console.log("day");
         const yearDoc = doc(invoiceColl, year); // Accedemos a las facturas de un año en especifico
         const monthDoc = collection(yearDoc, month); // Accedemos a las facturas de un mes en especifico
         const date = `${year}-${month}-${day}`;
@@ -573,7 +576,6 @@ export function getInvoices(year, month, day) {
           });
         }
       } else if (month && year) {
-        console.log("month");
         const yearDoc = doc(invoiceColl, year); // Accedemos a las facturas de un año en especifico
         const monthDoc = collection(yearDoc, month); // Accedemos a las facturas de un mes en especifico
 
@@ -588,7 +590,6 @@ export function getInvoices(year, month, day) {
           });
         }
       } else if (year) {
-        console.log("year");
         const yearDoc = doc(invoiceColl, year); // Accedemos a las facturas de un año en especifico
 
         const enero = await getDocs(collection(yearDoc, "01"));
@@ -689,7 +690,6 @@ export function updateProduct(productData) {
 export function updateInvoice(id, invoiceData) {
   return async (dispatch) => {
     try {
-      console.log("Action",id, invoiceData);
       const dateSplit = invoiceData.VEN_FECHA.split("-");
       const year = dateSplit[0];
       const month = `0${dateSplit[1]}`.slice(-2);
@@ -710,7 +710,6 @@ export function updateInvoice(id, invoiceData) {
         payload: invoiceData,
       });
     } catch (err) {
-      console.log(err);
       throw new Error(err);
     }
   };

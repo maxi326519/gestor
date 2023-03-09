@@ -4,7 +4,7 @@ import { initializeApp } from "firebase/app";
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-
+import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfigDeveloper = {
@@ -29,8 +29,9 @@ const firebaseConfigProduction = {
 
 // Initialize Firebase
 
-const fs = initializeApp(firebaseConfigProduction);
+const fs = initializeApp(firebaseConfigDeveloper);
 
-// Initilize FireStore Database
+// Initilize FireStore Services
 export const db = getFirestore(fs);
 export const auth = getAuth(fs);
+export const storage = getStorage(fs)
