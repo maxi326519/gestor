@@ -1,50 +1,13 @@
-import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { changePassword, Alert } from "../../../../redux/actions";
 
-import validation from "../../../../functions/Ruc-Ci.ts";
-
 export default function PersonalData({ disabled, userData, handleChange }) {
   const dispatch = useDispatch();
-  const [error, setError] = useState({
-    EMP_RUC: null,
-  });
-  const [isValid, setIsValid] = useState({
-    EMP_RUC: null,
-  });
 
   function handleChangePassword() {
     dispatch(changePassword()).then(() => {
       /*       toast.info("Se envio a tu correo un link para cambiar la contraseña"); */
     });
-  }
-
-  useEffect(() => {
-    handleValidations("EMP_RUC", userData.EMP_RUC);
-  }, [userData]);
-
-  function handleValidations(name, value) {
-    if (name === "EMP_RUC") {
-      if (value !== "") {
-        try {
-          if (value.length !== 13)
-            throw new Error("El formato del Ruc es incorrecto");
-
-          let id = validation(value);
-
-          // Si tenemos un error de parte de la validacion la devolvemos
-          if (id.message !== "") throw new Error(id.message);
-
-          setError({ ...error, EMP_RUC: null });
-          setIsValid({ ...isValid, EMP_RUC: "" });
-        } catch (err) {
-          setError({ ...error, EMP_RUC: err.message });
-          setIsValid({ ...isValid, EMP_RUC: "is-invalid" });
-        }
-      } else {
-        setIsValid({ ...isValid, EMP_RUC: "" });
-      }
-    }
   }
 
   return (
@@ -56,16 +19,15 @@ export default function PersonalData({ disabled, userData, handleChange }) {
           <div className="form-floating mb-3 ">
             <input
               type="number"
-              className={`form-control ${isValid.EMP_RUC}`}
-              id={error.EMP_RUC ? "floatingInputInvalid" : "floatingInput"}
+              className="form-control"
+              id="floatingInputInvalid"
               name="EMP_RUC"
-              disabled={disabled}
+              disabled
               value={userData.EMP_RUC}
               onChange={handleChange}
               required
             />
             <label className="floatingInput">RUC</label>
-            {!error.EMP_RUC ? null : <small>{error.EMP_RUC}</small>}
           </div>
 
           {/* RAZON SOCIAL */}

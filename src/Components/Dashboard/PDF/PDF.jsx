@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Document,
   Page,
@@ -115,14 +115,13 @@ export default function PDF({ invoice, handleClosePDF }) {
     if (invoice.VEN_CLAVEACCESO) {
       JsBarcode("#barcode", invoice.VEN_CLAVEACCESO, {  displayValue: false });
       const canvas = canvasRef.current;
-      const dataUrl = canvas.toDataURL();
       try {
         setBarCode(canvas.toDataURL());
       } catch (e) {
         console.log(e);
       }
     }
-  }, [canvasRef]);
+  }, [canvasRef, invoice]);
 
   return (
     <div className="pdf-container">

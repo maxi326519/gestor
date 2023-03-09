@@ -13,6 +13,7 @@ export default function Obligations({ disabled, userData, handleChange }) {
           name="taxesBoolean"
           value={userData.EMP_REGIMEN}
           onChange={handleChange}
+          disabled={disabled}
           required
         >
           <option value="1">General</option>

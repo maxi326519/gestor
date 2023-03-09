@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import {
   signin,
@@ -46,16 +46,10 @@ export default function Signin() {
     confirmPassword: "",
   });
 
-  useEffect(() => {
-    handleVerification();
-  }, [user]);
-
   function handleChange(e) {
     setUser({ ...user, [e.target.name]: e.target.value });
     handleVerification(e.target.name, e.target.value);
   }
-
-  function handleVerification(value) {}
 
   function handleVerification(name, value) {
     if (name === "EMP_RUC") {

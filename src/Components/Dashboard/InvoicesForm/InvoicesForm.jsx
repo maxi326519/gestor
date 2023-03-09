@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
-import JsBarcode from "jsbarcode";
-
 import clave2 from "../../../functions/Clave.ts";
-
 import {
   postInvoice,
   updateUserData,
@@ -21,7 +18,6 @@ import AddClient from "./AddClient/AddClient";
 import PDF from "../PDF/PDF";
 
 import "./InvoicesForm.css";
-import { Link } from "react-router-dom";
 
 const initialInvoice = {
   CLI_CODIGO: 0,
@@ -82,7 +78,6 @@ function format(date) {
 }
 
 export default function InvoicesForm({
-  addInvoice,
   handleAddInvoice,
   handleAddProduct,
   handleAddClient,
@@ -96,10 +91,6 @@ export default function InvoicesForm({
   const [invoice, setInvoice] = useState(initialInvoice);
   const [invoicePDF, setPDF] = useState(null);
   const [discount, setDiscount] = useState(0);
-  const [error, setError] = useState({
-    VEN_GUIA: false,
-    INFO: false,
-  });
 
   /* Calcular totales por cada cambio */
   useEffect(() => {

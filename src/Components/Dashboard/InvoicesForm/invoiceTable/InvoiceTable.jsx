@@ -119,7 +119,7 @@ export default function InvoiceTable({
             />
             <input
               className={`form-control ${
-                invoice.VEN_CAMPO2 !== "" && invoice.VEN_VALOR2 == ""
+                invoice.VEN_CAMPO2 !== "" && invoice.VEN_VALOR2 === ""
                   ? "is-invalid"
                   : ""
               }`}

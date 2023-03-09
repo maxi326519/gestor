@@ -134,7 +134,7 @@ export default function validation(numero: number) {
     if (numero.toString().substring(9, 13) !== "0001") {
       identification.message = "El ruc de la empresa del sector público debe terminar con 0001"
     }
-  } else if (pri == true) {
+  } else if (pri === true) {
     if (digitoVerificador !== d10) {
       identification.message = "El ruc de la empresa del sector privado es incorrecto."
     }

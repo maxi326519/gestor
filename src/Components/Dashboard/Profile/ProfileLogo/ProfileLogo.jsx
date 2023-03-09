@@ -1,10 +1,10 @@
-import { useState } from "react";
+/* import { useState } from "react"; */
 
 import "./ProfileLogo.css";
 
 export default function ProfileLogo({ userData, disabled }) {
 
-  const [file, setFile] = useState();
+/*   const [file, setFile] = useState(); */
 
 
   return (

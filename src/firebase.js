@@ -7,7 +7,7 @@ import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
-const firebaseConfigDeveloper = {
+/* const firebaseConfigDeveloper = {
   apiKey: "AIzaSyC7nrIyKS4VQLew6pM1O2jP37zjhtuH6EY",
   authDomain: "gesto-e26ab.firebaseapp.com",
   databaseURL: "https://gesto-e26ab-default-rtdb.firebaseio.com",
@@ -16,7 +16,7 @@ const firebaseConfigDeveloper = {
   messagingSenderId: "340558224805",
   appId: "1:340558224805:web:f8bb36140eed40b2c71c4c",
 };
-
+ */
 const firebaseConfigProduction = {
   apiKey: "AIzaSyCM6q26hiY5DHxrKVSqbJbG9evYe6MTWK4",
   authDomain: "demofv-a9565.firebaseapp.com",
@@ -29,7 +29,7 @@ const firebaseConfigProduction = {
 
 // Initialize Firebase
 
-const fs = initializeApp(firebaseConfigDeveloper);
+const fs = initializeApp(firebaseConfigProduction);
 
 // Initilize FireStore Services
 export const db = getFirestore(fs);

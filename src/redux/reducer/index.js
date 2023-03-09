@@ -21,7 +21,6 @@ import {
   UPDATE_INVOICE,
   DELETE_CLIENT,
   DELETE_PRODUCT,
-  DELETE_INVOICE,
 } from "../actions";
 
 const initialState = {

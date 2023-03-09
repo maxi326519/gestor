@@ -11,7 +11,6 @@ export default function AddProduct({
   handleAddProduct,
 }) {
   const products = useSelector((state) => state.products);
-  const [productInvoice, setProduct] = useState([]);
   const [isAdded, setAdded] = useState([]);
   const [rows, setRows] = useState([]);
 

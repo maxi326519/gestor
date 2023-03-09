@@ -49,7 +49,6 @@ export const UPDATE_CLIENT = "UPDATE_CLIENT";
 export const UPDATE_PRODUCT = "UPDATE_PRODUCT";
 export const UPDATE_INVOICE = "UPDATE_INVOICE";
 
-export const DELETE_INVOICE = "DELETE_INVOICE";
 export const DELETE_CLIENT = "DELETE_CLIENT";
 export const DELETE_PRODUCT = "DELETE_PRODUCT";
 
@@ -750,27 +749,6 @@ export function deleteProduct(code) {
       return dispatch({
         type: DELETE_PRODUCT,
         payload: code,
-      });
-    } catch (err) {
-      throw new Error(err);
-    }
-  };
-}
-
-export function deleteInvoice(id) {
-  return async (dispatch) => {
-    try {
-      const invoiceColl = collection(
-        db,
-        "users",
-        auth.currentUser.uid,
-        "invoices"
-      );
-      await deleteDoc(doc(invoiceColl, id));
-
-      return dispatch({
-        type: DELETE_INVOICE,
-        payload: id,
       });
     } catch (err) {
       throw new Error(err);
