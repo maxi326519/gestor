@@ -277,7 +277,7 @@ export function GoogleSesion() {
           EMP_NCE: 100 /* Limite de factura */,
           EMP_NOTIFICACION: 0 /* default */,
           EMP_USUKEY: user.uid /* Id del usuarios */,
-          EMP_SECUENCIAL: 1 /* Numero de facturas en DB */,
+          EMP_SECUENCIAL: 0 /* Numero de facturas en DB */,
           EMP_IMPUESTO: 0,
           EMP_PERFIL: {
             DATOS_PERSONALES: false,
@@ -558,7 +558,7 @@ export function getInvoices(year, month, day) {
       ); // Accedemos a las colecciones de todas las facturas
 
       console.log(year, month, day);
-      
+
       if (day && month && year) {
         const yearDoc = doc(invoiceColl, year); // Accedemos a las facturas de un año en especifico
         const monthDoc = collection(yearDoc, month); // Accedemos a las facturas de un mes en especifico

@@ -4,7 +4,7 @@ import { logOut } from "../../../../redux/actions";
 
 import logout from "../../../../assets/svg/logout.svg";
 
-export default function Buttons({ disabled, handleDisabled }) {
+export default function Buttons({ disabled, handleDisabled, handleProfile}) {
   const dispatch = useDispatch();
   const redirect = useNavigate();
 
@@ -12,9 +12,9 @@ export default function Buttons({ disabled, handleDisabled }) {
     dispatch(logOut())
       .then(() => {
         redirect("/login");
+        handleProfile();
       })
       .catch((e) => {
-        /*       toast.error(e.message); */
         console.log(e.message);
       });
   }

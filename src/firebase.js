@@ -6,7 +6,7 @@ import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
-const isDev = true;
+const isDev = false;
 
 // Your web app's Firebase configuration
 const firebaseConfigDeveloper = {

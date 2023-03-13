@@ -87,7 +87,7 @@ export default function Profile({ handleProfile }) {
             handleChange={handleChange}
           />
         </div>
-        <Buttons disabled={disabled} handleDisabled={handleDisabled} />
+        <Buttons disabled={disabled} handleDisabled={handleDisabled} handleProfile={handleProfile}/>
       </form>
     </div>
   );
