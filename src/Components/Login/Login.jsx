@@ -157,9 +157,7 @@ export default function Signin() {
           Iniciar sesion
         </button>
 
-        <button className="btn btn-primary" onClick={handleGoogleSesion}>
-          Registrase con Google
-        </button>
+        <Link className="resetPass" to="/resetPassword">¿Olvidaste tu contraseña?</Link>
 
         <p>¿No tienes cuenta?</p>
 

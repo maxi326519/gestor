@@ -13,6 +13,7 @@ import {
 import { getAuth } from "firebase/auth";
 
 import Loading from "./Components/Loading/Loading";
+import ResetPassword from "./Components/ResetPassword/ResetPassword";
 import Profile from "./Components/Dashboard/Profile/Profile";
 import Products from "./Components/Dashboard/Products/Products";
 import Client from "./Components/Dashboard/Client/Client";
@@ -115,6 +116,7 @@ function App() {
       {loading ? <Loading /> : null}
       {profile ? <Profile handleProfile={handleProfile} /> : null}
       <Routes>
+        <Route path="/resetPassword" element={<ResetPassword />} />
         <Route
           path="/dashboard/products"
           element={

@@ -21,6 +21,11 @@
   margin-bottom: 30px;
 }
 
+.sesion .resetPass{
+  margin-top: 10px;
+  font-size: 13px;
+}
+
 .sesion form p{
-  margin-top: 30px;
+  margin-top: 10px;
 }

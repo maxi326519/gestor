@@ -557,6 +557,8 @@ export function getInvoices(year, month, day) {
         "invoices"
       ); // Accedemos a las colecciones de todas las facturas
 
+      console.log(year, month, day);
+      
       if (day && month && year) {
         const yearDoc = doc(invoiceColl, year); // Accedemos a las facturas de un año en especifico
         const monthDoc = collection(yearDoc, month); // Accedemos a las facturas de un mes en especifico
