@@ -30,6 +30,7 @@
   flex-grow: 1;
   overflow-y: scroll;
   max-height: calc(100vh - 800px);
+  min-height: 200px;
   border-radius: 0 0 10px 10px;
   border: 1px solid gray;
 }
@@ -61,4 +62,11 @@
 .aditional-input-container input{
   max-width: 300px !important;
   margin-bottom: 10px;
+}
+
+@media screen and (max-width: 700px) {
+  .adicional{
+    display: flex;
+    flex-direction: column-reverse;
+  }
 }

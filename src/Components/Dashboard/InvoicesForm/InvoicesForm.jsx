@@ -46,7 +46,7 @@ const initialInvoice = {
   VEN_ESTABLECIMIENTO: "001",
   VEN_ESTADO: 1,
   VEN_FAUTORIZA: 1,
-  VEN_FECHA: format(new Date().toLocaleDateString()),
+  VEN_FECHA: new Date().toISOString().split("T")[0],
   VEN_FPAGO: "01",
   VEN_GUIA: "-",
   VEN_ICE: 0.0,
@@ -167,8 +167,8 @@ export default function InvoicesForm({
           .then((d) => {
             dispatch(
               updateUserData({
-                EMP_NUMERO: user.EMP_NUMERO + 1,
-                EMP_SECUENCIAL: user.EMP_SECUENCIAL + 1,
+                EMP_NUMERO: Number(user.EMP_NUMERO) + 1,
+                EMP_SECUENCIAL: Number(user.EMP_SECUENCIAL) + 1,
               })
             ).then(() => {
               dispatch(closeLoading());

@@ -35,7 +35,7 @@ export default function AddData({
         </div>
 
         <div className="grid">
-          <div className="form-floating mb-3">
+          <div className="form-floating">
             <input
               className="form-control"
               type="text"
@@ -51,7 +51,7 @@ export default function AddData({
             </label>
           </div>
 
-          <div className="form-floating mb-3">
+          <div className="form-floating">
             <input
               className="form-control"
               type="text"
@@ -61,7 +61,7 @@ export default function AddData({
             <label>Direccion</label>
           </div>
 
-          <div className="form-floating mb-3">
+          <div className="form-floating">
             <input
               className="form-control"
               type="text"
@@ -71,7 +71,7 @@ export default function AddData({
             <label>Telefono</label>
           </div>
 
-          <div className="form-floating mb-3">
+          <div className="form-floating">
             <input
               className="form-control"
               type="text"

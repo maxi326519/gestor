@@ -46,3 +46,34 @@
   margin-left: 30px;
   margin-right: 5px;
 }
+
+@media screen and (max-width: 700px) {
+
+  .dashboardList__searchBar .controls {
+    display: flex;
+    justify-content: center;
+  }
+
+  .dashboardList__searchBar .controls button{
+    margin-top: 0;
+  }
+
+  .dashboardList__searchBar .dateFilter{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 5px 0px;
+  }
+
+  .dashboardList__searchBar .dateFilter button{
+    margin-left: 0;
+    margin-top: 5px;
+    display: grid;
+    grid-column: 1 / 4;
+  }
+
+  .dashboardList__searchBar .controls,
+  .dashboardList__searchBar .dateFilter{
+    margin-left: 0;
+    border: none;
+  }
+}

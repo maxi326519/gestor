@@ -68,7 +68,7 @@ export default function ClientList({ handleAddClient, handleProfile }) {
         <div className="contentCard">
           {rows.length <= 0 ? (
             <div className="listEmpty">
-              <span>No hay productos</span>
+              <span>No hay clientes</span>
             </div>
           ) : (
             rows?.map((c) => <ClientCard key={c.id} client={c} />)

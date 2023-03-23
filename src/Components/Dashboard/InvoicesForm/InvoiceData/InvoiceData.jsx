@@ -17,7 +17,12 @@ const formasDePago = [
   { value: "21", name: "ENDOSO DE TÍTULOS" },
 ];
 
-export default function InvoiceData({ invoice, handleChange, handleSetGuia, handleProfile}) {
+export default function InvoiceData({
+  invoice,
+  handleChange,
+  handleSetGuia,
+  handleProfile,
+}) {
   const user = useSelector((state) => state.user.userDB);
   const [guia, setGuia] = useState(false);
   const [guiaData, setGuiaData] = useState({
@@ -118,6 +123,7 @@ export default function InvoiceData({ invoice, handleChange, handleSetGuia, hand
             type="date"
             className="form-control"
             name="VEN_FECHA"
+            max={new Date().toISOString().split("T")[0]}
             value={dateFormat}
             onChange={dateValidation}
             required

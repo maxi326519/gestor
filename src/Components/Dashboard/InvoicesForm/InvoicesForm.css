@@ -124,3 +124,22 @@
   flex-grow: 1;
   margin-right: 20px;
 }
+
+@media screen and (max-width: 700px) {
+  .invoice__top {
+    flex-direction: column-reverse;
+  }
+
+  .dashboard__invoice {
+    margin: 0px;
+    border-radius: 0px;
+  }
+
+  .invoice-data__client-data {
+    margin-right: 0px;
+  }
+
+  .dashboard__invoice button{
+    margin-right: 0px !important;
+  }
+}

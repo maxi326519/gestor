@@ -1,32 +1,59 @@
-.invoice-card{
-    display: grid;
-    grid-template-columns: 30px 110px 180px 150px repeat(4, 1fr) repeat(4, 110px) repeat(2, 80px);
-    grid-template-rows: 1fr;
-    gap: 10px;
-    padding: 10px;
-    outline: 1px solid #ccc;
+.invoice-card {
+  display: grid;
+  grid-template-columns: 30px 110px 180px 150px repeat(4, 1fr) repeat(4, 110px) repeat(
+      2,
+      80px
+    );
+  grid-template-rows: 1fr;
+  gap: 10px;
+  padding: 10px;
+  outline: 1px solid #ccc;
 }
 
-.invoice-card input{
-    min-width: 100px;
+.invoice-card input {
+  min-width: 100px;
 }
 
-.invoice-card input[type="checkbox"]{
-    min-width: 10px;
-    width: 20px;
+.invoice-card input[type="checkbox"] {
+  min-width: 10px;
+  width: 20px;
 }
 
-.invoice-card span{
-    min-width: 100px;
-    padding-left: 10px;
-    border-right: 1px solid #ccc;
+.invoice-card span {
+  min-width: 100px;
+  padding-left: 10px;
+  border-right: 1px solid #ccc;
 }
 
-.invoice-card span:first-child{
-    min-width: 10px;
-    border-right: none;
+.invoice-card span:first-child {
+  min-width: 10px;
+  border-right: none;
 }
 
-.first-row{
-  margin-right: 15px;
+@media screen and (max-width: 1400px) {
+  .invoice-card span {
+    padding-left: 5px;
+    font-size: 14px;
+  }
+
+  .invoice-card {
+    gap: 5px;
+    padding: 7px;
+  }
+
+  .invoice-card input {
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .invoice-card {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr 1fr;
+    gap: 0px;
+  }
+
+  .first-row span{
+    display: none;
+  }
 }

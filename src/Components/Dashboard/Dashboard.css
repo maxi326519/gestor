@@ -1,6 +1,6 @@
 .dashboard {
+  flex-grow: 1;
   display: flex;
-  width: 100%;
   height: 100vh;
   background-color: #eaeaea;
   color: #333;
@@ -9,12 +9,12 @@
 .dashboard__container {
   flex-grow: 1;
   display: flex;
-  margin: 20px;
 }
 
 .perfil {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   padding: 0;
   margin: none;
 }
@@ -33,13 +33,14 @@
   display: block;
   width: 50px;
   height: 50px;
+  padding: 0;
   overflow: hidden;
   border-radius: 50%;
   border: 2px solid gray;
 }
 
 .perfil button img {
-  width: 100%;
+  width: 100px;
 }
 
 .perfil button {
@@ -60,7 +61,6 @@
   display: flex;
   flex-direction: column;
   padding: 20px;
-  border-radius: 20px;
   outline: 1px solid #ccc;
   background: white;
 }
@@ -99,6 +99,10 @@
   overflow: scroll;
 }
 
+.label-mobile{
+  display: none
+}
+
 .listEmpty {
   display: flex;
   justify-content: center;
@@ -119,6 +123,19 @@
   width: 45%;
 }
 
+@media screen and (max-width: 1400px) {
+  .perfil h3 {
+    font-size: 20px;
+    margin-bottom: 0px;
+  }
+
+  .dashboardList__searchBar {
+    display: flex;
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+}
+
 @media screen and (max-width: 700px) {
   .dashboard {
     flex-direction: column;
@@ -127,9 +144,10 @@
   .dashboard__container {
     margin: 0;
   }
-
+  
   .dashboardList {
     width: 100%;
+    padding: 10px;
   }
 
   .dashboardList h3 {
@@ -143,5 +161,13 @@
   .dashboardList__searchBar button {
     margin-left: 0;
     margin-top: 10px;
+  }
+
+  .perfil {
+    margin-bottom: 10px;
+  }
+
+  .label-mobile{
+    display: block;
   }
 }
