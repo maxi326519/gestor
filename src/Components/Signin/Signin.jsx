@@ -126,67 +126,6 @@ export default function Signin() {
     }
   }
 
-  function handleGoogleSesion(e) {
-    e.preventDefault();
-    dispatch(openLoading());
-    dispatch(GoogleSesion())
-      .then(() => {
-        dispatch(closeLoading());
-        dispatch(getUserData())
-          .then((d) => {
-            if (
-              d.payload.EMP_PERFIL.DATOS_PERSONALES &&
-              d.payload.EMP_PERFIL.OBLIGACIONES &&
-              d.payload.EMP_PERFIL.FACTURA_ELECTRONICA
-            ) {
-              const date = new Date().toLocaleDateString().split("/");
-              const year = date[2];
-              const month = `0${date[1]}`.slice(-2);
-              dispatch(getProducts()).catch((e) => console.log(e));
-              dispatch(getClients()).catch((e) => console.log(e));
-              dispatch(getInvoices(year, month)).catch((e) => console.log(e));
-              redirect("/dashboard/invoices/add");
-              dispatch(closeLoading());
-            } else {
-              dispatch(closeLoading());
-              redirect("/signin/user");
-            }
-          })
-          .catch(() => {
-            dispatch(closeLoading());
-            swal(
-              "Error",
-              "Hubo un error desconocido al iniciar sesion",
-              "error"
-            );
-          });
-        redirect("/signin/user");
-      })
-      .catch((e) => {
-        dispatch(closeLoading());
-        if (e.message.includes("EMP_EMAIL-already-in-use")) {
-          setError({ ...error, EMP_EMAIL: "El correo ya esta en uso" });
-        } else {
-          swal(
-            "Error",
-            "Ocurrió un error desconocido, vuelva a intentar mas tarde",
-            "error"
-          );
-          console.log(e.message);
-        }
-        if (e.message.includes("EMP_RUC")) {
-          setError({ ...error, EMP_RUC: "El ruc ya esta en uso" });
-        } else {
-          swal(
-            "Error",
-            "Ocurrió un error desconocido, vuelva a intentar mas tarde",
-            "error"
-          );
-          console.log(e.message);
-        }
-      });
-  }
-
   function handleSubmit(e) {
     e.preventDefault();
     for (const data in user) {
@@ -207,7 +146,7 @@ export default function Signin() {
       })
       .catch((e) => {
         dispatch(closeLoading());
-        if (e.message.includes("EMP_EMAIL-already-in-use")) {
+        if (e.message.includes("email-already-in-use")) {
           setError({ ...error, EMP_EMAIL: "El correo ya esta en uso" });
         } else {
           swal(
@@ -217,7 +156,7 @@ export default function Signin() {
           );
           console.log(e.message);
         }
-        if (e.message.includes("EMP_RUC")) {
+        if (e.message.includes("ruc")) {
           setError({ ...error, EMP_RUC: "El ruc ya esta en uso" });
         } else {
           swal(
