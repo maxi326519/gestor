@@ -88,7 +88,7 @@ export function signin(user) {
         EMP_NCE: 100 /* Limite de factura */,
         EMP_NOTIFICACION: 0 /* default */,
         EMP_USUKEY: userCredential.user.uid /* Id del usuarios */,
-        EMP_SECUENCIAL: 1 /* Numero de facturas en DB */,
+        EMP_SECUENCIAL: 0 /* Numero de facturas en DB */,
         EMP_IMPUESTO: 0,
         EMP_PERFIL: {
           DATOS_PERSONALES: false,
@@ -291,7 +291,7 @@ export function GoogleSesion() {
 
       return dispatch({
         type: SIGN_IN,
-        payload: { ...user, userDB},
+        payload: { ...user, userDB },
       });
     } catch (err) {
       throw new Error(err);
@@ -505,13 +505,14 @@ export function getClients() {
           });
         });
       }
+      console.log("dsads");
 
-      return dispatch({
+      dispatch({
         type: GET_CLIENTS,
         payload: clients,
       });
     } catch (err) {
-      throw new Error(err);
+      throw new Error({ GetClients: err });
     }
   };
 }
@@ -534,13 +535,13 @@ export function getProducts() {
           products.push(doc.data());
         });
       }
-
-      return dispatch({
+      console.log("dsads");
+      dispatch({
         type: GET_PRODUCTS,
         payload: products,
       });
     } catch (err) {
-      throw new Error(err);
+      throw new Error({ GetProducts: err });
     }
   };
 }
@@ -636,12 +637,12 @@ export function getInvoices(year, month, day) {
         throw new Error("Faltan parametros para acceder a 'invoices'");
       }
 
-      return dispatch({
+      dispatch({
         type: GET_INVOICES,
         payload: invoices,
       });
     } catch (err) {
-      throw new Error(err);
+      throw new Error({ GetInvoices: err });
     }
   };
 }

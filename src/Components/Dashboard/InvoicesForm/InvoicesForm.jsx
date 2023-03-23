@@ -134,7 +134,7 @@ export default function InvoicesForm({
     return {
       VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
       VEN_PTOEMISION: user.EMP_PTOEMISION,
-      VEN_NUMERO: user.EMP_NUMERO + 1,
+      VEN_NUMERO: user.EMP_NUMERO,
       VEN_DESCUENTO: total * (discount / 100),
       VEN_SUBTOTAL: subtotal.toFixed(user.EMP_PRECISION),
       VEN_SUBTOTAL0: subtotalPorcentual.toFixed(user.EMP_PRECISION),
@@ -177,7 +177,7 @@ export default function InvoicesForm({
                 ...initialInvoice,
                 VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
                 VEN_PTOEMISION: user.EMP_PTOEMISION,
-                VEN_NUMERO: user.EMP_NUMERO + 2,
+                VEN_NUMERO: user.EMP_NUMERO,
               });
               setNewProduct([]);
               swal(

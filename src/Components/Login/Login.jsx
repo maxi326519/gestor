@@ -13,6 +13,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 
 import "./Login.css";
+import swal from "sweetalert";
 
 export default function Signin() {
   const redirect = useNavigate();
@@ -32,50 +33,29 @@ export default function Signin() {
     handleValidation(e.target.name, e.target.value);
   }
 
-  function handleGoogleSesion(e) {
-    e.preventDefault();
-    dispatch(openLoading());
-    dispatch(GoogleSesion())
-      .then(() => {
-        handlVerifyRegister();
-      })
-      .catch((e) => {
-        dispatch(closeLoading());
-        if (e.message.includes("EMP_RUC")) {
-          setError({
-            ...error,
-            EMP_RUC: "No existe ningun usuario con ese EMP_RUC",
-          });
-        } else if (e.message.includes("password")) {
-          setError({ ...error, password: "La contraseña es incorrecta" });
-        } else {
-          /*           toast(e.message); */
-          console.log(e.message);
-        }
-      });
-  }
-
   function handleSubmit(e) {
     e.preventDefault();
 
     dispatch(openLoading());
     dispatch(login(user))
       .then(() => {
-        console.log("1");
         handlVerifyRegister();
-        console.log("2");
       })
       .catch((e) => {
         dispatch(closeLoading());
-        if (e.message.includes("EMP_RUC")) {
+        if (e.message.includes("ruc")) {
           setError({
             ...error,
-            EMP_RUC: "No existe ningun usuario con ese EMP_RUC",
+            EMP_RUC: "No existe ningun usuario con ese Ruc",
           });
         } else if (e.message.includes("password")) {
           setError({ ...error, password: "La contraseña es incorrecta" });
         } else {
-          /*           toast(e.message); */
+          swal(
+            "Error",
+            "Error al iniciar sesion, intentelo mas tarder",
+            "error"
+          );
           console.log(e.message);
         }
       });
@@ -91,11 +71,30 @@ export default function Signin() {
         dispatch(closeLoading());
         redirect("/signin/user");
       } else {
-        dispatch(getProducts());
-        dispatch(getClients());
-        dispatch(getInvoices());
-        dispatch(closeLoading());
-        redirect("/dashboard/invoices/add");
+        const year = new Date().getFullYear().toString();
+        const month = `0${new Date().getMonth()}`.slice(-2);
+
+        console.log(year, month);
+
+        Promise.all([
+          dispatch(getProducts()),
+          dispatch(getClients()),
+          dispatch(getInvoices(year, month, null))
+        ])
+          .then(() => {
+            dispatch(closeLoading());
+            redirect("/dashboard/invoices/add");
+          })
+          .catch((err) => {
+            console.log(err);
+            dispatch(closeLoading());
+            swal(
+              "Error",
+              "Error al cargar los datos, intentelo mas tarder",
+              "error"
+            );
+            redirect("/dashboard/invoices/add");
+          });
       }
     });
   }
@@ -157,7 +156,9 @@ export default function Signin() {
           Iniciar sesion
         </button>
 
-        <Link className="resetPass" to="/resetPassword">¿Olvidaste tu contraseña?</Link>
+        <Link className="resetPass" to="/resetPassword">
+          ¿Olvidaste tu contraseña?
+        </Link>
 
         <p>¿No tienes cuenta?</p>
 
