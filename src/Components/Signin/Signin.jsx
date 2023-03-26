@@ -2,13 +2,8 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import {
   signin,
-  GoogleSesion,
   openLoading,
   closeLoading,
-  getUserData,
-  getProducts,
-  getClients,
-  getInvoices,
 } from "../../redux/actions";
 import { Link, useNavigate } from "react-router-dom";
 import validation from "../../functions/Ruc-Ci.ts";
@@ -261,10 +256,6 @@ export default function Signin() {
 
         <button className="btn btn-primary" type="submit">
           Registrarse
-        </button>
-
-        <button className="btn btn-primary" onClick={handleGoogleSesion}>
-          Registrase con Google
         </button>
 
         <p>¿Ya tienes cuenta?</p>
