@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import {
   login,
-  GoogleSesion,
   openLoading,
   closeLoading,
   getUserData,
@@ -52,11 +51,7 @@ export default function Signin() {
           setError({ ...error, password: "La contraseña es incorrecta" });
         } else if (e.message.includes("user")) {
           setError({ ...error, password: "La contraseña es incorrecta" });
-          swal(
-            "Error",
-            "Error no se encontro al usuario",
-            "error"
-          );
+          swal("Error", "Error no se encontro al usuario", "error");
           console.log(e);
         } else {
           swal(
@@ -72,13 +67,9 @@ export default function Signin() {
   function handlVerifyRegister() {
     dispatch(getUserData()).then((d) => {
       if (
-        !d.payload.EMP_PERFIL.FACTURA_ELECTRONICA ||
-        !d.payload.EMP_PERFIL.OBLIGACIONES ||
-        !d.payload.EMP_PERFIL.DATOS_PERSONALES
+        d.payload.EMP_PERFIL.DATOS_PERSONALES &&
+        d.payload.EMP_PERFIL.OTHER_DATA
       ) {
-        dispatch(closeLoading());
-        redirect("/signin/user");
-      } else {
         const year = new Date().getFullYear().toString();
         const month = `0${new Date().getMonth()}`.slice(-2);
 
@@ -101,6 +92,9 @@ export default function Signin() {
             );
             redirect("/dashboard/invoices/add");
           });
+      } else {
+        dispatch(closeLoading());
+        redirect("/signin/user");
       }
     });
   }

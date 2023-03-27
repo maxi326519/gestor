@@ -125,7 +125,6 @@ export default function InvoiceData({
         dispatch(logOut())
           .then(() => {
             redirect("/login");
-            handleProfile();
           })
           .catch((e) => {
             console.log(e.message);

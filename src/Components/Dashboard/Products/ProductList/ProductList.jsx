@@ -52,7 +52,6 @@ export default function ProductList({ handleAddProduct, handleProfile }) {
         dispatch(logOut())
           .then(() => {
             redirect("/login");
-            handleProfile();
           })
           .catch((e) => {
             console.log(e.message);

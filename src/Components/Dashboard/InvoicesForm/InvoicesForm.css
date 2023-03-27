@@ -29,10 +29,6 @@
   flex-grow: 1;
 }
 
-.dashboard__invoice h2 {
-  margin-bottom: 20px;
-}
-
 .invoice-data {
   display: flex;
   flex-direction: column;

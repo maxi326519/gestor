@@ -55,7 +55,6 @@ export default function ClientList({ handleAddClient, handleProfile }) {
         dispatch(logOut())
           .then(() => {
             redirect("/login");
-            handleProfile();
           })
           .catch((e) => {
             console.log(e.message);
