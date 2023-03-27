@@ -1,4 +1,4 @@
-import { db, auth } from "../../firebase";
+import { db, auth, storage } from "../../firebase";
 import {
   collection,
   doc,
@@ -21,30 +21,30 @@ import {
   updateEmail,
   signOut,
 } from "firebase/auth";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 export const SIGN_IN = "SIGN_IN";
 export const LOG_IN = "LOG_IN";
-export const SIGN_OUT = "SIGN_OUT";
+export const LOG_OUT = "LOG_OUT";
 export const CONFIRM_REGISTER = "CONFIRM_REGISTER";
 export const PERSISTENCE = "PERSISTENCE";
 
 export const OPEN_LOADING = "OPEN_LOADING";
 export const CLOSE_LOADING = "CLOSE_LOADING";
-export const ALERT = "ALERT";
-export const CLEAR_ALERT = "CLEAR_ALERT";
 
 export const UPLOAD_LOGO = "UPLOAD_LOGO";
-export const GET_USER_DATA = "GET_USER_DATA";
-export const UPDATE_PROFILE = "UPDATE_PROFILE";
+export const UPLOAD_FILE = "UPLOAD_FILE";
 
 export const POST_CLIENT = "ADD_CLIENT";
 export const POST_PRODUCT = "ADD_PRODUCT";
 export const POST_INVOICE = "ADD_INVOICE";
 
+export const GET_USER_DATA = "GET_USER_DATA";
 export const GET_CLIENTS = "GET_CLIENTS";
 export const GET_PRODUCTS = "GET_PRODUCTS";
 export const GET_INVOICES = "GET_INVOICES";
 
+export const UPDATE_PROFILE = "UPDATE_PROFILE";
 export const UPDATE_CLIENT = "UPDATE_CLIENT";
 export const UPDATE_PRODUCT = "UPDATE_PRODUCT";
 export const UPDATE_INVOICE = "UPDATE_INVOICE";
@@ -131,8 +131,7 @@ export function confirmDatosPersonales(newData) {
         ...newData,
         EMP_PERFIL: {
           DATOS_PERSONALES: true,
-          OBLIGACIONES: false,
-          FACTURA_ELECTRONICA: false,
+          OTROS_DATOS: false,
         },
       };
 
@@ -148,39 +147,14 @@ export function confirmDatosPersonales(newData) {
   };
 }
 
-export function confirmObligaciones(newData) {
+export function confirmData(newData) {
   return async (dispatch) => {
     try {
       const updateData = {
         ...newData,
         EMP_PERFIL: {
           DATOS_PERSONALES: true,
-          OBLIGACIONES: true,
-          FACTURA_ELECTRONICA: false,
-        },
-      };
-
-      await updateDoc(doc(db, "users", auth.currentUser.uid), updateData);
-
-      return dispatch({
-        type: CONFIRM_REGISTER,
-        payload: updateData,
-      });
-    } catch (err) {
-      throw new Error(err);
-    }
-  };
-}
-
-export function confirmFacturaElectronica(newData) {
-  return async (dispatch) => {
-    try {
-      const updateData = {
-        ...newData,
-        EMP_PERFIL: {
-          DATOS_PERSONALES: true,
-          OBLIGACIONES: true,
-          FACTURA_ELECTRONICA: true,
+          OTHER_DATA: true,
         },
       };
 
@@ -304,7 +278,7 @@ export function logOut() {
     await signOut(auth);
 
     return dispatch({
-      type: SIGN_OUT,
+      type: LOG_OUT,
     });
   };
 }
@@ -347,7 +321,49 @@ export function updateUserData(newData) {
   };
 }
 
-export function uploadLogo(logo) {}
+export function uploadLogo(logo) {
+  return async (dispatch) => {
+    try {
+      const dir = `/users/${auth.currentUser.uid}/perfil`;
+
+      console.log(logo);
+
+      const storageRef = ref(storage, dir);
+      const imageQuery = await uploadBytes(storageRef, logo);
+
+      // GET invoice image url
+      const imageUrl = await getDownloadURL(imageQuery.ref);
+
+      return dispatch({
+        type: UPLOAD_LOGO,
+        payload: imageUrl,
+      });
+    } catch (e) {
+      throw new Error(e);
+    }
+  };
+}
+
+export function uploadFile(file) {
+  return async (dispatch) => {
+    try {
+      const dir = `users/${auth.currentUser.uid}/firma`;
+
+      const storageRef = ref(storage, dir);
+      const imageQuery = await uploadBytes(storageRef, file);
+
+      // GET invoice image url
+      const fileUrl = await getDownloadURL(imageQuery.ref);
+
+      return dispatch({
+        type: UPLOAD_FILE,
+        payload: fileUrl,
+      });
+    } catch (e) {
+      throw new Error(e);
+    }
+  };
+}
 
 export function changePassword() {
   return async (dispatch) => {
@@ -373,26 +389,6 @@ export function closeLoading() {
   return (dispatch) => {
     return dispatch({
       type: CLOSE_LOADING,
-    });
-  };
-}
-
-export function Alert(text, isAcceptFunction) {
-  return (dispatch) => {
-    return dispatch({
-      type: ALERT,
-      payload: {
-        text,
-        isAcceptFunction,
-      },
-    });
-  };
-}
-
-export function clearAlert() {
-  return (dispatch) => {
-    return dispatch({
-      type: CLEAR_ALERT,
     });
   };
 }
@@ -505,8 +501,6 @@ export function getClients() {
           });
         });
       }
-      console.log("dsads");
-
       dispatch({
         type: GET_CLIENTS,
         payload: clients,
@@ -535,7 +529,6 @@ export function getProducts() {
           products.push(doc.data());
         });
       }
-      console.log("dsads");
       dispatch({
         type: GET_PRODUCTS,
         payload: products,
@@ -557,8 +550,6 @@ export function getInvoices(year, month, day) {
         auth.currentUser.uid,
         "invoices"
       ); // Accedemos a las colecciones de todas las facturas
-
-      console.log(year, month, day);
 
       if (day && month && year) {
         const yearDoc = doc(invoiceColl, year); // Accedemos a las facturas de un año en especifico

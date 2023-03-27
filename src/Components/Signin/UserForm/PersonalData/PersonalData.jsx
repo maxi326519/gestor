@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { storage } from "../../../../firebase";
-import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import {
   openLoading,
   closeLoading,
   confirmDatosPersonales,
+  uploadLogo,
 } from "../../../../redux/actions";
 
 import "./PersonalData.css";
@@ -85,10 +84,11 @@ export default function PersonalData() {
       !error.EMP_NOMBRE_COMERCIAL
     ) {
       dispatch(openLoading());
-      await UploadImage()
+      dispatch(uploadLogo(file))
         .then((imageUrl) => {
-
-          dispatch(confirmDatosPersonales({ ...user, EMP_LOGO: imageUrl }))
+          dispatch(
+            confirmDatosPersonales({ ...user, EMP_LOGO: imageUrl.payload })
+          )
             .then(() => {
               dispatch(closeLoading());
             })
@@ -113,22 +113,6 @@ export default function PersonalData() {
         });
     }
   }
-
-  const UploadImage = async () => {
-    try {
-      const dir = `/users/${userData.EMP_USUKEY}/perfil`;
-
-      const storageRef = ref(storage, dir);
-      const imageQuery = await uploadBytes(storageRef, file);
-
-      // GET invoice image url
-      const imageUrl = await getDownloadURL(imageQuery.ref);
-
-      return imageUrl;
-    } catch (e) {
-      throw new Error(e);
-    }
-  };
 
   return (
     <form onSubmit={handleSubmit} className="to-left">

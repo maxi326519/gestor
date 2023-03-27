@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import swal from "sweetalert";
 
 import ClientCard from "./ClientCard/ClientCard";
 
 import addSquare from "../../../../assets/svg/add-square.svg";
+import logout from "../../../../assets/svg/logout.svg";
 import "./ClientList.css";
+import { logOut } from "../../../../redux/actions";
 
 export default function ClientList({ handleAddClient, handleProfile }) {
+  const redirect = useNavigate();
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.user.userDB);
   const clients = useSelector((state) => state.clients);
   const [rows, setRows] = useState([]);
@@ -36,10 +42,39 @@ export default function ClientList({ handleAddClient, handleProfile }) {
     );
   }
 
+  function handleLogOut() {
+    swal({
+      text: "¿Seguro que desea cerrar sesión?",
+      icon: "warning",
+      buttons: {
+        confirm: true,
+        cancel: true,
+      },
+    }).then((res) => {
+      if (res) {
+        dispatch(logOut())
+          .then(() => {
+            redirect("/login");
+            handleProfile();
+          })
+          .catch((e) => {
+            console.log(e.message);
+          });
+      }
+    });
+  }
+
   return (
     <div className="dashboardList">
       <div className="perfil">
         <h3>Listado de clientes</h3>
+        <button
+          className="btn btn-primary btn-sesion"
+          type="button"
+          onClick={handleLogOut}
+        >
+          <img src={logout} alt="logout" />
+        </button>
         <button type="button" onClick={handleProfile}>
           <img src={user.EMP_LOGO} alt="logo" />
         </button>

@@ -9,6 +9,7 @@ export default function InvoiceTable({
   newProducts,
   handleChangeProduct,
   handleChange,
+  handleProductRemove
 }) {
   const [isDisabled, setDisabled] = useState(true);
 
@@ -30,6 +31,7 @@ export default function InvoiceTable({
           user.EMP_AUTOMATICO === 1 ? "detCantidad" : ""
         }`}
       >
+        <span>Borrar</span>
         <span>Codigo</span>
         <span>Descripcion</span>
         {user.EMP_AUTOMATICO === 1 ? <span>Det. Cantidad</span> : null}
@@ -47,6 +49,7 @@ export default function InvoiceTable({
               user.EMP_AUTOMATICO === 1 ? "detCantidad" : ""
             }`}
           >
+            <button className="btn btn-danger" onClick={() => handleProductRemove(p)}>-</button>
             <span>{p.ITE_CODIGO}</span>
             <span>{p.ITE_DESCRIPCION}</span>
             {user.EMP_AUTOMATICO === 1 ? <span>{p.detCantidad}</span> : null}

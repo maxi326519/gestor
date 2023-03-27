@@ -1,10 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import {
-  signin,
-  openLoading,
-  closeLoading,
-} from "../../redux/actions";
+import { signin, openLoading, closeLoading } from "../../redux/actions";
 import { Link, useNavigate } from "react-router-dom";
 import validation from "../../functions/Ruc-Ci.ts";
 
@@ -59,10 +55,10 @@ export default function Signin() {
           if (id.message !== "") throw new Error(id.message);
 
           setError({ ...error, EMP_RUC: null });
-          setIsValid({ ...isValid, EMP_RUC: "is-invalid" });
+          setIsValid({ ...isValid, EMP_RUC: "is-valid" });
         } catch (err) {
           setError({ ...error, EMP_RUC: err.message });
-          setIsValid({ ...isValid, EMP_RUC: "is-valid" });
+          setIsValid({ ...isValid, EMP_RUC: "is-invalid" });
         }
       } else {
         setIsValid({ ...isValid, EMP_RUC: "" });
@@ -126,42 +122,40 @@ export default function Signin() {
     for (const data in user) {
       handleVerification(data, user[data]);
     }
-
-    dispatch(openLoading());
-    dispatch(
-      signin({
-        EMP_RUC: user.EMP_RUC,
-        EMP_EMAIL: user.EMP_EMAIL,
-        password: user.password,
-      })
-    )
-      .then(() => {
-        dispatch(closeLoading());
-        redirect("/signin/user");
-      })
-      .catch((e) => {
-        dispatch(closeLoading());
-        if (e.message.includes("email-already-in-use")) {
-          setError({ ...error, EMP_EMAIL: "El correo ya esta en uso" });
-        } else {
-          swal(
-            "Error",
-            "Ocurrió un error desconocido, vuelva a intentar mas tarde",
-            "error"
-          );
-          console.log(e.message);
-        }
-        if (e.message.includes("ruc")) {
-          setError({ ...error, EMP_RUC: "El ruc ya esta en uso" });
-        } else {
-          swal(
-            "Error",
-            "Ocurrió un error desconocido, vuelva a intentar mas tarde",
-            "error"
-          );
-          console.log(e.message);
-        }
-      });
+    if (
+      !error.EMP_RUC &&
+      !error.EMP_EMAIL &&
+      !error.password &&
+      !error.confirmPassword
+    ) {
+      dispatch(openLoading());
+      dispatch(
+        signin({
+          EMP_RUC: user.EMP_RUC,
+          EMP_EMAIL: user.EMP_EMAIL,
+          password: user.password,
+        })
+      )
+        .then(() => {
+          dispatch(closeLoading());
+          redirect("/signin/user");
+        })
+        .catch((e) => {
+          dispatch(closeLoading());
+          if (e.message.includes("email-already-in-use")) {
+            setError({ ...error, EMP_EMAIL: "El correo ya esta en uso" });
+          } else if (e.message.includes("ruc")) {
+            setError({ ...error, EMP_RUC: "El ruc ya esta en uso" });
+          } else {
+            swal(
+              "Error",
+              "Ocurrió un error desconocido, vuelva a intentar mas tarde",
+              "error"
+            );
+            console.log(e.message);
+          }
+        });
+    }
   }
 
   return (
@@ -254,7 +248,16 @@ export default function Signin() {
           )}
         </div>
 
-        <button className="btn btn-primary" type="submit">
+        <button
+          className="btn btn-primary"
+          type="submit"
+          disabled={
+            error.EMP_RUC ||
+            error.EMP_EMAIL ||
+            error.password ||
+            error.confirmPassword
+          }
+        >
           Registrarse
         </button>
 

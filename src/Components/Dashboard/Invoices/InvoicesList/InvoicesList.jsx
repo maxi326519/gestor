@@ -4,9 +4,10 @@ import {
   openLoading,
   updateInvoice,
   getInvoices,
+  logOut,
 } from "../../../../redux/actions";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 
 import InvoiceCard from "./InvoiceCard/InvoiceCard";
@@ -14,6 +15,7 @@ import Excel from "../Excel/Excel";
 import PDF from "../../PDF/PDF";
 
 import addSquare from "../../../../assets/svg/add-square.svg";
+import logout from "../../../../assets/svg/logout.svg";
 
 import "../../Dashboard.css";
 import "./InvoicesList.css";
@@ -23,6 +25,8 @@ export default function InvoicesList({
   handleExportInvoice,
   handleProfile,
 }) {
+  const redirect = useNavigate();
+  const dispatch = useDispatch();
   const [invoicePDF, setPDF] = useState(null);
   const invoices = useSelector((state) => state.invoices);
   const user = useSelector((state) => state.user.userDB);
@@ -33,7 +37,6 @@ export default function InvoicesList({
   const [years, setYears] = useState([]);
   const [days, setDays] = useState([]);
   const [consolidado, setConsolidado] = useState(false);
-  const dispatch = useDispatch();
   const [filter, setFilter] = useState({
     year: new Date().toLocaleDateString().split("/")[2],
     month: `0${new Date().toLocaleDateString().split("/")[1]}`.slice(-2),
@@ -191,6 +194,28 @@ export default function InvoicesList({
     setPDF(null);
   }
 
+  function handleLogOut() {
+    swal({
+      text: "¿Seguro que desea cerrar sesión?",
+      icon: "warning",
+      buttons: {
+        confirm: true,
+        cancel: true,
+      },
+    }).then((res) => {
+      if (res) {
+        dispatch(logOut())
+          .then(() => {
+            redirect("/login");
+            handleProfile();
+          })
+          .catch((e) => {
+            console.log(e.message);
+          });
+      }
+    });
+  }
+
   return (
     <div className="dashboardList">
       {invoicePDF ? (
@@ -198,6 +223,13 @@ export default function InvoicesList({
       ) : null}
       <div className="perfil">
         <h3>Listado de Facturas</h3>
+        <button
+          className="btn btn-primary btn-sesion"
+          type="button"
+          onClick={handleLogOut}
+        >
+          <img src={logout} alt="logout" />
+        </button>
         <button type="button" onClick={handleProfile}>
           <img src={user.EMP_LOGO} alt="logo" />
         </button>

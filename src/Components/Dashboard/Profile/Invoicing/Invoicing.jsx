@@ -1,6 +1,13 @@
 import "./Invoicing.css";
 
-export default function Invoicing({ disabled, userData, handleChange }) {
+export default function Invoicing({
+  disabled,
+  userData,
+  handleChange,
+  type,
+  handleShowPassword,
+  handleFile,
+}) {
   return (
     <div className="invoicing">
       <hr></hr>
@@ -9,7 +16,7 @@ export default function Invoicing({ disabled, userData, handleChange }) {
       <div className="invoice_number">
         <div className="form-floating mb-3 number">
           <input
-            type="text"
+            type="number"
             className="form-control"
             name="EMP_ESTABLECIMIENTO"
             disabled={disabled}
@@ -22,7 +29,7 @@ export default function Invoicing({ disabled, userData, handleChange }) {
 
         <div className="form-floating mb-3 number">
           <input
-            type="text"
+            type="number"
             className="form-control"
             name="EMP_PTOEMISION"
             disabled={disabled}
@@ -35,11 +42,11 @@ export default function Invoicing({ disabled, userData, handleChange }) {
 
         <div className="form-floating mb-3 serial">
           <input
-            type="text"
+            type="number"
             className="form-control"
-            name="EMP_SECUENCIAL"
+            name="EMP_NUMERO"
             disabled={disabled}
-            value={userData.EMP_NUMERO?.toString().padStart(9, "0")}
+            value={userData.EMP_NUMERO}
             onChange={handleChange}
             required
           />
@@ -67,13 +74,14 @@ export default function Invoicing({ disabled, userData, handleChange }) {
           name="file"
           accept="image/*"
           className="form-control"
-          /*         onChange={handleFile} */
+          disabled={disabled}
+          onChange={handleFile}
         />
 
         {/* CLAVE DE LA FIRMA */}
         <div className="form-floating mb-3 ">
           <input
-            type="password"
+            type={type}
             className="form-control"
             name="EMP_KEY"
             disabled={disabled}
@@ -82,7 +90,15 @@ export default function Invoicing({ disabled, userData, handleChange }) {
           />
           <label htmlFor="floatingInput">Clave de la firma</label>
         </div>
-        {disabled ? null : <button className="btn btn-outline-success">Ver clave</button>}
+        {disabled ? null : (
+          <button
+            className="btn btn-outline-success"
+            type="button"
+            onClick={handleShowPassword}
+          >
+            Ver clave
+          </button>
+        )}
       </div>
     </div>
   );

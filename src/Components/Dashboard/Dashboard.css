@@ -56,6 +56,20 @@
   width: 100%;
 }
 
+.perfil .btn-sesion {
+  margin-right: 10px;
+  background-color: transparent;
+  border: none;
+}
+
+.perfil .btn-sesion img {
+  filter: invert(0%);
+}
+
+.perfil .btn-sesion:hover img {
+  filter: invert(100%);
+}
+
 .dashboardList {
   flex-grow: 1;
   display: flex;
@@ -99,8 +113,8 @@
   overflow: scroll;
 }
 
-.label-mobile{
-  display: none
+.label-mobile {
+  display: none;
 }
 
 .listEmpty {
@@ -144,7 +158,7 @@
   .dashboard__container {
     margin: 0;
   }
-  
+
   .dashboardList {
     width: 100%;
     padding: 10px;
@@ -167,7 +181,7 @@
     margin-bottom: 10px;
   }
 
-  .label-mobile{
+  .label-mobile {
     display: block;
   }
 }

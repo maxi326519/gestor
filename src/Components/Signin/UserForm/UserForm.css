@@ -14,7 +14,7 @@
 }
 
 .signin .container{
-  width: 500px;
+  width: max-content;
   padding: 30px;
   border-radius: 20px;
   text-align: center;

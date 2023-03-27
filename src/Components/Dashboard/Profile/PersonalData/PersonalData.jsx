@@ -1,12 +1,28 @@
 import { useDispatch } from "react-redux";
-import { changePassword, Alert } from "../../../../redux/actions";
+import { changePassword } from "../../../../redux/actions";
+import swal from "sweetalert";
 
 export default function PersonalData({ disabled, userData, handleChange }) {
   const dispatch = useDispatch();
 
   function handleChangePassword() {
-    dispatch(changePassword()).then(() => {
-      /*       toast.info("Se envio a tu correo un link para cambiar la contraseña"); */
+    swal({
+      text: "¿Seguro que quiere cambiar la contraseña?",
+      icon: "info",
+      buttons: {
+        confirm: true,
+        cancel: true,
+      },
+    }).then((res) => {
+      if (res) {
+        dispatch(changePassword()).then(() => {
+          swal(
+            "Enviado",
+            "Se envio un correo para cambiar tu contraseña",
+            "success"
+          );
+        });
+      }
     });
   }
 
@@ -92,11 +108,8 @@ export default function PersonalData({ disabled, userData, handleChange }) {
             <input
               type="email"
               className="form-control"
-              name="EMP_EMAIL"
-              disabled={disabled}
+              disabled={true}
               value={userData.EMP_EMAIL}
-              onChange={handleChange}
-              required
             />
             <label htmlFor="floatingInput">Correo electronico</label>
           </div>
@@ -106,14 +119,8 @@ export default function PersonalData({ disabled, userData, handleChange }) {
       {disabled ? null : (
         <button
           className="btn btn-outline-success"
-          onClick={() => {
-            dispatch(
-              Alert(
-                "¿Seguro que quiere cambiar la contraseña?",
-                handleChangePassword
-              )
-            );
-          }}
+          type="button"
+          onClick={handleChangePassword}
         >
           Cambiar contraseña
         </button>

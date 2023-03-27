@@ -1,0 +1,49 @@
+.ohterData-container {
+  display: flex;
+}
+
+.ohterData-container div:first-child {
+  margin-right: 30px;
+}
+
+.check-container {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  padding: 10px 20px 20px 30px;
+}
+
+.check-container input {
+  margin-right: 10px;
+}
+
+.container_invoice_n {
+  display: flex;
+  flex-direction: column;
+}
+
+.container_invoice_n .factura-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.container_invoice_n .factura-container input {
+  width: 100%;
+}
+
+.factura-container div:first-child {
+  margin-right: 0px;
+}
+
+.factura-container div:nth-child(2) {
+}
+
+.container_invoice_n .number {
+  flex-grow: 1;
+}
+
+.container_invoice_n .number input {
+  flex-grow: 1;
+  width: 100%;
+}

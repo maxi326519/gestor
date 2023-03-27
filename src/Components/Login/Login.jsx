@@ -50,13 +50,21 @@ export default function Signin() {
           });
         } else if (e.message.includes("password")) {
           setError({ ...error, password: "La contraseña es incorrecta" });
+        } else if (e.message.includes("user")) {
+          setError({ ...error, password: "La contraseña es incorrecta" });
+          swal(
+            "Error",
+            "Error no se encontro al usuario",
+            "error"
+          );
+          console.log(e);
         } else {
           swal(
             "Error",
-            "Error al iniciar sesion, intentelo mas tarder",
+            "Error al iniciar sesión, intentelo mas tarde",
             "error"
           );
-          console.log(e.message);
+          console.log(e);
         }
       });
   }
@@ -74,12 +82,10 @@ export default function Signin() {
         const year = new Date().getFullYear().toString();
         const month = `0${new Date().getMonth()}`.slice(-2);
 
-        console.log(year, month);
-
         Promise.all([
           dispatch(getProducts()),
           dispatch(getClients()),
-          dispatch(getInvoices(year, month, null))
+          dispatch(getInvoices(year, month, null)),
         ])
           .then(() => {
             dispatch(closeLoading());

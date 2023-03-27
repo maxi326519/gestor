@@ -9,6 +9,7 @@ import {
   closeLoading,
 } from "../../../../redux/actions";
 import "./ElectronicInvoice.css";
+import { useNavigate } from "react-router-dom";
 
 const initialState = {
   EMP_ESTABLECIMIENTO: "001",
@@ -21,31 +22,45 @@ const initialState = {
 
 export default function ElectronicInvoice() {
   const dispatch = useDispatch();
-  const user = useSelector(state => state.user.userDB);
+  const redirect = useNavigate();
+  const user = useSelector((state) => state.user.userDB);
   const [file, setFile] = useState(null);
   const [facturacion, setFacturacion] = useState(initialState);
 
   async function handleSubmit(e) {
     e.preventDefault();
     dispatch(openLoading());
-    await UploadFile().then((fileUrl) => {
-      dispatch(confirmFacturaElectronica({
-        ...facturacion,
-        EMP_ARCHIVO: fileUrl
-        }))
-      .then(() => {
-        dispatch(closeLoading());
+    await UploadFile()
+      .then((fileUrl) => {
+        dispatch(
+          confirmFacturaElectronica({
+            ...facturacion,
+            EMP_ARCHIVO: fileUrl,
+          })
+        )
+          .then(() => {
+            redirect("/dashboard");
+            dispatch(closeLoading());
+          })
+          .catch((err) => {
+            dispatch(closeLoading());
+            swal(
+              "Error",
+              "Ocurrió un error desconocido, vuelva a intentar mas tarde",
+              "error"
+            );
+            console.log(err);
+          });
       })
       .catch((err) => {
         dispatch(closeLoading());
-        swal("Error", "Ocurrió un error desconocido, vuelva a intentar mas tarde", "error");
+        swal(
+          "Error",
+          "Ocurrió un error desconocido al cargar el archivo, vuelva a intentar mas tarde",
+          "error"
+        );
         console.log(err);
-      })
-    }).catch((err) => {
-      dispatch(closeLoading());
-      swal("Error", "Ocurrió un error desconocido al cargar el archivo, vuelva a intentar mas tarde", "error");
-      console.log(err);
-    })
+      });
   }
 
   function handleChange(e) {
@@ -56,21 +71,21 @@ export default function ElectronicInvoice() {
   }
 
   const UploadFile = async () => {
-    try{
+    try {
       console.log(user);
-      const dir = `users/${user.EMP_USUKEY}/firma`
+      const dir = `users/${user.EMP_USUKEY}/firma`;
 
       const storageRef = ref(storage, dir);
       const imageQuery = await uploadBytes(storageRef, file);
-  
-      // GET invoice image url 
+
+      // GET invoice image url
       const fileUrl = await getDownloadURL(imageQuery.ref);
 
       return fileUrl;
-    }catch(e){
+    } catch (e) {
       throw new Error(e);
     }
-  }
+  };
 
   return (
     <form className="electronicInvoice to-left" onSubmit={handleSubmit}>

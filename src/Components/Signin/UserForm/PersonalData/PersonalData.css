@@ -1,6 +1,7 @@
 .signin form {
   display: flex;
   flex-direction: column;
+  min-width: 500px;
 }
 
 .signin form h2 {

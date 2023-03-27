@@ -1,29 +1,34 @@
-/* import { useState } from "react"; */
-
+import { useEffect, useState } from "react";
 import "./ProfileLogo.css";
 
-export default function ProfileLogo({ userData, disabled }) {
+export default function ProfileLogo({ logo, userData, disabled, handleLogo }) {
+  const [logoImage, setLogoImage] = useState(null);
 
-/*   const [file, setFile] = useState(); */
-
+  useEffect(() => {
+    console.log(logo);
+    if (logo) {
+      setLogoImage(URL.createObjectURL(logo));
+    } else if (userData.EMP_LOGO) {
+      setLogoImage(userData.EMP_LOGO);
+    }
+  }, [logo, userData.EMP_LOGO]);
 
   return (
     <div className="profile_logo_container">
       <div className="logo-container">
-        {userData.EMP_LOGO ? (
-          <img src={userData.EMP_LOGO} alt="your-logo" />
+        {logoImage ? (
+          <img src={logoImage} alt="your-logo" />
         ) : (
           <span>Seleccione una imagen</span>
         )}
-      </div>    
+      </div>
       {disabled ? null : (
         <input
           type="file"
           name="file"
           accept="image/*"
           className="form-control"
-          /*               onChange={handleFile} */
-          required
+          onChange={handleLogo}
         />
       )}
     </div>

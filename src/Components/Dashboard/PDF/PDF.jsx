@@ -112,8 +112,9 @@ export default function PDF({ invoice, handleClosePDF }) {
   const [barCode, setBarCode] = useState(null);
 
   useEffect(() => {
+    console.log(invoice);
     if (invoice.VEN_CLAVEACCESO) {
-      JsBarcode("#barcode", invoice.VEN_CLAVEACCESO, {  displayValue: false });
+      JsBarcode("#barcode", invoice.VEN_CLAVEACCESO, { displayValue: false });
       const canvas = canvasRef.current;
       try {
         setBarCode(canvas.toDataURL());
@@ -145,7 +146,7 @@ export default function PDF({ invoice, handleClosePDF }) {
               <View style={styles.comerceData}>
                 <Image
                   style={styles.logo}
-                  src="https://res.cloudinary.com/doxph7wwq/image/upload/v1676561586/kpvt6nniodzjnrn6aqqm.png"
+                  src={user.EMP_LOGO}
                 />
                 <Text>Nombre: {user.EMP_NOMBRE}</Text>
                 <Text>Ruc: {user.EMP_RUC}</Text>
@@ -194,7 +195,7 @@ export default function PDF({ invoice, handleClosePDF }) {
                     <View>
                       <Image src={barCode} style={{ width: "270px" }} />
                       <Text style={{ fontSize: "10px" }}>
-                       { invoice.VEN_CLAVEACCESO }
+                        {invoice.VEN_CLAVEACCESO}
                       </Text>
                     </View>
                   ) : (
@@ -259,7 +260,7 @@ export default function PDF({ invoice, handleClosePDF }) {
                   Valor
                 </Text>
               </View>
-              {invoice.ITE_DETALLES?.map((p) => (
+              {invoice.ITE_DETALLES.map((p) => (
                 <View style={styles.tablaRows}>
                   <Text style={{ ...styles.text, width: "60px" }}>
                     {p.ITE_CODIGO}

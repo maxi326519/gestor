@@ -31,7 +31,7 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
   });
 
   function handleChange(e) {
-    setProduct({ ...product, [e.target.name]: e.target.value.replace(/[^a-zA-Z0-9]/g, '') });
+    setProduct({ ...product, [e.target.name]: e.target.value });
     if (e.target.name === "ITE_CODIGO") {
       if (products.find((p) => p.ITE_CODIGO === e.target.value)) {
         setError({ ITE_CODIGO: "Este codigo ya existe" });

@@ -43,7 +43,7 @@ const initialInvoice = {
   VEN_CODIGO: 0,
   VEN_COMISION: 0,
   VEN_DESCUENTO: 0,
-  VEN_ESTABLECIMIENTO: "001",
+  VEN_ESTABLECIMIENTO: 1,
   VEN_ESTADO: 1,
   VEN_FAUTORIZA: 1,
   VEN_FECHA: new Date().toISOString().split("T")[0],
@@ -53,7 +53,7 @@ const initialInvoice = {
   VEN_IMPRESO: 0.0,
   VEN_IVA: 0.0,
   VEN_NUMERO: 1,
-  VEN_PTOEMISION: "001",
+  VEN_PTOEMISION: 1,
   VEN_RETENCION: 0.0,
   VEN_SRI: 0.0,
   VEN_SUBTOTAL: 0.0,
@@ -68,14 +68,6 @@ const initialInvoice = {
   VEN_VALOR2: "",
   VEN_VALOR3: "",
 };
-
-function format(date) {
-  const dateSplit = date.split("/");
-  const format = `${dateSplit[2]}-${("0" + dateSplit[1]).slice(-2)}-${
-    "0" + dateSplit[0].slice(-2)
-  }`;
-  return format;
-}
 
 export default function InvoicesForm({
   handleAddInvoice,
@@ -148,7 +140,6 @@ export default function InvoicesForm({
 
     if (user.EMP_SECUENCIAL < 100) {
       if (handleValidations()) {
-        console.log("post");
         dispatch(openLoading());
         const newInvoice = {
           ...invoice,
@@ -156,9 +147,9 @@ export default function InvoicesForm({
           VEN_CLAVEACCESO: clave2(
             invoice.CLI_IDENTIFICACION,
             invoice.VEN_FECHA,
-            `00000000${invoice.VEN_NUMERO}`.slice(-9),
-            invoice.VEN_ESTABLECIMIENTO,
-            invoice.VEN_PTOEMISION,
+            `00${invoice.VEN_NUMERO}`.slice(-9),
+            `00${invoice.VEN_ESTABLECIMIENTO}`.slice(-3),
+            `00${invoice.VEN_PTOEMISION}`.slice(-3),
             user.EMP_CODIGO
           ),
         };
@@ -296,8 +287,8 @@ export default function InvoicesForm({
     setFormClient(false);
   }
 
-  function handleRemove(p) {
-    setNewProduct(newProducts.filter((pf) => pf.code !== p.code));
+  function handleRemove(product) {
+    setNewProduct(newProducts.filter((p) => p.ITE_CODIGO !== product.ITE_CODIGO));
   }
 
   function handleSetGuia(value) {
@@ -327,8 +318,6 @@ export default function InvoicesForm({
                   : value,
             };
           } else {
-            if (name === "VED_CANTIDAD" && e.target.value < 1) value = 1;
-
             newProduct = {
               ...p,
               [name]: value,
@@ -362,8 +351,10 @@ export default function InvoicesForm({
   function handleViewPDF() {
     const currentInvoice = {
       ...invoice,
-      ITE_DETELLES: newProducts,
+      ITE_DETALLES: newProducts,
     };
+    console.log(currentInvoice);
+    console.log(newProducts);
     setPDF(currentInvoice);
   }
 
@@ -405,6 +396,7 @@ export default function InvoicesForm({
           newProducts={newProducts}
           handleChangeProduct={handleChangeProduct}
           handleChange={handleChange}
+          handleProductRemove={handleRemove}
         />
         <div className="buttons">
           <button className="btn btn-primary" onClick={handleClear}>

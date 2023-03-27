@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
+import { logOut } from "../../../../redux/actions";
 
 import clave2 from "../../../../functions/Clave";
+import logout from "../../../../assets/svg/logout.svg";
 
 import "./InvoiceData.css";
 
@@ -23,6 +26,8 @@ export default function InvoiceData({
   handleSetGuia,
   handleProfile,
 }) {
+  const redirect = useNavigate();
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.user.userDB);
   const [guia, setGuia] = useState(false);
   const [guiaData, setGuiaData] = useState({
@@ -38,8 +43,8 @@ export default function InvoiceData({
       user.EMP_RUC,
       invoice.VEN_FECHA.split("-").reverse().join("-"),
       `00000000${invoice.VEN_NUMERO}`.slice(-9),
-      invoice.VEN_ESTABLECIMIENTO,
-      invoice.VEN_PTOEMISION,
+      `00${invoice.VEN_ESTABLECIMIENTO}`.slice(-3),
+      `00${invoice.VEN_PTOEMISION}`.slice(-3),
       Number(user.EMP_CODIGO)
     );
     setClave(clave);
@@ -107,10 +112,39 @@ export default function InvoiceData({
     }
   }
 
+  function handleLogOut() {
+    swal({
+      text: "¿Seguro que desea cerrar sesión?",
+      icon: "warning",
+      buttons: {
+        confirm: true,
+        cancel: true,
+      },
+    }).then((res) => {
+      if (res) {
+        dispatch(logOut())
+          .then(() => {
+            redirect("/login");
+            handleProfile();
+          })
+          .catch((e) => {
+            console.log(e.message);
+          });
+      }
+    });
+  }
+
   return (
     <div className="buscadores">
       <div className="perfil">
-        <h2>Factura</h2>
+        <h2>Factura</h2>{" "}
+        <button
+          className="btn btn-primary btn-sesion"
+          type="button"
+          onClick={handleLogOut}
+        >
+          <img src={logout} alt="logout" />
+        </button>
         <button type="button" onClick={handleProfile}>
           <img src={user.EMP_LOGO} alt="logo" />
         </button>
@@ -135,9 +169,10 @@ export default function InvoiceData({
         <div className="invoice-number">
           <label htmlFor="floatingInput">Numero de Factura</label>
           {user ? (
-            <span>{`${user.EMP_ESTABLECIMIENTO} - ${
-              user.EMP_PTOEMISION
-            } - ${`000000000${invoice.VEN_NUMERO}`.slice(-9)}`}</span>
+            <span>{`
+            ${`00${invoice.VEN_ESTABLECIMIENTO}`.slice(-3)} - 
+            ${`00${invoice.VEN_PTOEMISION}`.slice(-3)} - 
+            ${`000000000${invoice.VEN_NUMERO}`.slice(-9)}`}</span>
           ) : null}
         </div>
       </div>

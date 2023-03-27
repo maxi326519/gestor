@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { closeLoading } from "../../../redux/actions";
 
 import PersonalData from "./PersonalData/PersonalData";
-import Obligations from "./Obligations/Obligations";
-import ElectronicInvoice from "./ElectronicInvoice/ElectronicInvoice";
+import OtherData from "./OtherData/OtherData";
 
 import "./UserForm.css";
 import { useSelector } from "react-redux";
@@ -16,13 +15,13 @@ export default function Signin() {
   const user = useSelector((state) => state.user.userDB);
 
   useEffect(() => {
-    if(
+    if (
       user.EMP_PERFIL.DATOS_PERSONALES &&
       user.EMP_PERFIL.OBLIGACIONES &&
       user.EMP_PERFIL.FACTURA_ELECTRONICA
-      ){
-        dispatch(closeLoading());
-        redirect("/dashboard/invoices/add");      
+    ) {
+      dispatch(closeLoading());
+      redirect("/dashboard/invoices/add");
     }
   });
 
@@ -41,30 +40,12 @@ export default function Signin() {
           <span className={user.EMP_PERFIL.OBLIGACIONES ? "active" : ""}>
             2
           </span>
-          <div
-            className={`progress_bar ${
-              user.EMP_PERFIL.OBLIGACIONES ? "active" : ""
-            }`}
-          ></div>
-          <span className={user.EMP_PERFIL.FACTURA_ELECTRONICA ? "active" : ""}>3</span>
         </div>
         {!user.EMP_PERFIL.DATOS_PERSONALES ? <PersonalData /> : null}
 
-        {user.EMP_PERFIL.DATOS_PERSONALES && !user.EMP_PERFIL.OBLIGACIONES ? (
-          <Obligations />
+        {user.EMP_PERFIL.DATOS_PERSONALES && !user.EMP_PERFIL.OTHER_DATA ? (
+          <OtherData />
         ) : null}
-
-        {user.EMP_PERFIL.DATOS_PERSONALES &&
-        user.EMP_PERFIL.OBLIGACIONES &&
-        !user.EMP_PERFIL.FACTURA_ELECTRONICA ? (
-          <ElectronicInvoice />
-        ) : null}
-
-        {user.EMP_PERFIL.DATOS_PERSONALES &&
-        user.EMP_PERFIL.OBLIGACIONES &&
-        user.EMP_PERFIL.FACTURA_ELECTRONICA
-          ? "Perfil completado"
-          : null}
       </div>
     </div>
   );

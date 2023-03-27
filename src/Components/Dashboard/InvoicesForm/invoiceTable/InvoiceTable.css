@@ -6,11 +6,11 @@
 
 .invoice-row {
   display: grid;
-  grid-template-columns: 100px 1fr repeat(5, 150px);
+  grid-template-columns: 80px 100px 1fr repeat(5, 150px);
 }
 
 .detCantidad{
-  grid-template-columns: 100px 1fr 1fr repeat(5, 150px);
+  grid-template-columns: 80px 100px 1fr 1fr repeat(5, 150px);
 }
 
 .invoice-first-row {

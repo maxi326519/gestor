@@ -1,21 +1,21 @@
 import {
   SIGN_IN,
   LOG_IN,
-  SIGN_OUT,
+  LOG_OUT,
   CONFIRM_REGISTER,
   PERSISTENCE,
-  GET_USER_DATA,
-  UPDATE_PROFILE,
   OPEN_LOADING,
   CLOSE_LOADING,
-  ALERT,
-  CLEAR_ALERT,
+  UPLOAD_LOGO,
+  UPLOAD_FILE,
   POST_CLIENT,
   POST_PRODUCT,
   POST_INVOICE,
+  GET_USER_DATA,
   GET_CLIENTS,
   GET_PRODUCTS,
   GET_INVOICES,
+  UPDATE_PROFILE,
   UPDATE_CLIENT,
   UPDATE_PRODUCT,
   UPDATE_INVOICE,
@@ -59,28 +59,10 @@ export const Reducer = (state = initialState, action) => {
         user: { ...state.user, ...action.payload },
       };
 
-    case SIGN_OUT:
-      return initialState;
+    case LOG_OUT:
+      break;
 
     case CONFIRM_REGISTER:
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          userDB: { ...state.user.userDB, ...action.payload },
-        },
-      };
-
-    case GET_USER_DATA:
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          userDB: { ...state.user.userDB, ...action.payload },
-        },
-      };
-
-    case UPDATE_PROFILE:
       return {
         ...state,
         user: {
@@ -101,18 +83,27 @@ export const Reducer = (state = initialState, action) => {
         loading: false,
       };
 
-    case ALERT:
+    case UPLOAD_LOGO:
       return {
         ...state,
-        alert: action.payload,
+        user: {
+          ...state.user,
+          userDB: {
+            ...state.user.userDB,
+            EMP_LOGO: action.payload,
+          },
+        },
       };
 
-    case CLEAR_ALERT:
+    case UPLOAD_FILE:
       return {
         ...state,
-        alert: {
-          text: null,
-          isAcceptFunction: null,
+        user: {
+          ...state.user,
+          userDB: {
+            ...state.user.userDB,
+            EMP_LOGO: action.payload,
+          },
         },
       };
 
@@ -126,6 +117,15 @@ export const Reducer = (state = initialState, action) => {
       return {
         ...state,
         clients: action.payload,
+      };
+
+    case GET_USER_DATA:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          userDB: { ...state.user.userDB, ...action.payload },
+        },
       };
 
     case GET_PRODUCTS:
@@ -158,6 +158,15 @@ export const Reducer = (state = initialState, action) => {
           },
         },
         invoices: [...state.invoices, action.payload],
+      };
+
+    case UPDATE_PROFILE:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          userDB: { ...state.user.userDB, ...action.payload },
+        },
       };
 
     case UPDATE_CLIENT:

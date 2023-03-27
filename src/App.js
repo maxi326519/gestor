@@ -53,8 +53,7 @@ function App() {
           .then((d) => {
             if (
               d.payload.EMP_PERFIL.DATOS_PERSONALES &&
-              d.payload.EMP_PERFIL.OBLIGACIONES &&
-              d.payload.EMP_PERFIL.FACTURA_ELECTRONICA
+              d.payload.EMP_PERFIL.OTHER_DATA
             ) {
               dispatch(getProducts()).catch((e) => console.log(e));
               dispatch(getClients()).catch((e) => console.log(e));
