@@ -17,8 +17,7 @@ export default function Signin() {
   useEffect(() => {
     if (
       user.EMP_PERFIL.DATOS_PERSONALES &&
-      user.EMP_PERFIL.OBLIGACIONES &&
-      user.EMP_PERFIL.FACTURA_ELECTRONICA
+      user.EMP_PERFIL.OTHER_DATA
     ) {
       dispatch(closeLoading());
       redirect("/dashboard/invoices/add");

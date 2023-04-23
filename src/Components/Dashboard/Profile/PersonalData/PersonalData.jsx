@@ -1,9 +1,16 @@
 import { useDispatch } from "react-redux";
 import { changePassword } from "../../../../redux/actions";
 import swal from "sweetalert";
+import { Link, useNavigate } from "react-router-dom";
 
-export default function PersonalData({ disabled, userData, handleChange }) {
+export default function PersonalData({
+  disabled,
+  userData,
+  handleChange,
+  handleProfile,
+}) {
   const dispatch = useDispatch();
+  const redirect = useNavigate();
 
   function handleChangePassword() {
     swal({
@@ -24,6 +31,11 @@ export default function PersonalData({ disabled, userData, handleChange }) {
         });
       }
     });
+  }
+
+  function handleChangeEmail() {
+    redirect("/reset-email");
+    handleProfile();
   }
 
   return (
@@ -117,13 +129,22 @@ export default function PersonalData({ disabled, userData, handleChange }) {
       </div>
       {/* PASSWORD */}
       {disabled ? null : (
-        <button
-          className="btn btn-outline-success"
-          type="button"
-          onClick={handleChangePassword}
-        >
-          Cambiar contraseña
-        </button>
+        <div className="btn-container">
+          <button
+            className="btn btn-outline-success"
+            type="button"
+            onClick={handleChangePassword}
+          >
+            Cambiar contraseña
+          </button>
+          <button
+            type="button"
+            className="btn btn-outline-success"
+            onClick={handleChangeEmail}
+          >
+            Cambiar correo
+          </button>
+        </div>
       )}
     </div>
   );

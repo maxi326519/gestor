@@ -1,4 +1,4 @@
-import {
+/* import {
   SIGN_IN,
   LOG_IN,
   LOG_OUT,
@@ -19,9 +19,10 @@ import {
   UPDATE_CLIENT,
   UPDATE_PRODUCT,
   UPDATE_INVOICE,
+  UPDATE_EMAIL,
   DELETE_CLIENT,
   DELETE_PRODUCT,
-} from "../actions";
+} from "../actions"; */
 
 const initialState = {
   user: {
@@ -40,7 +41,7 @@ const initialState = {
 };
 
 export const Reducer = (state = initialState, action) => {
-  switch (action.type) {
+/*   switch (action.type) {
     case SIGN_IN:
       return {
         ...state,
@@ -104,6 +105,15 @@ export const Reducer = (state = initialState, action) => {
             ...state.user.userDB,
             EMP_LOGO: action.payload,
           },
+        },
+      };
+
+    case UPDATE_EMAIL:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          EMP_EMAIL: action.payload,
         },
       };
 
@@ -207,5 +217,5 @@ export const Reducer = (state = initialState, action) => {
 
     default:
       return state;
-  }
+  } */
 };

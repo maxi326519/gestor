@@ -45,3 +45,7 @@
 .container a{
   margin-top: 10px;
 }
+
+.container span{
+  margin-bottom: 20px;
+}

@@ -1,19 +1,23 @@
 import { useState } from "react";
-import styles from "./ResetPassword.module.css";
-import { Link, useNavigate } from "react-router-dom";
-import { sendPasswordResetEmail } from "firebase/auth";
-import swal from "sweetalert";
-import { auth } from "../../firebase";
 import { useDispatch } from "react-redux";
-import { closeLoading, openLoading } from "../../redux/actions";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  changeEmail,
+  closeLoading,
+  openLoading,
+  verifyEmailVerificationCode,
+} from "../../redux/actions";
+import swal from "sweetalert";
 
-export default function ResetPassword() {
+import styles from "./ResetEmail.module.css";
+
+export default function ResetEmail() {
   const dispatch = useDispatch();
   const redirect = useNavigate();
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
 
-  function handleChange(event) {
+  function handleChangeEmail(event) {
     const correo = /^[\w.@]+$/;
 
     if (correo.test(event.target.value)) {
@@ -22,30 +26,39 @@ export default function ResetPassword() {
     }
   }
 
-  async function handleSubmit(event) {
+  async function handleSubmitEmail(event) {
     event.preventDefault();
     if (!error) {
       dispatch(openLoading());
-      await sendPasswordResetEmail(auth, email)
+      dispatch(changeEmail(email))
         .then(() => {
           dispatch(closeLoading());
-          swal({
-            title: "Enviado",
-            text: "Ya se envio un correo para reestablecer la contraseña",
-            icon: "success",
-            buttons: {
-              aceptar: true,
-            },
-          }).then((res) => {
-            redirect("/login");
-          });
+          swal("Actualizado", "Se cambio el correco con exito", "success").then(
+            (res) => {
+              if (res) {
+                redirect("/dashboard/invoices");
+              }
+            }
+          );
         })
         .catch((err) => {
           dispatch(closeLoading());
-          if (err.message.includes("user-not-found")) {
-            setError("No existe un ususario con ese correo");
-          } else if (err.message.includes("invalid-email")) {
-            setError("El mail no es valido");
+          if (err.message.includes("requires-recent-login")) {
+            swal({
+              titulo: "Error",
+              text: "Se requiere que haya iniciado sesion recientemente, reinicie sesión para hacer el cambio",
+              icon: "error",
+              buttons: {
+                iniciar: true,
+                cancel: true,
+              },
+            }).then((res) => {
+              if (res) {
+                redirect("/login");
+              } else {
+                redirect("/dashboard/invoices");
+              }
+            });
           } else {
             swal(
               "Error",
@@ -72,9 +85,9 @@ export default function ResetPassword() {
 
   return (
     <div className={styles.background}>
-      <form className={`to-left ${styles.form}`} onSubmit={handleSubmit}>
+      <form className={`to-left ${styles.form}`} onSubmit={handleSubmitEmail}>
         <div className={styles.container}>
-          <h4>Restaurar contraseña</h4>
+          <h4>Cambiar correo</h4>
           <div className="form-floating">
             <input
               id={error ? "floatingInputInvalid" : "email"}
@@ -82,16 +95,16 @@ export default function ResetPassword() {
               type="email"
               className={`form-control ${!error ? "" : "is-invalid"}`}
               value={email}
-              onChange={handleChange}
+              onChange={handleChangeEmail}
               required
             />
             <label className="form-label" htmlFor="email">
-              Escriba su correo
+              Escriba su nuevo correo
             </label>
             {error ? <small>{error}</small> : null}
           </div>
           <button className="btn btn-success" type="submit">
-            Enviar
+            cambiar
           </button>
           <Link to="/login">{"< Volver"}</Link>
         </div>

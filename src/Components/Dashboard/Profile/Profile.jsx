@@ -49,7 +49,6 @@ export default function Profile({ handleProfile }) {
           e.target.value <= 999999999 &&
           e.target.value.length <= 9)
       ) {
-        console.log("asdasd");
         setUser({ ...userData, [e.target.name]: e.target.value });
       }
     } else {
@@ -94,6 +93,7 @@ export default function Profile({ handleProfile }) {
     dispatch(openLoading());
     dispatch(updateUserData(newData))
       .then(() => {
+        setDisabled(!disabled);
         dispatch(closeLoading());
         swal("Guardado", "¡Perfil actualizado exitosamente!", "success");
       })
@@ -109,7 +109,6 @@ export default function Profile({ handleProfile }) {
   }
 
   function handleShowPassword() {
-    console.log("Show password:", type);
     if (type === "password") {
       setType("text");
     } else {
@@ -146,7 +145,7 @@ export default function Profile({ handleProfile }) {
 
   return (
     <div className="dashboard_profile">
-      <form onSubmit={handleSubmit} className="profile">
+      <form onSubmit={handleSubmit} className="profile to-left">
         <div className="close-button" onClick={handleProfile}>
           <h2>Mi perfil</h2>
           <button className="btn btn-danger close" type="button">
@@ -168,6 +167,7 @@ export default function Profile({ handleProfile }) {
             disabled={disabled}
             userData={userData}
             handleChange={handleChange}
+            handleProfile={handleProfile}
           />
         </div>
 

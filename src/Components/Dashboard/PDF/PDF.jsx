@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import axios from "axios";
 import {
   Document,
   Page,
@@ -12,6 +13,8 @@ import { useSelector } from "react-redux";
 import JsBarcode from "jsbarcode";
 
 import "./PDF.css";
+import { auth, storage } from "../../../firebase";
+import { getDownloadURL, ref } from "firebase/storage";
 const styles = StyleSheet.create({
   page: {
     padding: "30px",
@@ -108,6 +111,7 @@ const formasDePago = [
 // Create Document Component
 export default function PDF({ invoice, handleClosePDF }) {
   const user = useSelector((state) => state.user.userDB);
+  const [image, setImage] = useState(null);
   const canvasRef = useRef(null);
   const [barCode, setBarCode] = useState(null);
 
@@ -123,6 +127,28 @@ export default function PDF({ invoice, handleClosePDF }) {
       }
     }
   }, [canvasRef, invoice]);
+
+  useEffect(() => {
+    downloadImage();
+  }, [user])
+
+  const downloadImage = async () => {
+    let url = "";
+    let storageUrl = `users/${auth.currentUser.uid}/perfil`;
+    console.log(storageUrl);
+    const storageRef = ref(storage, storageUrl);
+    getDownloadURL(storageRef).then((u) => (url = u));
+
+    try {
+      const response = await axios.get(url, { responseType: "arraybuffer" });
+      const image = Buffer.from(response.data, "binary").toString("base64");
+      setImage(image);
+      console.log(image);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
 
   return (
     <div className="pdf-container">
@@ -144,10 +170,7 @@ export default function PDF({ invoice, handleClosePDF }) {
             <View style={styles.userData}>
               {/* COMERCE DATA */}
               <View style={styles.comerceData}>
-                <Image
-                  style={styles.logo}
-                  src={user.EMP_LOGO}
-                />
+                {image ? <Image style={styles.logo} src={image} /> : null}
                 <Text>Nombre: {user.EMP_NOMBRE}</Text>
                 <Text>Ruc: {user.EMP_RUC}</Text>
                 <Text>Dirección: {user.EMP_DIRECCION}</Text>

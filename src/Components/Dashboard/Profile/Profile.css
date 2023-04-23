@@ -58,6 +58,10 @@
   display: flex;
 }
 
+.datosPersonales .btn-container button {
+  margin-right: 10px;
+}
+
 .profile-btn-back {
   display: flex;
   justify-content: flex-end;

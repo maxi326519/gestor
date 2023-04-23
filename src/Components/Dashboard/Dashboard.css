@@ -102,7 +102,7 @@
 
 .dashboardList__grid {
   flex-grow: 1;
-  border-radius: 10px;
+  border-radius: 5px;
   outline: 1px solid #ccc;
   overflow: hidden;
 }
