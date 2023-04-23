@@ -66,7 +66,8 @@ function App() {
               redirect("/signin/user");
             }
           })
-          .catch(() => {
+          .catch((err) => {
+            console.log(err);
             dispatch(closeLoading());
             swal(
               "Error",

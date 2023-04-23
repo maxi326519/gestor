@@ -1,4 +1,4 @@
-/* import {
+import {
   SIGN_IN,
   LOG_IN,
   LOG_OUT,
@@ -22,7 +22,7 @@
   UPDATE_EMAIL,
   DELETE_CLIENT,
   DELETE_PRODUCT,
-} from "../actions"; */
+} from "../actions";
 
 const initialState = {
   user: {
@@ -41,7 +41,7 @@ const initialState = {
 };
 
 export const Reducer = (state = initialState, action) => {
-/*   switch (action.type) {
+  switch (action.type) {
     case SIGN_IN:
       return {
         ...state,
@@ -217,5 +217,5 @@ export const Reducer = (state = initialState, action) => {
 
     default:
       return state;
-  } */
+  }
 };

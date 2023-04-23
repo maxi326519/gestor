@@ -5,8 +5,8 @@ import {
   updateEmail,
   sendPasswordResetEmail,
   sendEmailVerification,
-} from "../../../firebase/auth";
-import { uploadBytes, getDownloadURL } from "../../../firebase/storage";
+} from "firebase/auth";
+import { uploadBytes, getDownloadURL } from "firebase/storage";
 
 export const GET_USER_DATA = "GET_USER_DATA";
 export const UPDATE_PROFILE = "UPDATE_PROFILE";
@@ -56,7 +56,7 @@ export function uploadLogo(logo) {
 
       console.log(logo);
 
-      const storageRef = ref(storage, dir);
+      const storageRef = storage.ref(storage, dir);
       const imageQuery = await uploadBytes(storageRef, logo);
 
       // GET invoice image url

@@ -1,5 +1,5 @@
 import { auth, db } from "../../../firebase";
-import { ref, child, update, getDatabase, query, get, set } from "firebase/database";
+import { ref, child, update, query, get, set } from "firebase/database";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -16,18 +16,26 @@ export function signin(user) {
   return async (dispatch) => {
     try {
       // Verificamos que no exista otro usuario con ese ruc
-      const queryInstance = query(
-        ref(db, "users"),
-        child("EMP_RUC").equalTo(user.EMP_RUC)
-      );
+
+      /*       console.log(1);
+
+      const queryInstance = query(ref(db, "users"));
+
+      console.log(2);
+
       const dbUser = await get(queryInstance);
       if (dbUser.exists()) throw new Error("El ruc ya existe");
+
+      console.log(3); */
+
       // Creamos el nuevo usuario
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         user.EMP_EMAIL,
         user.password
       );
+
+      console.log(4);
 
       const userDB = {
         EMP_RUC: user.EMP_RUC,
@@ -55,6 +63,8 @@ export function signin(user) {
         },
       };
 
+      console.log(userCredential.user.uid);
+
       // Almacenamos los primeros datos sobre el usuario,
       // y le indicamos que el perfil todavia no esta completo
       await set(ref(db, `users/${userCredential.user.uid}`), userDB);
@@ -76,13 +86,13 @@ export function confirmDatosPersonales(newData) {
   return async (dispatch) => {
     try {
       // Verificamos que no exista otro usuario con ese ruc
-      if (newData.EMP_RUC) {
+      /*       if (newData.EMP_RUC) {
         const queryInstance = ref(db, "users");
         const dbUser = await get(
           child(queryInstance, `ruc/${newData.EMP_RUC}`)
         );
         if (dbUser.exists()) throw new Error("El ruc ya existe");
-      }
+      } */
 
       const updateData = {
         ...newData,
@@ -91,6 +101,8 @@ export function confirmDatosPersonales(newData) {
           OTROS_DATOS: false,
         },
       };
+
+      console.log(auth.currentUser.uid);
 
       await update(ref(db, `users/${auth.currentUser.uid}`), updateData);
 
@@ -130,17 +142,22 @@ export function confirmData(newData) {
 export function login(userData) {
   return async (dispatch) => {
     try {
+      console.log(1);
       // Verificamo que exista un usuario con ese ruc
       const queryInstance = query(
-        ref(getDatabase(), "users"),
+        ref(db, "users"),
         child("EMP_RUC").equalTo(userData.EMP_RUC)
       );
       const dbUser = await get(queryInstance);
+
+      console.log(2);
 
       if (!dbUser.exists()) throw new Error("El ruc no existe");
 
       // Si existe nos traemos el email y hacemos la Auth
       const email = dbUser.val().EMP_EMAIL;
+
+      console.log(3);
 
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -148,16 +165,20 @@ export function login(userData) {
         userData.password
       );
 
+      console.log(4);
+
       // Por ultimo nos traemos toda la informacion restante del usuario
-      const dataUser = await get(
-        ref(getDatabase(), `users/${userCredential.user.uid}`)
-      );
+      const dataUser = await get(ref(db, `users/${userCredential.user.uid}`));
+
+      console.log(5);
 
       // Agregamos toda la informacion en un mismo objeto
       const currentUser = {
         ...dataUser.val(),
         ...userCredential.user,
       };
+
+      console.log(6);
 
       return dispatch({
         type: LOG_IN,
@@ -171,6 +192,7 @@ export function login(userData) {
 
 export function persistence(userData) {
   return async (dispatch) => {
+    console.log(userData);
     return dispatch({
       type: PERSISTENCE,
       payload: userData,
