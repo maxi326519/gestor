@@ -1,12 +1,5 @@
 import { db, auth } from "../../../firebase";
-import {
-  collection,
-  doc,
-  setDoc,
-  getDocs,
-  updateDoc,
-  deleteDoc,
-} from "firebase/firestore";
+import { ref, push, set, get, update, remove, child } from "firebase/database";
 
 export const POST_PRODUCT = "ADD_PRODUCT";
 export const GET_PRODUCTS = "GET_PRODUCTS";
@@ -14,28 +7,23 @@ export const UPDATE_PRODUCT = "UPDATE_PRODUCT";
 export const DELETE_PRODUCT = "DELETE_PRODUCT";
 
 export function postProduct(product) {
-return async (dispatch) => {
+  return async (dispatch) => {
     try {
-      const productColl = collection(
-        db,
-        "users",
-        auth.currentUser.uid,
-        "products"
-      );
-
-      const newProduct = {
+      const productsRef = ref(db, `users/${auth.currentUser.uid}/products`);
+      const newProductRef = push(productsRef);
+      if (!newProductRef) throw new Error("Error al agregar el producto");
+      const newProductId = newProductRef.key;
+      const newProductData = {
         ...product,
         USU_KEY: auth.currentUser.uid,
+        ITE_CODIGO: newProductId,
       };
 
-      await setDoc(doc(productColl, product.ITE_CODIGO), {
-        ...product,
-        USU_KEY: auth.currentUser.uid,
-      });
+      set(newProductRef, newProductData);
 
       return dispatch({
-        type: POST_PRODUCT,
-        payload: newProduct,
+        type: "ADD_PRODUCT",
+        payload: newProductData,
       });
     } catch (err) {
       throw new Error(err);
@@ -46,27 +34,26 @@ return async (dispatch) => {
 export function getProducts() {
   return async (dispatch) => {
     try {
-      const productColl = collection(
-        db,
-        "users",
-        auth.currentUser.uid,
-        "products"
-      );
-      const query = await getDocs(productColl);
-
+      const productsRef = ref(db, `users/${auth.currentUser.uid}/products`);
+      const query = await get(productsRef);
       let products = [];
 
-      if (!query.empty) {
-        query.forEach((doc) => {
-          products.push(doc.data());
+      if (query.exists()) {
+        const productsData = query.val();
+        Object.keys(productsData).forEach((key) => {
+          products.push({
+            ...productsData[key],
+            ITE_CODIGO: key,
+          });
         });
       }
+
       dispatch({
-        type: GET_PRODUCTS,
+        type: "GET_PRODUCTS",
         payload: products,
       });
     } catch (err) {
-      throw new Error({ GetProducts: err });
+      throw new Error(err);
     }
   };
 }
@@ -74,16 +61,10 @@ export function getProducts() {
 export function updateProduct(productData) {
   return async (dispatch) => {
     try {
-      const productColl = collection(
-        db,
-        "users",
-        auth.currentUser.uid,
-        "products"
-      );
-      await updateDoc(doc(productColl, productData.ITE_CODIGO), productData);
-
+      const productsRef = ref(db, `users/${auth.currentUser.uid}/products`);
+      await update(child(productsRef, productData.ITE_CODIGO), productData);
       return dispatch({
-        type: UPDATE_PRODUCT,
+        type: "UPDATE_PRODUCT",
         payload: productData,
       });
     } catch (err) {
@@ -95,16 +76,10 @@ export function updateProduct(productData) {
 export function deleteProduct(code) {
   return async (dispatch) => {
     try {
-      const productColl = collection(
-        db,
-        "users",
-        auth.currentUser.uid,
-        "products"
-      );
-      await deleteDoc(doc(productColl, code));
-
+      const productsRef = ref(db, `users/${auth.currentUser.uid}/products`);
+      await remove(child(productsRef, code));
       return dispatch({
-        type: DELETE_PRODUCT,
+        type: "DELETE_PRODUCT",
         payload: code,
       });
     } catch (err) {

@@ -1,7 +1,10 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth, db } from "../../../firebase";
-import { collection, doc, getDoc, getDocs, setDoc, updateDoc, where } from "firebase/firestore";
-import { query } from "express";
+import { ref, child, update, getDatabase, query, get, set } from "firebase/database";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
 
 export const SIGN_IN = "SIGN_IN";
 export const LOG_IN = "LOG_IN";
@@ -14,12 +17,11 @@ export function signin(user) {
     try {
       // Verificamos que no exista otro usuario con ese ruc
       const queryInstance = query(
-        collection(db, "users"),
-        where("EMP_RUC", "==", user.EMP_RUC)
+        ref(db, "users"),
+        child("EMP_RUC").equalTo(user.EMP_RUC)
       );
-      const dbUser = await getDocs(queryInstance);
-      if (!dbUser.empty) throw new Error("El ruc ya existe");
-
+      const dbUser = await get(queryInstance);
+      if (dbUser.exists()) throw new Error("El ruc ya existe");
       // Creamos el nuevo usuario
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -30,21 +32,21 @@ export function signin(user) {
       const userDB = {
         EMP_RUC: user.EMP_RUC,
         EMP_EMAIL: user.EMP_EMAIL,
-        EMP_AUTOMATICO: 1 /* default */,
-        EMP_CODIGO: 1 /* default */,
-        EMP_COMPROBANTES: 1 /* default */,
-        EMP_DADICIONAL: 0 /* default */,
-        EMP_ESTADO: 1 /* default */,
+        EMP_AUTOMATICO: 1,
+        EMP_CODIGO: 1,
+        EMP_COMPROBANTES: 1,
+        EMP_DADICIONAL: 0,
+        EMP_ESTADO: 1,
         EMP_FECHA: new Date().toLocaleDateString(),
-        EMP_GUIAREMISION: 1 /* default */,
+        EMP_GUIAREMISION: 1,
         EMP_LICENCIA: "NORMAL",
-        EMP_MENSAJE: "" /* default */,
-        EMP_MULTILOCAL: 1 /* default */,
-        EMP_MULTIUSUARIO: 0 /* default */,
-        EMP_NCE: 100 /* Limite de factura */,
-        EMP_NOTIFICACION: 0 /* default */,
-        EMP_USUKEY: userCredential.user.uid /* Id del usuarios */,
-        EMP_SECUENCIAL: 0 /* Numero de facturas en DB */,
+        EMP_MENSAJE: "",
+        EMP_MULTILOCAL: 1,
+        EMP_MULTIUSUARIO: 0,
+        EMP_NCE: 100,
+        EMP_NOTIFICACION: 0,
+        EMP_USUKEY: userCredential.user.uid,
+        EMP_SECUENCIAL: 0,
         EMP_IMPUESTO: 0,
         EMP_PERFIL: {
           DATOS_PERSONALES: false,
@@ -55,7 +57,7 @@ export function signin(user) {
 
       // Almacenamos los primeros datos sobre el usuario,
       // y le indicamos que el perfil todavia no esta completo
-      await setDoc(doc(db, "users", userCredential.user.uid), userDB);
+      await set(ref(db, `users/${userCredential.user.uid}`), userDB);
 
       return dispatch({
         type: SIGN_IN,
@@ -75,12 +77,11 @@ export function confirmDatosPersonales(newData) {
     try {
       // Verificamos que no exista otro usuario con ese ruc
       if (newData.EMP_RUC) {
-        const queryInstance = query(
-          collection(db, "users"),
-          where("ruc", "==", newData.EMP_RUC)
+        const queryInstance = ref(db, "users");
+        const dbUser = await get(
+          child(queryInstance, `ruc/${newData.EMP_RUC}`)
         );
-        const dbUser = await getDocs(queryInstance);
-        if (!dbUser.empty) throw new Error("El ruc ya existe");
+        if (dbUser.exists()) throw new Error("El ruc ya existe");
       }
 
       const updateData = {
@@ -91,7 +92,7 @@ export function confirmDatosPersonales(newData) {
         },
       };
 
-      await updateDoc(doc(db, "users", auth.currentUser.uid), updateData);
+      await update(ref(db, `users/${auth.currentUser.uid}`), updateData);
 
       return dispatch({
         type: CONFIRM_REGISTER,
@@ -114,7 +115,7 @@ export function confirmData(newData) {
         },
       };
 
-      await updateDoc(doc(db, "users", auth.currentUser.uid), updateData);
+      await update(ref(db, `users/${auth.currentUser.uid}`), updateData);
 
       return dispatch({
         type: CONFIRM_REGISTER,
@@ -131,15 +132,15 @@ export function login(userData) {
     try {
       // Verificamo que exista un usuario con ese ruc
       const queryInstance = query(
-        collection(db, "users"),
-        where("EMP_RUC", "==", `${userData.EMP_RUC}`)
+        ref(getDatabase(), "users"),
+        child("EMP_RUC").equalTo(userData.EMP_RUC)
       );
-      const dbUser = await getDocs(queryInstance);
+      const dbUser = await get(queryInstance);
 
-      if (dbUser.empty) throw new Error("El ruc no existe");
+      if (!dbUser.exists()) throw new Error("El ruc no existe");
 
       // Si existe nos traemos el email y hacemos la Auth
-      const email = dbUser.docs[0].data().EMP_EMAIL;
+      const email = dbUser.val().EMP_EMAIL;
 
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -148,11 +149,13 @@ export function login(userData) {
       );
 
       // Por ultimo nos traemos toda la informacion restante del usuario
-      const dataUser = await getDoc(doc(db, "users", userCredential.user.uid));
+      const dataUser = await get(
+        ref(getDatabase(), `users/${userCredential.user.uid}`)
+      );
 
       // Agregamos toda la informacion en un mismo objeto
       const currentUser = {
-        ...dataUser.data(),
+        ...dataUser.val(),
         ...userCredential.user,
       };
 

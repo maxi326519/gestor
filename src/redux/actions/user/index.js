@@ -1,12 +1,12 @@
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { auth, db, storage } from "../../../firebase";
+import { db, auth, storage } from "../../../firebase";
+import { ref, get, update } from "firebase/database";
 import {
   getAuth,
-  sendEmailVerification,
-  sendPasswordResetEmail,
   updateEmail,
-} from "firebase/auth";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+  sendPasswordResetEmail,
+  sendEmailVerification,
+} from "../../../firebase/auth";
+import { uploadBytes, getDownloadURL } from "../../../firebase/storage";
 
 export const GET_USER_DATA = "GET_USER_DATA";
 export const UPDATE_PROFILE = "UPDATE_PROFILE";
@@ -14,12 +14,12 @@ export const UPDATE_EMAIL = "UPDATE_EMAIL";
 export const UPLOAD_LOGO = "UPLOAD_LOGO";
 export const UPLOAD_FILE = "UPLOAD_FILE";
 
-/* USER DATA */
 export function getUserData() {
   return async (dispatch) => {
     try {
-      const dataUser = await getDoc(doc(db, "users", auth.currentUser.uid));
-      const userDB = dataUser.data();
+      const dataUserRef = ref(db, `users/${auth.currentUser.uid}`);
+      const dataUserSnapshot = await get(dataUserRef);
+      const userDB = dataUserSnapshot.val();
 
       return dispatch({
         type: GET_USER_DATA,
@@ -36,10 +36,8 @@ export function updateUserData(newData) {
     try {
       if (newData.email !== auth.currentUser.email)
         await updateEmail(auth.currentUser, newData.email);
-
-      await updateDoc(doc(db, "users", auth.currentUser.uid), {
-        ...newData,
-      });
+      const userRef = ref(db, `users/${auth.currentUser.uid}`);
+      await update(userRef, { ...newData });
 
       return dispatch({
         type: UPDATE_PROFILE,
@@ -54,7 +52,7 @@ export function updateUserData(newData) {
 export function uploadLogo(logo) {
   return async (dispatch) => {
     try {
-      const dir = `/users/${auth.currentUser.uid}/perfil`;
+      const dir = `users/${auth.currentUser.uid}/perfil`;
 
       console.log(logo);
 
@@ -78,7 +76,6 @@ export function uploadFile(file) {
   return async (dispatch) => {
     try {
       const dir = `users/${auth.currentUser.uid}/firma`;
-
       const storageRef = ref(storage, dir);
       const imageQuery = await uploadBytes(storageRef, file);
 
@@ -111,10 +108,8 @@ export function changeEmail(newEmail) {
     try {
       await updateEmail(auth.currentUser, newEmail);
       await sendEmailVerification(auth.currentUser);
-
-      await updateDoc(doc(db, "users", auth.currentUser.uid), {
-        EMP_EMAIL: newEmail,
-      });
+      const userRef = ref(db, `users/${auth.currentUser.uid}`);
+      await update(userRef, { EMP_EMAIL: newEmail });
 
       dispatch({
         type: UPDATE_EMAIL,
