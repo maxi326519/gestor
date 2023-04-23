@@ -1,12 +1,16 @@
 import { db, auth, storage } from "../../../firebase";
 import { ref, get, update } from "firebase/database";
 import {
+  uploadBytes,
+  ref as storageRef,
+  getDownloadURL,
+} from "firebase/storage";
+import {
   getAuth,
   updateEmail,
   sendPasswordResetEmail,
   sendEmailVerification,
 } from "firebase/auth";
-import { uploadBytes, getDownloadURL } from "firebase/storage";
 
 export const GET_USER_DATA = "GET_USER_DATA";
 export const UPDATE_PROFILE = "UPDATE_PROFILE";
@@ -56,8 +60,8 @@ export function uploadLogo(logo) {
 
       console.log(logo);
 
-      const storageRef = storage.ref(storage, dir);
-      const imageQuery = await uploadBytes(storageRef, logo);
+      const storageReference = storageRef(storage, dir);
+      const imageQuery = await uploadBytes(storageReference, logo);
 
       // GET invoice image url
       const imageUrl = await getDownloadURL(imageQuery.ref);
@@ -76,8 +80,8 @@ export function uploadFile(file) {
   return async (dispatch) => {
     try {
       const dir = `users/${auth.currentUser.uid}/firma`;
-      const storageRef = ref(storage, dir);
-      const imageQuery = await uploadBytes(storageRef, file);
+      const storageReference = storageRef(storage, dir);
+      const imageQuery = await uploadBytes(storageReference, file);
 
       // GET invoice image url
       const fileUrl = await getDownloadURL(imageQuery.ref);
