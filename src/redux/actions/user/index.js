@@ -41,7 +41,7 @@ export function updateUserData(newData) {
       if (newData.email !== auth.currentUser.email)
         await updateEmail(auth.currentUser, newData.email);
       const userRef = ref(db, `users/${auth.currentUser.uid}`);
-      await update(userRef, { ...newData });
+      await update(userRef, newData);
 
       return dispatch({
         type: UPDATE_PROFILE,

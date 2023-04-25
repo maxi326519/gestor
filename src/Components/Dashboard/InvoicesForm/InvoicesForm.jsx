@@ -193,7 +193,7 @@ export default function InvoicesForm({
             dispatch(closeLoading());
             swal(
               "Error",
-              "Surgio un error desconocido al agregar la factura",
+              "Surgio un error desconocido al actualizar el usuario",
               "error"
             );
             console.log(e);

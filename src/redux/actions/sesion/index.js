@@ -1,5 +1,5 @@
 import { auth, db } from "../../../firebase";
-import { ref, child, update, query, get, set } from "firebase/database";
+import { ref, child, update, query, get, set, equalTo } from "firebase/database";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -145,8 +145,8 @@ export function login(userData) {
       console.log(1);
       // Verificamo que exista un usuario con ese ruc
       const queryInstance = query(
-        ref(db, "users"),
-        child("EMP_RUC").equalTo(userData.EMP_RUC)
+        ref(db,  `users/${auth.currentUser.uid}`),
+        equalTo(userData.EMP_RUC)
       );
       const dbUser = await get(queryInstance);
 
