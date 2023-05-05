@@ -107,10 +107,11 @@ export default function InvoicesForm({
     let subtotalPorcentual = 0;
     let subtotalIVA = 0;
     let total = 0;
+    let productDiscount = 0;
 
     newProducts.forEach((p) => {
-      subtotal +=
-        p.VED_PUNITARIO * p.VED_CANTIDAD * (1 - p.VED_DESCUENTO / 100);
+      subtotal +=p.VED_PUNITARIO * p.VED_CANTIDAD * (1 - p.VED_DESCUENTO / 100);
+      productDiscount += p.VED_PUNITARIOIVA * (p.VED_DESCUENTO / 100);
 
       if (p.VED_IMPUESTO === "2") {
         total +=
@@ -128,7 +129,7 @@ export default function InvoicesForm({
       VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
       VEN_PTOEMISION: user.EMP_PTOEMISION,
       VEN_NUMERO: user.EMP_NUMERO,
-      VEN_DESCUENTO: total * (discount / 100),
+      VEN_DESCUENTO: (total * (discount / 100)) + productDiscount,
       VEN_SUBTOTAL: subtotal.toFixed(user.EMP_PRECISION),
       VEN_SUBTOTAL0: subtotalPorcentual.toFixed(user.EMP_PRECISION),
       VEN_SUBTOTAL12: subtotalIVA.toFixed(user.EMP_PRECISION),

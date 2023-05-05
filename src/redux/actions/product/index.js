@@ -1,5 +1,5 @@
 import { db, auth } from "../../../firebase";
-import { ref, push, set, get, update, remove, child } from "firebase/database";
+import { ref, set, get, update, remove, child } from "firebase/database";
 
 export const POST_PRODUCT = "ADD_PRODUCT";
 export const GET_PRODUCTS = "GET_PRODUCTS";
@@ -9,17 +9,15 @@ export const DELETE_PRODUCT = "DELETE_PRODUCT";
 export function postProduct(product) {
   return async (dispatch) => {
     try {
-      const productsRef = ref(db, `users/${auth.currentUser.uid}/products`);
-      const newProductRef = push(productsRef);
-      if (!newProductRef) throw new Error("Error al agregar el producto");
-      const newProductId = newProductRef.key;
       const newProductData = {
-        ...product,
-        USU_KEY: auth.currentUser.uid,
-        ITE_CODIGO: newProductId,
-      };
-
+         ...product,
+         USU_KEY: auth.currentUser.uid,
+       };
+      
+      const productsRef = ref(db, `users/${auth.currentUser.uid}/products`);
+      const newProductRef = child(productsRef, product.ITE_CODIGO);
       set(newProductRef, newProductData);
+      
 
       return dispatch({
         type: "ADD_PRODUCT",
