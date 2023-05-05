@@ -50,18 +50,17 @@ export default function InvoiceCard({
   function handleChecked() {
     setAll(false);
     if (isChecked.some((c) => c === invoice.VEN_CODIGO)) {
-      console.log("Borrando");
       setCheck(isChecked.filter((c) => c !== invoice.VEN_CODIGO));
     } else {
-      console.log("Guardando");
-      console.log(invoice.VEN_CODIGO);
       setCheck([...isChecked, invoice.VEN_CODIGO]);
     }
   }
 
   return (
     <div className="invoice-card">
-      {(invoice.VEN_ESTADO === 2) || invoice.VEN_ESTADO === 3 ? <input type="checkbox" disabled/> : (
+      {invoice.VEN_ESTADO === 2 || invoice.VEN_ESTADO === 3 ? (
+        <input type="checkbox" disabled />
+      ) : (
         <input
           type="checkbox"
           checked={isChecked.some((c) => c === invoice.VEN_CODIGO)}

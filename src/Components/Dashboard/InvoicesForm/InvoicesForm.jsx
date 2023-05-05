@@ -139,16 +139,6 @@ export default function InvoicesForm({
   function handleSubmit(e) {
     e.preventDefault();
 
-/*     console.log("Prueba");
-    dispatch(verifyInvoiceNumber())
-      .then(() => {
-        console.log("todo bien");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    return false; */
-
     if (user.EMP_SECUENCIAL < 100) {
       if (handleValidations()) {
         dispatch(openLoading());

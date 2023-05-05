@@ -51,7 +51,10 @@ export const Reducer = (state = initialState, action) => {
     case LOG_IN:
       return {
         ...state,
-        user: action.payload,
+        user: {
+          ...state.user,
+          userDB: action.payload,
+        },
       };
 
     case PERSISTENCE:
@@ -103,7 +106,7 @@ export const Reducer = (state = initialState, action) => {
           ...state.user,
           userDB: {
             ...state.user.userDB,
-            EMP_LOGO: action.payload,
+            EMP_ARCHIVO: action.payload,
           },
         },
       };
@@ -113,7 +116,10 @@ export const Reducer = (state = initialState, action) => {
         ...state,
         user: {
           ...state.user,
-          EMP_EMAIL: action.payload,
+          userBD: {
+            ...state.user.userDB,
+            EMP_EMAIL: action.payload,
+          },
         },
       };
 

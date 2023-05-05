@@ -52,15 +52,14 @@ export default function Signin() {
         } else if (e.message.includes("user")) {
           setError({ ...error, password: "La contraseña es incorrecta" });
           swal("Error", "Error no se encontro al usuario", "error");
-          console.log(e);
         } else {
           swal(
             "Error",
             "Error al iniciar sesión, intentelo mas tarde",
             "error"
           );
-          console.log(e);
         }
+        console.log(e);
       });
   }
 
@@ -94,7 +93,7 @@ export default function Signin() {
           });
       } else {
         dispatch(closeLoading());
-        redirect("/signin/user");
+        redirect("/signin");
       }
     });
   }

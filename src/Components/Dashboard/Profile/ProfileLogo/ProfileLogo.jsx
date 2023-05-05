@@ -5,7 +5,6 @@ export default function ProfileLogo({ logo, userData, disabled, handleLogo }) {
   const [logoImage, setLogoImage] = useState(null);
 
   useEffect(() => {
-    console.log(logo);
     if (logo) {
       setLogoImage(URL.createObjectURL(logo));
     } else if (userData.EMP_LOGO) {

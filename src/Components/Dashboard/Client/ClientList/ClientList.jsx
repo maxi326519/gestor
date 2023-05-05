@@ -105,7 +105,7 @@ export default function ClientList({ handleAddClient, handleProfile }) {
               <span>No hay clientes</span>
             </div>
           ) : (
-            rows?.map((c) => <ClientCard key={c.id} client={c} />)
+            rows?.map((c) => <ClientCard key={c.CLI_CODIGO} client={c} />)
           )}
         </div>
       </div>

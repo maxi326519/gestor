@@ -1,14 +1,13 @@
 import {
-  getDatabase,
   ref,
   push,
   update,
   get,
   query,
   orderByChild,
+  equalTo,
 } from "firebase/database";
-import { collection, doc, addDoc } from "firebase/firestore";
-import { auth, storage } from "../../../firebase";
+import { auth, db } from "../../../firebase";
 
 export const POST_INVOICE = "ADD_INVOICE";
 export const GET_INVOICES = "GET_INVOICES";
@@ -20,19 +19,15 @@ export function postInvoice(invoice) {
       const date = invoice.VEN_FECHA.split("-");
       const year = date[0];
       const month = date[1];
-
       const invoiceRef = ref(
-        getDatabase(),
-        "users",
-        auth.currentUser.uid,
-        "invoices"
+        db,
+        `users/${auth.currentUser.uid}/invoices/${year}/${month}`
       );
-      const yearRef = push(ref(invoiceRef, year));
-      const query = await addDoc(collection(yearRef, month), invoice);
+      const query = await push(invoiceRef, invoice);
 
       const newInvoice = {
         ...invoice,
-        VEN_CODIGO: query.id,
+        VEN_CODIGO: query.key,
       };
 
       return dispatch({
@@ -50,11 +45,11 @@ export function getInvoices(year, month, day) {
     try {
       let invoices = [];
       const uid = auth.currentUser.uid;
-      const invoiceRef = ref(getDatabase(), `users/${uid}/invoices`);
 
       if (day && month && year) {
         const date = `${year}-${month}-${day}`;
-        const q = query(invoiceRef, orderByChild("VEN_FECHA").equalTo(date));
+        const invoiceRef = ref(db, `users/${uid}/invoices/${year}/${month}`);
+        const q = query(invoiceRef, orderByChild("VEN_FECHA"), equalTo(date));
 
         const snapshot = await get(q);
 
@@ -68,7 +63,7 @@ export function getInvoices(year, month, day) {
           });
         }
       } else if (month && year) {
-        const monthRef = ref(invoiceRef, year, month);
+        const monthRef = ref(db, `users/${uid}/invoices/${year}/${month}`);
 
         const snapshot = await get(monthRef);
 
@@ -82,7 +77,7 @@ export function getInvoices(year, month, day) {
           });
         }
       } else if (year) {
-        const yearRef = ref(invoiceRef, year);
+        const yearRef = ref(db, `users/${uid}/invoices/${year}`);
         const snapshot = await get(yearRef);
 
         if (snapshot.exists()) {
@@ -105,7 +100,7 @@ export function getInvoices(year, month, day) {
         payload: invoices,
       });
     } catch (err) {
-      throw new Error({ GetInvoices: err });
+      throw new Error(err);
     }
   };
 }
@@ -113,20 +108,16 @@ export function getInvoices(year, month, day) {
 export function updateInvoice(id, invoiceData) {
   return async (dispatch) => {
     try {
+      console.log(invoiceData);
       const dateSplit = invoiceData.VEN_FECHA.split("-");
       const year = dateSplit[0];
       const month = `0${dateSplit[1]}`.slice(-2);
 
       const invoiceRef = ref(
-        getDatabase(),
-        "users",
-        auth.currentUser.uid,
-        "invoices"
-      ); // Accedemos a las colecciones de todas las facturas
-      const yearRef = ref(invoiceRef, year); // Accedemos a las facturas de un año en especifico
-      const monthRef = ref(yearRef, month); // Accedemos a las facturas de un mes en especifico
-
-      await update(ref(monthRef, id), invoiceData);
+        db,
+        `users/${auth.currentUser.uid}/invoices/${year}/${month}/${id}`
+      );
+      await update(invoiceRef, invoiceData);
 
       dispatch({
         type: UPDATE_INVOICE,

@@ -65,8 +65,6 @@ export default function InvoicesList({
     setDays(dayArr);
   }, [invoices]);
 
-  useEffect(() => console.log(isChecked), [isChecked]);
-
   function handleChange(e) {
     const value = e.target.value;
 
@@ -106,37 +104,21 @@ export default function InvoicesList({
       })
         .then(async (r) => {
           if (r) {
-            let error = 0;
-
+            dispatch(openLoading());
             for (let i = 0; i < isChecked.length; i++) {
               const invoiceAuth = rows.find(
                 (invoice) => invoice.VEN_CODIGO === isChecked[i]
               );
 
-              dispatch(openLoading());
               await dispatch(
                 updateInvoice(isChecked[i], {
                   ...invoiceAuth,
                   VEN_ESTADO: 3,
                 })
-              ).catch(error++);
+              );
             }
 
             dispatch(closeLoading());
-
-            if (error === 1) {
-              swal(
-                "Error",
-                `Hubo un inconveniente al intentar autorizar una factura, intentelo mas tarde`,
-                "error"
-              );
-            } else {
-              swal(
-                "Actualizado",
-                `Se actualizaron ${isChecked.length} facturas con exito`,
-                "success"
-              );
-            }
             setAll(false);
             setCheck([]);
             handleCheck();
@@ -146,7 +128,7 @@ export default function InvoicesList({
           dispatch(closeLoading());
           swal(
             "Error",
-            `Hubo un inconveniente al intentar autorizar una factura, intentelo mas tarde`,
+            `Hubo un error al intentar autorizar una factura, intentelo mas tarde`,
             "error"
           );
           console.log(e);

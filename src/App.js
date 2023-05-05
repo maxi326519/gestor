@@ -26,7 +26,6 @@ import AddClient from "./Components/Dashboard/Forms/ClientForm/ClientForm";
 
 import Login from "./Components/Login/Login";
 import Signin from "./Components/Signin/Signin";
-import UserForm from "./Components/Signin/UserForm/UserForm";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -54,7 +53,7 @@ function App() {
           .then((d) => {
             if (
               d.payload.EMP_PERFIL.DATOS_PERSONALES &&
-              d.payload.EMP_PERFIL.OTHER_DATA
+              d.payload.EMP_PERFIL.OTROS_DATOS
             ) {
               dispatch(getProducts()).catch((e) => console.log(e));
               dispatch(getClients()).catch((e) => console.log(e));
@@ -63,7 +62,7 @@ function App() {
               dispatch(closeLoading());
             } else {
               dispatch(closeLoading());
-              redirect("/signin/user");
+              redirect("/signin");
             }
           })
           .catch((err) => {
@@ -169,7 +168,6 @@ function App() {
 
         <Route path="/login" element={<Login />} />
         <Route path="/signin" element={<Signin />} />
-        <Route path="/signin/user" element={<UserForm />} />
       </Routes>
 
       <ExportInvoice

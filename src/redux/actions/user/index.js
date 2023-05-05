@@ -21,7 +21,7 @@ export const UPLOAD_FILE = "UPLOAD_FILE";
 export function getUserData() {
   return async (dispatch) => {
     try {
-      const dataUserRef = ref(db, `users/${auth.currentUser.uid}`);
+      const dataUserRef = ref(db, `users/${auth.currentUser.uid}/profile`);
       const dataUserSnapshot = await get(dataUserRef);
       const userDB = dataUserSnapshot.val();
 
@@ -40,7 +40,7 @@ export function updateUserData(newData) {
     try {
       if (newData.email !== auth.currentUser.email)
         await updateEmail(auth.currentUser, newData.email);
-      const userRef = ref(db, `users/${auth.currentUser.uid}`);
+      const userRef = ref(db, `users/${auth.currentUser.uid}/profile`);
       await update(userRef, newData);
 
       return dispatch({
@@ -56,9 +56,7 @@ export function updateUserData(newData) {
 export function uploadLogo(logo) {
   return async (dispatch) => {
     try {
-      const dir = `users/${auth.currentUser.uid}/perfil`;
-
-      console.log(logo);
+      const dir = `users/${auth.currentUser.uid}/logo`;
 
       const storageReference = storageRef(storage, dir);
       const imageQuery = await uploadBytes(storageReference, logo);
@@ -107,13 +105,15 @@ export function changePassword() {
   };
 }
 
-export function changeEmail(newEmail) {
+export function changeEmail(newEmail, ruc) {
   return async (dispatch) => {
     try {
       await updateEmail(auth.currentUser, newEmail);
       await sendEmailVerification(auth.currentUser);
-      const userRef = ref(db, `users/${auth.currentUser.uid}`);
+      const userRef = ref(db, `users/${auth.currentUser.uid}/profile`);
+      const authRef = ref(db, `auth/${ruc}`);
       await update(userRef, { EMP_EMAIL: newEmail });
+      await update(authRef, { EMAIL: newEmail });
 
       dispatch({
         type: UPDATE_EMAIL,

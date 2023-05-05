@@ -5,7 +5,7 @@ import {
   closeLoading,
   confirmDatosPersonales,
   uploadLogo,
-} from "../../../../redux/actions";
+} from "../../../redux/actions";
 
 import "./PersonalData.css";
 import swal from "sweetalert";
