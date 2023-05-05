@@ -54,7 +54,7 @@ export default function InvoiceData({
     setGuiaData({
       GUIA_ESTABLECIMIENTO: Number(user.EMP_ESTABLECIMIENTO),
       GUIA_PTEMISION: Number(user.EMP_PTOEMISION),
-      GUIA_SECUENCIAL: Number(user.EMP_SECUENCIAL + 1),
+      GUIA_SECUENCIAL: Number(user.EMP_NUMERO),
     });
   }, [user]);
 

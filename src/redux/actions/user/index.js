@@ -97,8 +97,8 @@ export function uploadFile(file) {
 export function changePassword() {
   return async (dispatch) => {
     try {
-      const auth = getAuth();
-      sendPasswordResetEmail(auth, auth.currentUser.email);
+      console.log(auth, auth.currentUser.email);
+      await sendPasswordResetEmail(auth, auth.currentUser.email);
     } catch (err) {
       throw new Error(err.message);
     }

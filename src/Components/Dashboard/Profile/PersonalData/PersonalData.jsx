@@ -22,13 +22,22 @@ export default function PersonalData({
       },
     }).then((res) => {
       if (res) {
-        dispatch(changePassword()).then(() => {
+        dispatch(changePassword())
+          .then(() => {
           swal(
             "Enviado",
-            "Se envio un correo para cambiar tu contraseña",
+            "Se envio un correo para cambiar su contraseña",
             "success"
           );
-        });
+        })
+        .catch((err) => {
+          console.log(err);
+          swal(
+            "Error",
+            "Hubo un error al enviar el correo para cambiar la contraseña, inténtelo mas tarde",
+            "error"
+          );
+        })
       }
     });
   }

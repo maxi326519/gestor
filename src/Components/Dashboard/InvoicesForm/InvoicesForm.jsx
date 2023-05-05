@@ -110,7 +110,8 @@ export default function InvoicesForm({
     let productDiscount = 0;
 
     newProducts.forEach((p) => {
-      subtotal +=p.VED_PUNITARIO * p.VED_CANTIDAD * (1 - p.VED_DESCUENTO / 100);
+      subtotal +=
+        p.VED_PUNITARIO * p.VED_CANTIDAD * (1 - p.VED_DESCUENTO / 100);
       productDiscount += p.VED_PUNITARIOIVA * (p.VED_DESCUENTO / 100);
 
       if (p.VED_IMPUESTO === "2") {
@@ -129,7 +130,7 @@ export default function InvoicesForm({
       VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
       VEN_PTOEMISION: user.EMP_PTOEMISION,
       VEN_NUMERO: user.EMP_NUMERO,
-      VEN_DESCUENTO: (total * (discount / 100)) + productDiscount,
+      VEN_DESCUENTO: total * (discount / 100) + productDiscount,
       VEN_SUBTOTAL: subtotal.toFixed(user.EMP_PRECISION),
       VEN_SUBTOTAL0: subtotalPorcentual.toFixed(user.EMP_PRECISION),
       VEN_SUBTOTAL12: subtotalIVA.toFixed(user.EMP_PRECISION),
@@ -182,11 +183,15 @@ export default function InvoicesForm({
           })
           .catch((e) => {
             dispatch(closeLoading());
-            swal(
-              "Error",
-              "Surgio un error desconocido al actualizar el usuario",
-              "error"
-            );
+            if (e.message.includes("Ya existe ese numero de factura")) {
+              swal("Error", "Ya existe ese numero de factura", "error");
+            } else {
+              swal(
+                "Error",
+                "Surgio un error desconocido al cargar la factura",
+                "error"
+              );
+            }
             console.log(e);
           });
       } else {

@@ -102,7 +102,7 @@ export default function ResetEmail() {
           <button className="btn btn-success" type="submit">
             cambiar
           </button>
-          <Link to="/login">{"< Volver"}</Link>
+          <Link to="/dashboard/invoices/add">{"< Volver"}</Link>
         </div>
       </form>
     </div>

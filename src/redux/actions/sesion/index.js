@@ -1,12 +1,10 @@
 import { auth, db } from "../../../firebase";
 import {
   ref,
-  orderByChild,
   update,
   query,
   get,
   set,
-  equalTo,
 } from "firebase/database";
 import {
   createUserWithEmailAndPassword,
