@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
 import clave2 from "../../../functions/Clave.ts";
@@ -6,9 +6,9 @@ import {
   postInvoice,
   updateUserData,
   openLoading,
-  closeLoading,
-  verifyInvoiceNumber,
+  closeLoading
 } from "../../../redux/actions";
+import JsBarcode from "jsbarcode";
 
 import SideBar from "../SideBar/SideBar";
 import AddData from "./AddData/AddData";
@@ -17,6 +17,7 @@ import InvoiceTable from "./invoiceTable/InvoiceTable";
 import AddProduct from "./AddProduct/AddProduct";
 import AddClient from "./AddClient/AddClient";
 import PDF from "../PDF/PDF";
+import { pdf } from "@react-pdf/renderer";
 
 import "./InvoicesForm.css";
 
@@ -82,8 +83,9 @@ export default function InvoicesForm({
   const [formClient, setFormClient] = useState(false);
   const [newProducts, setNewProduct] = useState([]);
   const [invoice, setInvoice] = useState(initialInvoice);
-  const [invoicePDF, setPDF] = useState(null);
   const [discount, setDiscount] = useState(0);
+  const canvasRef = useRef(null);
+  const [barCode, setBarCode] = useState(null);
 
   /* Calcular totales por cada cambio */
   useEffect(() => {
@@ -166,7 +168,6 @@ export default function InvoicesForm({
               })
             ).then(() => {
               dispatch(closeLoading());
-              setPDF(newInvoice);
               setInvoice({
                 ...initialInvoice,
                 VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
@@ -353,19 +354,29 @@ export default function InvoicesForm({
     );
   }
 
-  function handleClosePDF(i) {
-    setPDF(null);
-  }
+  const handleOpenPDF = async () => {
 
-  function handleViewPDF() {
     const currentInvoice = {
       ...invoice,
       ITE_DETALLES: newProducts,
     };
-    console.log(currentInvoice);
-    console.log(newProducts);
-    setPDF(currentInvoice);
-  }
+
+    if (invoice.VEN_CLAVEACCESO) {
+      JsBarcode("#barcode", invoice.VEN_CLAVEACCESO, { displayValue: false });
+      const canvas = canvasRef.current;
+      try {
+        setBarCode(canvas.toDataURL());
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
+    const blob = await pdf(
+      <PDF invoice={currentInvoice} user={user} barCode={barCode} />
+    ).toBlob();
+    const url = URL.createObjectURL(blob);
+    window.open(url, "_blank");
+  };
 
   return (
     <div className="dashboard">
@@ -375,9 +386,6 @@ export default function InvoicesForm({
         handleAddClient={handleAddClient}
       />
       <div className="dashboard__invoice to-left">
-        {invoicePDF ? (
-          <PDF invoice={invoicePDF} handleClosePDF={handleClosePDF}></PDF>
-        ) : null}{" "}
         <div className="invoice__top">
           <AddData
             invoice={invoice}
@@ -416,7 +424,7 @@ export default function InvoicesForm({
             Guardar factura
           </button>
 
-          <button className="btn btn-primary" onClick={handleViewPDF}>
+          <button className="btn btn-primary" onClick={handleOpenPDF}>
             RIDE
           </button>
         </div>
