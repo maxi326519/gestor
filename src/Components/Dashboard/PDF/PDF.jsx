@@ -106,7 +106,11 @@ const formasDePago = [
 ];
 
 // Create Document Component
-export default function PDF({ invoice, user, barCode }) {
+export default function PDF({ invoice, user, barCode, logo }) {
+  useEffect(() => {
+    console.log("BarCode:", barCode);
+    console.log("PDF:", logo);
+  });
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -114,7 +118,7 @@ export default function PDF({ invoice, user, barCode }) {
         <View style={styles.userData}>
           {/* COMERCE DATA */}
           <View style={styles.comerceData}>
-            <Image style={styles.logo} src={user.EMP_LOGO} />
+            <Image style={styles.logo} src={logo} />
             <Text>Nombre: {user.EMP_NOMBRE}</Text>
             <Text>Ruc: {user.EMP_RUC}</Text>
             <Text>Dirección: {user.EMP_DIRECCION}</Text>

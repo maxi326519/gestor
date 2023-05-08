@@ -6,7 +6,7 @@ import {
   postInvoice,
   updateUserData,
   openLoading,
-  closeLoading
+  closeLoading,
 } from "../../../redux/actions";
 import JsBarcode from "jsbarcode";
 
@@ -355,7 +355,6 @@ export default function InvoicesForm({
   }
 
   const handleOpenPDF = async () => {
-
     const currentInvoice = {
       ...invoice,
       ITE_DETALLES: newProducts,
@@ -371,11 +370,36 @@ export default function InvoicesForm({
       }
     }
 
+    let logo = "";
+    await downloadImage()
+      .then((response) => {
+        console.log(response.slice(5));
+        logo = response.slice(5);
+      })
+      .catch((err) => console.log(err));
+
     const blob = await pdf(
-      <PDF invoice={currentInvoice} user={user} barCode={barCode} />
+      <PDF invoice={currentInvoice} user={user} barCode={barCode} logo={logo} />
     ).toBlob();
     const url = URL.createObjectURL(blob);
     window.open(url, "_blank");
+  };
+
+  const downloadImage = async (storageUrl) => {
+    const response = await fetch(storageUrl);
+    const blob = await response.blob();
+
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const imageUrl = URL.createObjectURL(blob);
+        resolve(imageUrl);
+      };
+      reader.onerror = () => {
+        reject(new Error("Error al leer la imagen."));
+      };
+      reader.readAsDataURL(blob);
+    });
   };
 
   return (
