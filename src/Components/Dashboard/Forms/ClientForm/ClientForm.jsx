@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
 import {
@@ -38,34 +38,51 @@ export default function ClientForm({ addClient, handleAddClient }) {
     CLI_EMAIL: null,
   });
 
-  function handleChange(e) {
-    if (e.target.name === "CLI_EMAIL") {
-      setclient({ ...client, [e.target.name]: e.target.value });
-    } else {
-      if (e.target.name === "CLI_IDENTIFICACION") handleVerification(e);
-      setclient({
-        ...client,
-        [e.target.name]: e.target.value.replace(/[^a-zA-Z0-9]/g, ""),
-      });
+  useEffect(() => {
+    if(client.CLI_IDENTIFICACION !== ""){
+      handleVerification(client.CLI_IDENTIFICACION);
     }
+  }, [client])
+
+  function handleChange(e) {
+    const nombre = /^[a-zA-ZÁÉÍÓÚáéíóúñÑ\s]+$/;
+    const direccion = /^[a-zA-ZÁÉÍÓÚáéíóúñÑ0-9\s]+$/;
+    const correo = /^[\w.@]+$/;
+    const telefono = /^[a-zA-Z0-9\s]+$/;
+
+    if (e.target.name === "CLI_IDENTIFICACION") handleVerification(e.target.value);
+    if (e.target.name === "CLI_EMAIL" && !correo.test(e.target.value))
+      return false;
+    if (e.target.name === "CLI_NOMBRE" && !nombre.test(e.target.value))
+      return false;
+    if (e.target.name === "CLI_DIRECCION" && !direccion.test(e.target.value))
+      return false;
+    if (e.target.name === "CLI_TELEFONO" && !telefono.test(e.target.value))
+      return false;
+
+    setclient({
+      ...client,
+      [e.target.name]: e.target.value,
+    });
   }
 
-  function handleVerification(e) {
+  function handleVerification(value) {
     try {
-      const value = e.target.value;
       /* Si ya existe devolvemos error */
-      if (clients.find((c) => c.CLI_IDENTIFICACION === e.target.value))
+      if (clients.find((c) => c.CLI_IDENTIFICACION === value))
         throw new Error("Este codigo ya existe");
 
       if (client.CLI_TIPOIDE === "04" || client.CLI_TIPOIDE === "05") {
-        if (client.CLI_TIPOIDE === "04" && value.length !== 13)   // Si es ruc y no tiene el tamaño correcto devolvemos error
+        if (client.CLI_TIPOIDE === "04" && value.length !== 13)
+          // Si es ruc y no tiene el tamaño correcto devolvemos error
           throw new Error("El formato del Ruc es incorrecto");
-        if (client.CLI_TIPOIDE === "05" && value.length !== 10)   // Si es cedula y no tiene el tamaño correcto devolvemos error
+        if (client.CLI_TIPOIDE === "05" && value.length !== 10)
+          // Si es cedula y no tiene el tamaño correcto devolvemos error
           throw new Error("El formato de la Cédula es incorrecto");
 
-        let id = validation(e.target.value);              // Si todo lo anterior esta bien, validamos el numero
+        let id = validation(value); // Si todo lo anterior esta bien, validamos el numero
         console.log(id);
-        if (id.message !== "") throw new Error(id.message);       // Si tenemos un error de parte de la validacion la devolvemos
+        if (id.message !== "") throw new Error(id.message); // Si tenemos un error de parte de la validacion la devolvemos
       }
       setError({ ...error, CLI_IDENTIFICACION: null });
     } catch (err) {
@@ -74,6 +91,10 @@ export default function ClientForm({ addClient, handleAddClient }) {
   }
 
   function handleSubmit(e) {
+    const correo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!correo.test(client.CLI_EMAIL))
+      setError({ ...client, CLI_EMAIL: "formato incorrecto" });
+
     e.preventDefault();
     if (error.CLI_IDENTIFICACION === null) {
       dispatch(openLoading());
@@ -187,6 +208,7 @@ export default function ClientForm({ addClient, handleAddClient }) {
         {/* Email*/}
         <div className="form-floating mb-3">
           <input
+            type="email"
             className="form-control"
             name="CLI_EMAIL"
             value={client.CLI_EMAIL}

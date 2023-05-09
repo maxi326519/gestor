@@ -31,6 +31,7 @@ import UserForm from "./Components/Signin/UserForm/UserForm";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import swal from "sweetalert";
+import ResetEmail from "./Components/ResetEmail/ResetEmail";
 
 function App() {
   const redirect = useNavigate();
@@ -115,7 +116,8 @@ function App() {
       {loading ? <Loading /> : null}
       {profile ? <Profile handleProfile={handleProfile} /> : null}
       <Routes>
-        <Route path="/resetPassword" element={<ResetPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/reset-email" element={<ResetEmail />} />
         <Route
           path="/dashboard/products"
           element={

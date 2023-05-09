@@ -157,7 +157,7 @@ export default function InvoiceData({
             className="form-control"
             name="VEN_FECHA"
             max={new Date().toISOString().split("T")[0]}
-            value={dateFormat}
+            value={invoice.VEN_FECHA}
             onChange={dateValidation}
             required
           />

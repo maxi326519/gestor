@@ -156,7 +156,7 @@ export default function Signin() {
           Iniciar sesion
         </button>
 
-        <Link className="resetPass" to="/resetPassword">
+        <Link className="resetPass" to="/reset-password">
           ¿Olvidaste tu contraseña?
         </Link>
 
