@@ -127,11 +127,11 @@ export default function InvoicesForm({
       VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
       VEN_PTOEMISION: user.EMP_PTOEMISION,
       VEN_NUMERO: user.EMP_NUMERO,
-      VEN_DESCUENTO: total * (discount / 100),
-      VEN_SUBTOTAL: subtotal.toFixed(user.EMP_PRECISION),
-      VEN_SUBTOTAL0: subtotalPorcentual.toFixed(user.EMP_PRECISION),
-      VEN_SUBTOTAL12: subtotalIVA.toFixed(user.EMP_PRECISION),
-      VEN_TOTAL: (total * (1 - discount / 100)).toFixed(user.EMP_PRECISION),
+      VEN_DESCUENTO: total * (discount / 100).toFixed(2),
+      VEN_SUBTOTAL: subtotal.toFixed(2),
+      VEN_SUBTOTAL0: subtotalPorcentual.toFixed(2),
+      VEN_SUBTOTAL12: subtotalIVA.toFixed(2),
+      VEN_TOTAL: (total * (1 - discount / 100)).toFixed(2),
     };
   }
 
