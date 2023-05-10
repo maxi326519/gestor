@@ -258,27 +258,38 @@ export default function InvoicesForm({
   }
 
   function handleProduct(product) {
-    if (!newProducts.find((pi) => pi.ITE_CODIGO === product.ITE_CODIGO)) {
-      setNewProduct([
-        ...newProducts,
-        {
-          ITE_BARRAS: product.ITE_BARRAS,
-          ITE_CODIGO: product.ITE_CODIGO,
-          ITE_DESCRIPCION: product.ITE_DESCRIPCION,
-          VED_CANTIDAD: 1,
-          VED_DESCUENTO: 0,
-          VED_IMPUESTO: product.ITE_IMPUESTO,
-          VED_PORCENTAJE: "",
-          VED_PUNITARIO: product.ITE_PVP,
-          VED_PUNITARIOIVA:
-            product.ITE_IMPUESTO === "2"
-              ? (product.ITE_PVP * 1.12).toFixed(user.EMP_PRECISION)
-              : product.ITE_PVP,
-          VED_UKEY: product.USU_KEY,
-          VED_VALOR: product.ITE_PVP,
-          VEN_CODIGO: 0,
-        },
-      ]);
+    if (!newProducts.some((pi) => pi.ITE_CODIGO === product.ITE_CODIGO)) {
+      let data = {
+        ITE_BARRAS: product.ITE_BARRAS,
+        ITE_CODIGO: product.ITE_CODIGO,
+        ITE_DESCRIPCION: product.ITE_DESCRIPCION,
+        VED_CANTIDAD: 1,
+        VED_DESCUENTO: 0,
+        VED_IMPUESTO: product.ITE_IMPUESTO,
+        VED_PORCENTAJE: "",
+        VED_PUNITARIO: 0,
+        VED_PUNITARIOIVA: 0,
+        VED_UKEY: product.USU_KEY,
+        VED_VALOR: product.ITE_PVP,
+        VEN_CODIGO: 0,
+      };
+
+      console.log("Iva:", user.EMP_INCLUYEIVA);
+
+      if (user.EMP_INCLUYEIVA) {
+        data.VED_PUNITARIO = product.ITE_PVP / 1.12;
+        data.VED_PUNITARIOIVA = product.ITE_PVP;
+      } else if (user.EMP_INCLUYEIVA === false) {
+        data.VED_PUNITARIO = product.ITE_PVP;
+        data.VED_PUNITARIOIVA =
+          product.ITE_IMPUESTO === "2"
+            ? (product.ITE_PVP * 1.12).toFixed(user.EMP_PRECISION)
+            : product.ITE_PVP;
+      }
+
+      console.log("Add new product:", data);
+
+      setNewProduct([...newProducts, data]);
     }
   }
 

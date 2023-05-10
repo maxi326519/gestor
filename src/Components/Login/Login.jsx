@@ -67,11 +67,10 @@ export default function Signin() {
     dispatch(getUserData()).then((d) => {
       if (
         d.payload.EMP_PERFIL.DATOS_PERSONALES &&
-        d.payload.EMP_PERFIL.OTHER_DATA
+        d.payload.EMP_PERFIL.OTROS_DATOS
       ) {
         const year = new Date().getFullYear().toString();
         const month = `0${new Date().getMonth()}`.slice(-2);
-
         Promise.all([
           dispatch(getProducts()),
           dispatch(getClients()),
