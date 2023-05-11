@@ -150,12 +150,12 @@ export default function InvoicesForm({
           ...invoice,
           ITE_DETALLES: newProducts,
           VEN_CLAVEACCESO: clave2(
-            invoice.CLI_IDENTIFICACION,
-            invoice.VEN_FECHA,
-            `00${invoice.VEN_NUMERO}`.slice(-9),
+            user.EMP_RUC,
+            invoice.VEN_FECHA.split("-").reverse().join("-"),
+            `00000000${invoice.VEN_NUMERO}`.slice(-9),
             `00${invoice.VEN_ESTABLECIMIENTO}`.slice(-3),
             `00${invoice.VEN_PTOEMISION}`.slice(-3),
-            user.EMP_CODIGO
+            Number(user.EMP_CODIGO)
           ),
         };
 
@@ -180,6 +180,7 @@ export default function InvoicesForm({
                 "Su factura se agrego correctamente",
                 "success"
               );
+              handleOpenPDF();
             });
           })
           .catch((e) => {

@@ -4,20 +4,51 @@
   flex-direction: column;
 }
 
+.product-table {
+  overflow-x: scroll;
+  border: 1px solid gray;
+}
+
+.product-table div:first-child {
+  width: max-content;
+  min-width: 100%;
+}
+
+.data-table {
+  flex-grow: 1;
+  width: 100%;
+  max-height: calc(100vh - 800px);
+  min-height: 200px;
+  overflow-y: scroll;
+}
+
+/* width */
+.data-table::-webkit-scrollbar {
+  width: 20px;
+}
+
+/* Track */
+.data-table::-webkit-scrollbar-track {
+  border-radius: 5px;
+}
+
+/* Handle */
+.data-table::-webkit-scrollbar-thumb {
+  background: #0002;
+  border-radius: 5px;
+}
+
 .invoice-row {
   display: grid;
   grid-template-columns: 80px 100px 1fr repeat(5, 150px);
-}
-
-.detCantidad{
-  grid-template-columns: 80px 100px 1fr 1fr repeat(5, 150px);
+  width: 100%;
+  min-width: 1280px;
 }
 
 .invoice-first-row {
   padding-right: 18px;
-  border-radius: 10px 10px 0 0;
-  overflow: hidden;
-  border: 1px solid gray;
+  width: max-content;
+  border-bottom: 1px solid gray;
   background-color: #0002;
 }
 
@@ -26,13 +57,8 @@
   outline: 1px solid #ccc;
 }
 
-.data-table{
-  flex-grow: 1;
-  overflow-y: scroll;
-  max-height: calc(100vh - 800px);
-  min-height: 200px;
-  border-radius: 0 0 10px 10px;
-  border: 1px solid gray;
+.detCantidad {
+  grid-template-columns: 80px 100px 1fr 200px repeat(5, 150px);
 }
 
 .invoice-totals {
@@ -40,11 +66,11 @@
   justify-content: flex-end;
 }
 
-.invoice-totals .discount{
+.invoice-totals .discount {
   margin-top: 10px;
 }
 
-.invoice-totals .discount input[type="number"]{
+.invoice-totals .discount input[type="number"] {
   width: 50px;
   margin-left: 10px;
 }
@@ -54,18 +80,18 @@
   width: 150px;
 }
 
-.data-aditional h5{
+.data-aditional h5 {
   padding-top: 30px;
   padding-bottom: 10px;
 }
 
-.aditional-input-container input{
+.aditional-input-container input {
   max-width: 300px !important;
   margin-bottom: 10px;
 }
 
 @media screen and (max-width: 700px) {
-  .adicional{
+  .adicional {
     display: flex;
     flex-direction: column-reverse;
   }
