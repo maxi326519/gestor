@@ -20,6 +20,8 @@ import PDF from "../PDF/PDF";
 import { pdf } from "@react-pdf/renderer";
 
 import "./InvoicesForm.css";
+import axios from "axios";
+import html2canvas from "html2canvas";
 
 const initialInvoice = {
   CLI_CODIGO: 0,
@@ -370,36 +372,32 @@ export default function InvoicesForm({
       }
     }
 
-    let logo = "";
-    await downloadImage()
-      .then((response) => {
-        console.log(response.slice(5));
-        logo = response.slice(5);
-      })
-      .catch((err) => console.log(err));
+    var img = new Image();
+    console.log("Creando imagen");
 
-    const blob = await pdf(
-      <PDF invoice={currentInvoice} user={user} barCode={barCode} logo={logo} />
-    ).toBlob();
-    const url = URL.createObjectURL(blob);
-    window.open(url, "_blank");
-  };
+    img.crossOrigin = "Anonymous";
+    img.onload = async () => {
+      console.log("Imagen cargada");
+      // Cuando la imagen se carga completamente, se convierte en un objeto de canvas
+      var canvas = document.createElement("canvas");
+      canvas.width = this.width;
+      canvas.height = this.height;
+      var ctx = canvas.getContext("2d");
+      ctx.drawImage(this, 0, 0);
+      var imageData = canvas.toDataURL("image/jpeg");
 
-  const downloadImage = async (storageUrl) => {
-    const response = await fetch(storageUrl);
-    const blob = await response.blob();
-
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const imageUrl = URL.createObjectURL(blob);
-        resolve(imageUrl);
-      };
-      reader.onerror = () => {
-        reject(new Error("Error al leer la imagen."));
-      };
-      reader.readAsDataURL(blob);
-    });
+      const blob = await pdf(
+        <PDF
+          invoice={currentInvoice}
+          user={user}
+          barCode={barCode}
+          logo={imageData}
+        />
+      ).toBlob();
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+    };
+    img.src = user.EMP_LOGO;
   };
 
   return (
