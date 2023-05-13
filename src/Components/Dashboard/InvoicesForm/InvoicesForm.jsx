@@ -372,32 +372,47 @@ export default function InvoicesForm({
       }
     }
 
-    var img = new Image();
-    console.log("Creando imagen");
+    console.log(user.EMP_LOGO);
+    
+    generateImage(user.EMP_LOGO)
+      .then(async (image) => {
+        // Aquí puedes hacer lo que necesites con la imagen, como guardarla o mostrarla en una vista previa
+        console.log(image);
+        const blob = await pdf(
+          <PDF
+            invoice={currentInvoice}
+            user={user}
+            barCode={barCode}
+            logo={image}
+          />
+        ).toBlob();
+        const url = URL.createObjectURL(blob);
+        window.open(url, "_blank");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
-    img.crossOrigin = "Anonymous";
-    img.onload = async () => {
-      console.log("Imagen cargada");
-      // Cuando la imagen se carga completamente, se convierte en un objeto de canvas
-      var canvas = document.createElement("canvas");
-      canvas.width = this.width;
-      canvas.height = this.height;
-      var ctx = canvas.getContext("2d");
-      ctx.drawImage(this, 0, 0);
-      var imageData = canvas.toDataURL("image/jpeg");
-
-      const blob = await pdf(
-        <PDF
-          invoice={currentInvoice}
-          user={user}
-          barCode={barCode}
-          logo={imageData}
-        />
-      ).toBlob();
-      const url = URL.createObjectURL(blob);
-      window.open(url, "_blank");
-    };
-    img.src = user.EMP_LOGO;
+  const generateImage = (imageUrl) => {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      image.src = imageUrl;
+      image.onload = () => {
+        const element = document.createElement('div');
+        element.appendChild(image);
+  
+        html2canvas(element).then((canvas) => {
+          const image = canvas.toDataURL('image/png');
+          resolve(image);
+        }).catch((error) => {
+          reject(error);
+        });
+      };
+      image.onerror = (error) => {
+        reject(error);
+      };
+    });
   };
 
   return (
