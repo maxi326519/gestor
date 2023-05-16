@@ -8,7 +8,6 @@ import {
   openLoading,
   closeLoading,
 } from "../../../redux/actions";
-import JsBarcode from "jsbarcode";
 
 import SideBar from "../SideBar/SideBar";
 import AddData from "./AddData/AddData";
@@ -16,10 +15,9 @@ import InvoiceData from "./InvoiceData/InvoiceData";
 import InvoiceTable from "./invoiceTable/InvoiceTable";
 import AddProduct from "./AddProduct/AddProduct";
 import AddClient from "./AddClient/AddClient";
-import PDF from "../PDF/PDF";
-import { pdf } from "@react-pdf/renderer";
 
 import "./InvoicesForm.css";
+import { usePDF } from "../PDF/usePDF.js";
 
 const initialInvoice = {
   CLI_CODIGO: 0,
@@ -78,14 +76,13 @@ export default function InvoicesForm({
   handleProfile,
 }) {
   const dispatch = useDispatch();
+  const pdf = usePDF();
   const user = useSelector((state) => state.user.userDB);
   const [formProduct, setFormproduct] = useState(false);
   const [formClient, setFormClient] = useState(false);
   const [newProducts, setNewProduct] = useState([]);
   const [invoice, setInvoice] = useState(initialInvoice);
   const [discount, setDiscount] = useState(0);
-  const canvasRef = useRef(null);
-  const [barCode, setBarCode] = useState(null);
 
   /* Calcular totales por cada cambio */
   useEffect(() => {
@@ -160,7 +157,7 @@ export default function InvoicesForm({
         };
 
         dispatch(postInvoice(newInvoice))
-          .then((d) => {
+          .then(() => {
             dispatch(
               updateUserData({
                 EMP_NUMERO: Number(user.EMP_NUMERO) + 1,
@@ -168,6 +165,8 @@ export default function InvoicesForm({
               })
             ).then(() => {
               dispatch(closeLoading());
+              pdf.openPDF(newInvoice);
+
               setInvoice({
                 ...initialInvoice,
                 VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
@@ -354,53 +353,13 @@ export default function InvoicesForm({
     );
   }
 
-  const handleOpenPDF = async () => {
+  function handleOpenRide() {
     const currentInvoice = {
       ...invoice,
       ITE_DETALLES: newProducts,
     };
-
-    if (invoice.VEN_CLAVEACCESO) {
-      JsBarcode("#barcode", invoice.VEN_CLAVEACCESO, { displayValue: false });
-      const canvas = canvasRef.current;
-      try {
-        setBarCode(canvas.toDataURL());
-      } catch (e) {
-        console.log(e);
-      }
-    }
-
-    let logo = "";
-    await downloadImage()
-      .then((response) => {
-        console.log(response.slice(5));
-        logo = response.slice(5);
-      })
-      .catch((err) => console.log(err));
-
-    const blob = await pdf(
-      <PDF invoice={currentInvoice} user={user} barCode={barCode} logo={logo} />
-    ).toBlob();
-    const url = URL.createObjectURL(blob);
-    window.open(url, "_blank");
-  };
-
-  const downloadImage = async (storageUrl) => {
-    const response = await fetch(storageUrl);
-    const blob = await response.blob();
-
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const imageUrl = URL.createObjectURL(blob);
-        resolve(imageUrl);
-      };
-      reader.onerror = () => {
-        reject(new Error("Error al leer la imagen."));
-      };
-      reader.readAsDataURL(blob);
-    });
-  };
+    pdf.openPDF(currentInvoice);
+  }
 
   return (
     <div className="dashboard">
@@ -448,7 +407,7 @@ export default function InvoicesForm({
             Guardar factura
           </button>
 
-          <button className="btn btn-primary" onClick={handleOpenPDF}>
+          <button className="btn btn-primary" onClick={handleOpenRide}>
             RIDE
           </button>
         </div>

@@ -19,12 +19,14 @@ import logout from "../../../../assets/svg/logout.svg";
 
 import "../../Dashboard.css";
 import "./InvoicesList.css";
+import { usePDF } from "../../PDF/usePDF";
 
 export default function InvoicesList({
   handleAddInvoice,
   handleExportInvoice,
   handleProfile,
 }) {
+  const pdf = usePDF();
   const redirect = useNavigate();
   const dispatch = useDispatch();
   const [invoicePDF, setPDF] = useState(null);
@@ -344,9 +346,7 @@ export default function InvoicesList({
               <InvoiceCard
                 key={invoice.VEN_CODIGO}
                 invoice={invoice}
-                viewPDF={() => {
-                  handleViewPDF(invoice);
-                }}
+                viewPDF={() => pdf.openPDF(invoice)}
                 disabled={disabled}
                 isChecked={isChecked}
                 setCheck={setCheck}
