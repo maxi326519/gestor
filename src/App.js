@@ -10,7 +10,7 @@ import {
   openLoading,
   closeLoading,
 } from "./redux/actions";
-import { getAuth } from "firebase/auth";
+import { auth } from "./firebase";
 
 import Loading from "./Components/Loading/Loading";
 import ResetPassword from "./Components/ResetPassword/ResetPassword";
@@ -37,30 +37,53 @@ function App() {
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.loading);
   const [profile, setProfile] = useState(false);
-  const auth = getAuth();
 
-  useEffect(() => {
+  useEffect(async () => {
     const date = new Date().toLocaleDateString().split("/");
     const year = date[2];
     const month = `0${date[1]}`.slice(-2);
 
     dispatch(openLoading());
-    setTimeout(() => {
+    let intentos = 0;
+
+    do {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      intentos++;
+      // Leemos la sesion del usuario
       if (auth.currentUser) {
+        // Si existe cargamos los datos
+        intentos = 5;
         const user = auth.currentUser;
+
         dispatch(persistence(user));
         dispatch(getUserData())
           .then((d) => {
+            // Si el registro esta completo cargamos los datos
             if (
               d.payload.EMP_PERFIL.DATOS_PERSONALES &&
               d.payload.EMP_PERFIL.OTROS_DATOS
             ) {
-              dispatch(getProducts()).catch((e) => console.log(e));
-              dispatch(getClients()).catch((e) => console.log(e));
-              dispatch(getInvoices(year, month)).catch((e) => console.log(e));
-              redirect("/dashboard/invoices/add");
-              dispatch(closeLoading());
+              Promise.all([
+                dispatch(getProducts()),
+                dispatch(getClients()),
+                dispatch(getInvoices(year, month, null)),
+              ])
+                .then(() => {
+                  dispatch(closeLoading());
+                  redirect("/dashboard/invoices/add");
+                })
+                .catch((err) => {
+                  console.log(err);
+                  dispatch(closeLoading());
+                  swal(
+                    "Error",
+                    "Error al cargar los datos, intentelo mas tarder",
+                    "error"
+                  );
+                  redirect("/dashboard/invoices/add");
+                });
             } else {
+              // Si el registro esta incompleto vamos a completar el registro
               dispatch(closeLoading());
               redirect("/signin");
             }
@@ -75,10 +98,13 @@ function App() {
             );
           });
       } else {
-        dispatch(closeLoading());
-        redirect("/login");
+        // Si no existe y se llego al maximo de intentos vamos a iniciar sesion
+        if (intentos >= 5) {
+          dispatch(closeLoading());
+          redirect("/login");
+        }
       }
-    }, 1000);
+    } while (intentos < 5);
   }, [auth, dispatch]);
 
   /* FORMS */
