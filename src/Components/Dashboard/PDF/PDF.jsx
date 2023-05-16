@@ -289,16 +289,16 @@ export default function PDF({ invoice, handleClosePDF }) {
                     {p.ITE_CODIGO}
                   </Text>
                   <Text style={{ ...styles.text, width: "60px" }}>
-                    {p.VED_CANTIDAD}
+                    {Number(p.VED_CANTIDAD).toFixed(2)}
                   </Text>
                   <Text style={{ ...styles.text, flexGrow: "1" }}>
                     {p.ITE_DESCRIPCION}
                   </Text>
                   <Text style={{ ...styles.text, width: "60px" }}>
-                    {p.VED_PUNITARIO}
+                    {Number(p.VED_PUNITARIO).toFixed(user.EMP_PRECISION)}
                   </Text>
                   <Text style={{ ...styles.text, width: "70px" }}>
-                    {p.VED_DESCUENTO}
+                    {p.VED_DESCUENTO.toFixed(2)}
                   </Text>
                   <Text style={{ ...styles.text, width: "80px" }}>
                     {Number(p.VED_VALOR).toFixed(2)}
