@@ -35,7 +35,6 @@ export default function InvoiceData({
     GUIA_PTEMISION: 1,
     GUIA_SECUENCIAL: 1,
   });
-  const [dateFormat, setFormat] = useState(invoice.VEN_FECHA);
   const [clave, setClave] = useState(0);
 
   useEffect(() => {
@@ -99,7 +98,6 @@ export default function InvoiceData({
     ).slice(-2)}`;
 
     if (newDate <= toDay) {
-      setFormat(format);
       handleChange({
         ...e,
         target: {

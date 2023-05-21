@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
 import clave2 from "../../../functions/Clave.ts";
@@ -8,6 +8,7 @@ import {
   openLoading,
   closeLoading,
 } from "../../../redux/actions";
+import { ref, get } from "firebase/database";
 
 import SideBar from "../SideBar/SideBar";
 import AddData from "./AddData/AddData";
@@ -18,6 +19,7 @@ import AddClient from "./AddClient/AddClient";
 
 import "./InvoicesForm.css";
 import { usePDF } from "../PDF/usePDF.js";
+import { auth, db } from "../../../firebase.js";
 
 const initialInvoice = {
   CLI_CODIGO: 0,
@@ -111,7 +113,12 @@ export default function InvoicesForm({
     newProducts.forEach((p) => {
       subtotal +=
         p.VED_PUNITARIO * p.VED_CANTIDAD * (1 - p.VED_DESCUENTO / 100);
-      productDiscount += p.VED_PUNITARIOIVA * (p.VED_DESCUENTO / 100);
+      productDiscount +=
+        p.VED_CANTIDAD * (p.VED_PUNITARIO * (p.VED_DESCUENTO / 100));
+
+      console.log(p.VED_CANTIDAD);
+      console.log(p.VED_PUNITARIO);
+      console.log(1 - p.VED_DESCUENTO / 100);
 
       if (p.VED_IMPUESTO === "2") {
         total +=
@@ -156,45 +163,35 @@ export default function InvoicesForm({
           ),
         };
 
-        dispatch(postInvoice(newInvoice))
-          .then(() => {
-            dispatch(
-              updateUserData({
-                EMP_NUMERO: Number(user.EMP_NUMERO) + 1,
-                EMP_SECUENCIAL: Number(user.EMP_SECUENCIAL) + 1,
-              })
-            ).then(() => {
-              dispatch(closeLoading());
-              pdf.openPDF(newInvoice);
-
-              setInvoice({
-                ...initialInvoice,
-                VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
-                VEN_PTOEMISION: user.EMP_PTOEMISION,
-                VEN_NUMERO: user.EMP_NUMERO,
+        handlePostInvoice(newInvoice, 1).catch((e) => {
+          dispatch(closeLoading());
+          if (e.message.includes("Ya existe ese numero de factura")) {
+            swal({
+              title: "Error",
+              text: "Ya existe ese numero de factura, se guardara con otro numero",
+              icon: "warning",
+            }).then(async (response) => {
+              dispatch(openLoading());
+              newInvoice.VEN_NUMERO = await checkNumber(invoice.VEN_NUMERO);
+              handlePostInvoice(newInvoice).catch(() => {
+                dispatch(closeLoading());
+                swal(
+                  "Error",
+                  "Surgio un error desconocido al cargar la factura",
+                  "error"
+                );
               });
-              setNewProduct([]);
-              swal(
-                "Guardado!",
-                "Su factura se agrego correctamente",
-                "success"
-              );
-              handleOpenPDF();
+              dispatch(closeLoading());
             });
-          })
-          .catch((e) => {
-            dispatch(closeLoading());
-            if (e.message.includes("Ya existe ese numero de factura")) {
-              swal("Error", "Ya existe ese numero de factura", "error");
-            } else {
-              swal(
-                "Error",
-                "Surgio un error desconocido al cargar la factura",
-                "error"
-              );
-            }
-            console.log(e);
-          });
+          } else {
+            swal(
+              "Error",
+              "Surgio un error desconocido al cargar la factura",
+              "error"
+            );
+          }
+          console.log(e);
+        });
       } else {
         swal(
           "Faltan datos",
@@ -204,6 +201,52 @@ export default function InvoicesForm({
       }
     } else {
       swal("¡Atencion!", "Llegaste a tu limite de 100 facturas", "warning");
+    }
+  }
+
+  async function handlePostInvoice(invoice) {
+    return dispatch(postInvoice(invoice)).then(() => {
+      dispatch(
+        updateUserData({
+          EMP_NUMERO: Number(invoice.VEN_NUMERO) + 1,
+          EMP_SECUENCIAL: Number(user.EMP_SECUENCIAL) + 1,
+        })
+      ).then(() => {
+        pdf.openPDF(invoice);
+        setInvoice({
+          ...initialInvoice,
+          VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
+          VEN_PTOEMISION: user.EMP_PTOEMISION,
+          VEN_NUMERO: user.EMP_NUMERO,
+        });
+        setNewProduct([]);
+        dispatch(closeLoading());
+        swal("Guardado!", "Su factura se agrego correctamente", "success");
+      });
+    });
+  }
+
+  async function checkNumber(number) {
+    try {
+      const url = `users/${auth.currentUser.uid}/invoices/numbers`;
+      const snapshot = await get(ref(db, url));
+      const numbers = [];
+      let newNumber = Number(number);
+
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        Object.keys(data).forEach((id) => {
+          numbers.push(id);
+        });
+
+        while (numbers.some((n) => Number(n) === newNumber)) {
+          newNumber++;
+        }
+
+        return newNumber;
+      }
+    } catch (err) {
+      console.log(err);
     }
   }
 
@@ -277,7 +320,10 @@ export default function InvoicesForm({
       console.log("Iva:", user.EMP_INCLUYEIVA);
 
       if (user.EMP_INCLUYEIVA) {
-        data.VED_PUNITARIO = product.ITE_PVP / 1.12;
+        data.VED_PUNITARIO =
+          product.ITE_IMPUESTO === "2"
+            ? (product.ITE_PVP / 1.12).toFixed(user.EMP_PRECISION)
+            : product.ITE_PVP;
         data.VED_PUNITARIOIVA = product.ITE_PVP;
       } else if (user.EMP_INCLUYEIVA === false) {
         data.VED_PUNITARIO = product.ITE_PVP;
