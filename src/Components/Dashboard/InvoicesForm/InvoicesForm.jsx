@@ -111,36 +111,36 @@ export default function InvoicesForm({
     let productDiscount = 0;
 
     newProducts.forEach((p) => {
-      subtotal +=
-        p.VED_PUNITARIO * p.VED_CANTIDAD * (1 - p.VED_DESCUENTO / 100);
+      subtotal += Number(
+        (
+          p.VED_PUNITARIO *
+          p.VED_CANTIDAD *
+          (1 - p.VED_DESCUENTO / 100)
+        ).toFixed(2)
+      );
       productDiscount +=
         p.VED_CANTIDAD * (p.VED_PUNITARIO * (p.VED_DESCUENTO / 100));
 
-      console.log(p.VED_CANTIDAD);
-      console.log(p.VED_PUNITARIO);
-      console.log(1 - p.VED_DESCUENTO / 100);
-
       if (p.VED_IMPUESTO === "2") {
-        total +=
-          p.VED_PUNITARIOIVA * p.VED_CANTIDAD * (1 - p.VED_DESCUENTO / 100);
         subtotalIVA +=
           p.VED_PUNITARIO * p.VED_CANTIDAD * (1 - p.VED_DESCUENTO / 100);
       } else {
-        total += p.VED_PUNITARIO * p.VED_CANTIDAD * (1 - p.VED_DESCUENTO / 100);
         subtotalPorcentual +=
           p.VED_PUNITARIO * p.VED_CANTIDAD * (1 - p.VED_DESCUENTO / 100);
       }
     });
+
+    total = subtotal + subtotalIVA * 0.12;
 
     return {
       VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
       VEN_PTOEMISION: user.EMP_PTOEMISION,
       VEN_NUMERO: user.EMP_NUMERO,
       VEN_DESCUENTO: total * (discount / 100) + productDiscount,
-      VEN_SUBTOTAL: subtotal.toFixed(user.EMP_PRECISION),
-      VEN_SUBTOTAL0: subtotalPorcentual.toFixed(user.EMP_PRECISION),
-      VEN_SUBTOTAL12: subtotalIVA.toFixed(user.EMP_PRECISION),
-      VEN_TOTAL: (total * (1 - discount / 100)).toFixed(user.EMP_PRECISION),
+      VEN_SUBTOTAL: subtotal,
+      VEN_SUBTOTAL0: subtotalPorcentual,
+      VEN_SUBTOTAL12: subtotalIVA,
+      VEN_TOTAL: total,
     };
   }
 
@@ -163,26 +163,20 @@ export default function InvoicesForm({
           ),
         };
 
-        handlePostInvoice(newInvoice, 1).catch((e) => {
+        handlePostInvoice(newInvoice, 1).catch(async (e) => {
           dispatch(closeLoading());
           if (e.message.includes("Ya existe ese numero de factura")) {
-            swal({
-              title: "Error",
-              text: "Ya existe ese numero de factura, se guardara con otro numero",
-              icon: "warning",
-            }).then(async (response) => {
-              dispatch(openLoading());
-              newInvoice.VEN_NUMERO = await checkNumber(invoice.VEN_NUMERO);
-              handlePostInvoice(newInvoice).catch(() => {
-                dispatch(closeLoading());
-                swal(
-                  "Error",
-                  "Surgio un error desconocido al cargar la factura",
-                  "error"
-                );
-              });
+            dispatch(openLoading());
+            newInvoice.VEN_NUMERO = await checkNumber(invoice.VEN_NUMERO);
+            handlePostInvoice(newInvoice).catch(() => {
               dispatch(closeLoading());
+              swal(
+                "Error",
+                "Surgio un error desconocido al cargar la factura",
+                "error"
+              );
             });
+            dispatch(closeLoading());
           } else {
             swal(
               "Error",
@@ -317,8 +311,6 @@ export default function InvoicesForm({
         VEN_CODIGO: 0,
       };
 
-      console.log("Iva:", user.EMP_INCLUYEIVA);
-
       if (user.EMP_INCLUYEIVA) {
         data.VED_PUNITARIO =
           product.ITE_IMPUESTO === "2"
@@ -332,8 +324,6 @@ export default function InvoicesForm({
             ? (product.ITE_PVP * 1.12).toFixed(user.EMP_PRECISION)
             : product.ITE_PVP;
       }
-
-      console.log("Add new product:", data);
 
       setNewProduct([...newProducts, data]);
     }

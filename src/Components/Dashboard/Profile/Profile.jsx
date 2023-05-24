@@ -32,7 +32,6 @@ export default function Profile({ handleProfile }) {
   }, [user]);
 
   function handleChange(e) {
-    console.log("Change:", e.target.name);
     if (
       e.target.name === "EMP_ESTABLECIMIENTO" ||
       e.target.name === "EMP_PTOEMISION" ||

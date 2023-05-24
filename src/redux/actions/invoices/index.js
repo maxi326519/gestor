@@ -24,8 +24,6 @@ export function postInvoice(invoice) {
         )
       );
 
-      console.log(invoiceNumber.val());
-
       if (invoiceNumber.exists()) {
         throw new Error("Ya existe ese numero de factura");
       }
@@ -137,7 +135,6 @@ export function getInvoices(year, month, day) {
 export function updateInvoice(id, invoiceData) {
   return async (dispatch) => {
     try {
-      console.log(invoiceData);
       const dateSplit = invoiceData.VEN_FECHA.split("-");
       const year = dateSplit[0];
       const month = `0${dateSplit[1]}`.slice(-2);

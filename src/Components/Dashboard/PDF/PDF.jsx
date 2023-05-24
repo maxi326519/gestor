@@ -107,9 +107,6 @@ const formasDePago = [
 
 // Create Document Component
 export default function PDF({ invoice, user, barCode }) {
-  useEffect(() => {
-    console.log("BarCode:", barCode);
-  });
 
   return (
     <Document>

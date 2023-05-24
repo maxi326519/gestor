@@ -40,7 +40,9 @@ export function updateUserData(newData) {
     try {
       if (newData.email !== auth.currentUser.email)
         await updateEmail(auth.currentUser, newData.email);
-      const userRef = ref(db, `users/${auth.currentUser.uid}/profile`);
+
+      const url = `users/${auth.currentUser.uid}/profile`;
+      const userRef = ref(db, url);
       await update(userRef, newData);
 
       return dispatch({
