@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-import dashboard from "../../../assets/svg/dashboard.svg";
+import dashboard from "../../../assets/img/facturador.png";
 import arrowDown from "../../../assets/svg/arrow-down.svg";
 import users from "../../../assets/svg/users.svg";
 import products from "../../../assets/svg/products.svg";
@@ -43,7 +43,7 @@ export default function SideBar({
       <div className="sideBar">
         <div className="sideBar__title">
           <img src={dashboard} alt="dashboard" />
-          <h1>Dashboard</h1>
+          <h1>Factureo</h1>
           <div className="options">
             <img
               src={options}

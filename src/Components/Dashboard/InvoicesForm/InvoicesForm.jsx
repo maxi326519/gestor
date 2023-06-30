@@ -168,6 +168,14 @@ export default function InvoicesForm({
           if (e.message.includes("Ya existe ese numero de factura")) {
             dispatch(openLoading());
             newInvoice.VEN_NUMERO = await checkNumber(invoice.VEN_NUMERO);
+            newInvoice.VEN_CLAVEACCESO = clave2(
+              user.EMP_RUC,
+              newInvoice.VEN_FECHA.split("-").reverse().join("-"),
+              `00000000${newInvoice.VEN_NUMERO}`.slice(-9),
+              `00${newInvoice.VEN_ESTABLECIMIENTO}`.slice(-3),
+              `00${newInvoice.VEN_PTOEMISION}`.slice(-3),
+              Number(user.EMP_CODIGO)
+            )
             handlePostInvoice(newInvoice).catch(() => {
               dispatch(closeLoading());
               swal(
