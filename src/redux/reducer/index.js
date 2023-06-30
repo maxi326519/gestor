@@ -23,6 +23,7 @@ import {
   DELETE_CLIENT,
   DELETE_PRODUCT,
 } from "../actions";
+import { UPDATE_LOCAL_PROFILE_DATA } from "../actions/user";
 
 const initialState = {
   user: {
@@ -72,6 +73,15 @@ export const Reducer = (state = initialState, action) => {
         user: {
           ...state.user,
           userDB: { ...state.user.userDB, ...action.payload },
+        },
+      };
+
+    case UPDATE_LOCAL_PROFILE_DATA:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          userDB: action.payload,
         },
       };
 

@@ -17,6 +17,7 @@ export const UPDATE_PROFILE = "UPDATE_PROFILE";
 export const UPDATE_EMAIL = "UPDATE_EMAIL";
 export const UPLOAD_LOGO = "UPLOAD_LOGO";
 export const UPLOAD_FILE = "UPLOAD_FILE";
+export const UPDATE_LOCAL_PROFILE_DATA= "UPDATE_LOCAL_PROFILE_DATA"
 
 export function getUserData() {
   return async (dispatch) => {
@@ -125,4 +126,11 @@ export function changeEmail(newEmail, ruc) {
       throw new Error(err);
     }
   };
+}
+
+export function updataLocalProfileData(userData){
+   return {
+      type: UPDATE_LOCAL_PROFILE_DATA,
+      payload: userData
+   }
 }

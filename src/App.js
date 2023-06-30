@@ -10,7 +10,7 @@ import {
   openLoading,
   closeLoading,
 } from "./redux/actions";
-import { auth } from "./firebase";
+import { auth, db } from "./firebase";
 
 import Loading from "./Components/Loading/Loading";
 import ResetPassword from "./Components/ResetPassword/ResetPassword";
@@ -31,10 +31,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import swal from "sweetalert";
 import ResetEmail from "./Components/ResetEmail/ResetEmail";
+import useListeners from "./listeners";
 
 function App() {
   const redirect = useNavigate();
   const dispatch = useDispatch();
+  const listener = useListeners();
   const loading = useSelector((state) => state.loading);
   const [profile, setProfile] = useState(false);
 
@@ -49,8 +51,11 @@ function App() {
     do {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       intentos++;
+      console.log(intentos);
       // Leemos la sesion del usuario
       if (auth.currentUser) {
+        listener.init(auth, db, dispatch);
+
         // Si existe cargamos los datos
         intentos = 5;
         const user = auth.currentUser;
