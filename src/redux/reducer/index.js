@@ -24,24 +24,22 @@ import {
   DELETE_PRODUCT,
 } from "../actions";
 import { UPDATE_LOCAL_PROFILE_DATA } from "../actions/user";
+import { initRootState } from "../../models/RootState";
+import {
+  DELETE_MOV_REPORT,
+  GET_MOV_REPORTS,
+  POST_MOV_REPORT,
+  UPDATE_MOV_REPORT,
+} from "../actions/reports";
+import { MovCabecera } from "../../models/reportes";
+import {
+  DELETE_STORE,
+  GET_STORES,
+  POST_STORE,
+  UPDATE_STORE,
+} from "../actions/stores/indes";
 
-const initialState = {
-  user: {
-    userDB: {
-      EMP_PERFIL: {},
-    },
-  },
-  clients: [],
-  products: [],
-  invoices: [],
-  loading: false,
-  alert: {
-    text: null,
-    isAcceptFunction: null,
-  },
-};
-
-export const Reducer = (state = initialState, action) => {
+export const Reducer = (state = { ...initRootState }, action) => {
   switch (action.type) {
     case SIGN_IN:
       return {
@@ -65,7 +63,7 @@ export const Reducer = (state = initialState, action) => {
       };
 
     case LOG_OUT:
-      return initialState;
+      return { ...initRootState };
 
     case CONFIRM_REGISTER:
       return {
@@ -230,6 +228,81 @@ export const Reducer = (state = initialState, action) => {
         ...state,
         products: state.products.filter((p) => p.ITE_CODIGO !== action.payload),
       };
+
+    /* STORES */
+    case POST_STORE:
+      return {
+        ...state,
+        stores: [...state.stores, action.payload],
+      };
+
+    case GET_STORES:
+      return {
+        ...state,
+        stores: action.payload,
+      };
+
+    case UPDATE_STORE:
+      return {
+        ...state,
+        stores: state.stores.data.map((mov) =>
+          mov.LOC_ESTABLECIMIENTO === action.payload.LOC_ESTABLECIMIENTO
+            ? action.payload
+            : mov
+        ),
+      };
+
+    case DELETE_STORE:
+      return {
+        ...state,
+        stores: state.stores.data.filter(
+          (mov) => mov.LOC_ESTABLECIMIENTO !== action.payload
+        ),
+      };
+    /* STORES */
+
+    /* REPORTS */
+    case POST_MOV_REPORT:
+      return {
+        ...state,
+        reports: [...state.reports, action.payload],
+      };
+
+    case GET_MOV_REPORTS:
+      return {
+        ...state,
+        reports: {
+          filters: {
+            year: action.payload.filters.year,
+            month: action.payload.filters.month,
+            day: action.payload.filters.day,
+          },
+          data: action.payload.data,
+        },
+      };
+
+    case UPDATE_MOV_REPORT:
+      return {
+        ...state,
+        reports: {
+          ...state.reports,
+          data: state.reports.data.map((mov) =>
+            mov.MCA_CODIGO === action.payload.MCA_CODIGO ? action.payload : mov
+          ),
+        },
+      };
+
+    case DELETE_MOV_REPORT:
+      return {
+        ...state,
+        reports: {
+          ...state.reports,
+          data: state.reports.data.filter(
+            (mov) => mov.MCA_CODIGO !== action.payload
+          ),
+        },
+      };
+    /* REPORTS */
 
     default:
       return state;

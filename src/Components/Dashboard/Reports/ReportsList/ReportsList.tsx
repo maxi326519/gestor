@@ -1,39 +1,37 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logOut } from "../../../../redux/actions";
 
-import ProductCard from "./ProductCard/ProductCard";
-
-import addSquare from "../../../../assets/svg/add-square.svg";
 import logout from "../../../../assets/svg/logout.svg";
 import swal from "sweetalert";
+import ReportsRow from "./ReportsRow/ReportsRow";
+import { MovCabecera } from "../../../../models/reportes";
+import { RootState } from "../../../../models/RootState";
 
-export default function ProductList({ handleAddProduct, handleProfile }) {
+interface Props {
+  handleAddProduct: () => void;
+  handleProfile: () => void;
+}
+
+export default function ProductList({
+  handleAddProduct,
+  handleProfile,
+}: Props) {
   const redirect = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.userDB);
-  const products = useSelector((state) => state.products);
+  const user = useSelector((state: RootState) => state.user.userDB);
+  const reports = useSelector((state: RootState) => state.reports);
   const [rows, setRows] = useState([]);
 
-  useEffect(() => {
-    setRows(products);
-  }, [products]);
+  useEffect(() => setRows(reports), [reports]);
 
-  function handleChange(e) {
-    const value = e.target.value;
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const value = event.target.value;
 
     setRows(
-      products.filter((p) => {
+      reports.filter((report) => {
         if (value === "") return true;
-        if (p.ITE_CODIGO.toLowerCase().includes(value.toLowerCase())) {
-          console.log("Code", p.ITE_CODIGO);
-          return true;
-        }
-        if (p.ITE_DESCRIPCION.toLowerCase().includes(value.toLowerCase())) {
-          console.log("Description", p.ITE_DESCRIPCION);
-          return true;
-        }
         return false;
       })
     );
@@ -49,21 +47,23 @@ export default function ProductList({ handleAddProduct, handleProfile }) {
       },
     }).then((res) => {
       if (res) {
-        dispatch(logOut())
+        dispatch<any>(logOut())
           .then(() => {
             redirect("/login");
           })
-          .catch((e) => {
+          .catch((e: Error) => {
             console.log(e.message);
           });
       }
     });
   }
 
+  function handleVerDetalles(): void {}
+
   return (
     <div className="dashboardList">
       <div className="perfil">
-        <h3>Listado de Productos</h3>
+        <h3>Reportes</h3>
         <button
           className="btn btn-primary btn-sesion"
           type="button"
@@ -78,23 +78,19 @@ export default function ProductList({ handleAddProduct, handleProfile }) {
       <div className="dashboardList__searchBar">
         <input
           className="form-control"
-          placeholder="Buscar producto"
+          placeholder="Buscar reporte"
           onChange={handleChange}
         />
-        <button className="btn btn-primary" onClick={handleAddProduct}>
-          <img src={addSquare} alt="add product" />
-          <span>Producto</span>
-        </button>
       </div>
       <div className="dashboardList__grid">
         <div className="product-card first-row">
           <span>Codigo</span>
-          <span>Descripcion</span>
+          <span>Fecha</span>
+          <span>Estado</span>
+          <span>Movimiento</span>
+          <span>Observaciones</span>
           <span>Tipo</span>
-          <span>Precio</span>
-          <span>Impuesto</span>
-          <span>Editar</span>
-          <span>Eliminar</span>
+          <span>Detalles</span>
         </div>
         <div className="contentCard">
           {rows.length <= 0 ? (
@@ -102,7 +98,13 @@ export default function ProductList({ handleAddProduct, handleProfile }) {
               <span>No hay productos</span>
             </div>
           ) : (
-            rows?.map((p) => <ProductCard key={p.ITE_CODIGO} product={p} />)
+            rows?.map((movReport: MovCabecera) => (
+              <ReportsRow
+                key={movReport.MCA_CODIGO}
+                movReport={movReport}
+                handleVerDetalles={handleVerDetalles}
+              />
+            ))
           )}
         </div>
       </div>

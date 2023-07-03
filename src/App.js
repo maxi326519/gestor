@@ -12,13 +12,18 @@ import {
 } from "./redux/actions";
 import { auth, db } from "./firebase";
 
+import useListeners from "./listeners";
 import Loading from "./Components/Loading/Loading";
 import ResetPassword from "./Components/ResetPassword/ResetPassword";
+import ResetEmail from "./Components/ResetEmail/ResetEmail";
 import Profile from "./Components/Dashboard/Profile/Profile";
+import InvoicesForm from "./Components/Dashboard/InvoicesForm/InvoicesForm";
+
+
+import Invoices from "./Components/Dashboard/Invoices/Invoices";
 import Products from "./Components/Dashboard/Products/Products";
 import Client from "./Components/Dashboard/Client/Client";
-import Invoices from "./Components/Dashboard/Invoices/Invoices";
-import InvoicesForm from "./Components/Dashboard/InvoicesForm/InvoicesForm";
+import Stores from "./Components/Dashboard/Stores/Stores";
 
 import ExportInvoice from "./Components/Dashboard/Forms/ExportForm/ExportForm";
 import AddProduct from "./Components/Dashboard/Forms/ProductForm/ProductForm";
@@ -30,8 +35,7 @@ import Signin from "./Components/Signin/Signin";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import swal from "sweetalert";
-import ResetEmail from "./Components/ResetEmail/ResetEmail";
-import useListeners from "./listeners";
+import Reports from "./Components/Dashboard/Reports/Reports";
 
 function App() {
   const redirect = useNavigate();
@@ -125,10 +129,6 @@ function App() {
     setProfile(!profile);
   }
 
-  function handleAddInvoice() {
-    setForm({ ...initialState, addInvoice: !form.addInvoice });
-  }
-
   function handleExportInvoice() {
     setForm({ ...initialState, exportInvoice: !form.exportInvoice });
   }
@@ -138,6 +138,10 @@ function App() {
   }
 
   function handleAddClient() {
+    setForm({ ...initialState, addClient: !form.addClient });
+  }
+
+  function handleAddEstablecimiento() {
     setForm({ ...initialState, addClient: !form.addClient });
   }
   /* FORMS */
@@ -153,10 +157,10 @@ function App() {
           path="/dashboard/products"
           element={
             <Products
-              handleAddInvoice={handleAddInvoice}
               handleAddProduct={handleAddProduct}
               handleAddClient={handleAddClient}
               handleProfile={handleProfile}
+              handleAddEstablecimiento={handleAddEstablecimiento}
             />
           }
         />
@@ -164,10 +168,10 @@ function App() {
           path="/dashboard/clients"
           element={
             <Client
-              handleAddInvoice={handleAddInvoice}
               handleAddProduct={handleAddProduct}
               handleAddClient={handleAddClient}
               handleProfile={handleProfile}
+              handleAddEstablecimiento={handleAddEstablecimiento}
             />
           }
         />
@@ -176,10 +180,34 @@ function App() {
           element={
             <Invoices
               handleExportInvoice={handleExportInvoice}
-              handleAddInvoice={handleAddInvoice}
               handleAddProduct={handleAddProduct}
               handleAddClient={handleAddClient}
               handleProfile={handleProfile}
+              handleAddEstablecimiento={handleAddEstablecimiento}
+            />
+          }
+        />
+        <Route
+          path="/dashboard/stores"
+          element={
+            <Stores
+              handleExportInvoice={handleExportInvoice}
+              handleAddProduct={handleAddProduct}
+              handleAddClient={handleAddClient}
+              handleProfile={handleProfile}
+              handleAddEstablecimiento={handleAddEstablecimiento}
+            />
+          }
+        />
+        <Route
+          path="/dashboard/reports"
+          element={
+            <Reports
+              handleExportInvoice={handleExportInvoice}
+              handleAddProduct={handleAddProduct}
+              handleAddClient={handleAddClient}
+              handleProfile={handleProfile}
+              handleAddEstablecimiento={handleAddEstablecimiento}
             />
           }
         />
@@ -189,10 +217,10 @@ function App() {
             <InvoicesForm
               addInvoice={form.addInvoice}
               handleExportInvoice={handleExportInvoice}
-              handleAddInvoice={handleAddInvoice}
               handleAddProduct={handleAddProduct}
               handleAddClient={handleAddClient}
               handleProfile={handleProfile}
+              handleAddEstablecimiento={handleAddEstablecimiento}
             />
           }
         />

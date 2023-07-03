@@ -14,7 +14,6 @@ import reports from "../../../assets/svg/reports.svg";
 import stores from "../../../assets/svg/stores.svg";
 
 export default function SideBar({
-  handleAddInvoice,
   handleAddProduct,
   handleAddClient,
   handleAddEstablecimiento,
@@ -24,8 +23,8 @@ export default function SideBar({
     invoices: false,
     products: false,
     clients: false,
-    establecimientos: false,
-    reportes: false,
+    stores: false,
+    reports: false,
   };
   const [accordion, setAccordion] = useState(initialState);
   const [isOpen, setOpen] = useState(false);
@@ -112,8 +111,8 @@ export default function SideBar({
     {
       label: "Establecimientos",
       acordion: {
-        name: "establecimientos",
-        value: accordion.establecimientos,
+        name: "stores",
+        value: accordion.stores,
       },
       icon: { svg: stores, alt: "stores" },
       subItems: [
@@ -122,7 +121,7 @@ export default function SideBar({
           value: "list",
           label: "Listado",
           icon: { svg: list, alt: "list" },
-          to: "/dashboard/establecimientos",
+          to: "/dashboard/stores",
         },
         {
           type: "Button",
@@ -139,8 +138,8 @@ export default function SideBar({
     {
       label: "Reportes",
       acordion: {
-        name: "reportes",
-        value: accordion.reportes,
+        name: "reports",
+        value: accordion.reports,
       },
       icon: { svg: reports, alt: "reports" },
       subItems: [
@@ -149,7 +148,7 @@ export default function SideBar({
           value: "list",
           label: "Listado",
           icon: { svg: list, alt: "list" },
-          to: "/dashboard/reportes",
+          to: "/dashboard/reports",
         },
       ],
     },

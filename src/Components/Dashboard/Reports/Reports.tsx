@@ -1,25 +1,32 @@
 import React from "react";
 
 import SideBar from "../SideBar/SideBar";
-import ProductList from "./ProductList/ProductList";
+import ReportsList from "./ReportsList/ReportsList";
 
 import "../Dashboard.css";
 
-export default function Products({
-  handleAddInvoice,
+interface Props {
+  handleAddProduct: () => void;
+  handleAddClient: () => void;
+  handleProfile: () => void;
+  handleAddEstablecimiento: () => void;
+}
+
+export default function Reports({
   handleAddProduct,
   handleAddClient,
   handleProfile,
-}) {
+  handleAddEstablecimiento,
+}: Props) {
   return (
     <div className="dashboard">
       <SideBar
-        handleAddInvoice={handleAddInvoice}
         handleAddProduct={handleAddProduct}
         handleAddClient={handleAddClient}
+        handleAddEstablecimiento={handleAddEstablecimiento}
       />
       <div className="dashboard__container to-left">
-        <ProductList
+        <ReportsList
           handleAddProduct={handleAddProduct}
           handleProfile={handleProfile}
         />

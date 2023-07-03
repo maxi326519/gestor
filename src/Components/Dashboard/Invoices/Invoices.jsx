@@ -4,22 +4,21 @@ import InvoicesList from "./InvoicesList/InvoicesList";
 import "../Dashboard.css";
 
 export default function Invoices({
-  handleAddInvoice,
   handleExportInvoice,
   handleAddProduct,
   handleAddClient,
   handleProfile,
+  handleAddEstablecimiento,
 }) {
   return (
     <div className="dashboard">
       <SideBar
-        handleAddInvoice={handleAddInvoice}
         handleAddProduct={handleAddProduct}
         handleAddClient={handleAddClient}
+        handleAddEstablecimiento={handleAddEstablecimiento}
       />
       <div className="dashboard__container to-left">
         <InvoicesList
-          handleAddInvoice={handleAddInvoice}
           handleExportInvoice={handleExportInvoice}
           handleProfile={handleProfile}
         />

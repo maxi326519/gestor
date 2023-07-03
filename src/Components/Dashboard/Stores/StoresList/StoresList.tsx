@@ -2,38 +2,39 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logOut } from "../../../../redux/actions";
+import { RootState } from "../../../../models/RootState";
+import { Establecimiento } from "../../../../models/establecimientos";
+import useEstablecimiento, {
+  UseEstablecimiento,
+} from "../../../../hooks/useEstablecimiento";
+import swal from "sweetalert";
 
-import ProductCard from "./ProductCard/ProductCard";
+import StoresRow from "./StoresRow/StoresRow";
 
 import addSquare from "../../../../assets/svg/add-square.svg";
 import logout from "../../../../assets/svg/logout.svg";
-import swal from "sweetalert";
 
-export default function ProductList({ handleAddProduct, handleProfile }) {
+interface Props {
+  handleAddProduct: () => void;
+  handleProfile: () => void;
+}
+
+export default function StoresList({ handleAddProduct, handleProfile }: Props) {
   const redirect = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.userDB);
-  const products = useSelector((state) => state.products);
-  const [rows, setRows] = useState([]);
+  const user = useSelector((state: RootState) => state.user.userDB);
+  const { establecimientos, actions }: UseEstablecimiento =
+    useEstablecimiento();
+  const [rows, setRows] = useState<Establecimiento[]>([]);
 
-  useEffect(() => {
-    setRows(products);
-  }, [products]);
+  useEffect(() => setRows(establecimientos), [establecimientos]);
 
-  function handleChange(e) {
-    const value = e.target.value;
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const value = event.target.value;
 
     setRows(
-      products.filter((p) => {
+      establecimientos.filter((establecimiento) => {
         if (value === "") return true;
-        if (p.ITE_CODIGO.toLowerCase().includes(value.toLowerCase())) {
-          console.log("Code", p.ITE_CODIGO);
-          return true;
-        }
-        if (p.ITE_DESCRIPCION.toLowerCase().includes(value.toLowerCase())) {
-          console.log("Description", p.ITE_DESCRIPCION);
-          return true;
-        }
         return false;
       })
     );
@@ -49,11 +50,11 @@ export default function ProductList({ handleAddProduct, handleProfile }) {
       },
     }).then((res) => {
       if (res) {
-        dispatch(logOut())
+        dispatch<any>(logOut())
           .then(() => {
             redirect("/login");
           })
-          .catch((e) => {
+          .catch((e: Error) => {
             console.log(e.message);
           });
       }
@@ -63,7 +64,7 @@ export default function ProductList({ handleAddProduct, handleProfile }) {
   return (
     <div className="dashboardList">
       <div className="perfil">
-        <h3>Listado de Productos</h3>
+        <h3>Listado de establecimientos</h3>
         <button
           className="btn btn-primary btn-sesion"
           type="button"
@@ -81,9 +82,13 @@ export default function ProductList({ handleAddProduct, handleProfile }) {
           placeholder="Buscar producto"
           onChange={handleChange}
         />
-        <button className="btn btn-primary" onClick={handleAddProduct}>
+        <button
+          className="btn btn-primary"
+          type="button"
+          onClick={handleAddProduct}
+        >
           <img src={addSquare} alt="add product" />
-          <span>Producto</span>
+          <span>Establecimiento</span>
         </button>
       </div>
       <div className="dashboardList__grid">
@@ -102,7 +107,14 @@ export default function ProductList({ handleAddProduct, handleProfile }) {
               <span>No hay productos</span>
             </div>
           ) : (
-            rows?.map((p) => <ProductCard key={p.ITE_CODIGO} product={p} />)
+            rows?.map((store: Establecimiento) => (
+              <StoresRow
+                key={store.LOC_ESTABLECIMIENTO}
+                establecimiento={store}
+                handleUpdate={actions.actualizar}
+                handleRemove={actions.borrar}
+              />
+            ))
           )}
         </div>
       </div>
