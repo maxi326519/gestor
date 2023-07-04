@@ -1,11 +1,6 @@
-import React, { useState } from "react";
-/* import ReactExport from "react-data-export";
+import { useState } from "react";
 
-const ExcelFile = ReactExport.ExcelFile;
-const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-const ExcelColumn = ReactExport.ExcelFile.ExcelColumn; */
-
-export default function ExportForm({ exportInvoice, handleExportInvoice }) {
+export default function ExportForm({ handleExportInvoice }) {
   const [exportData, setInvoice] = useState({
     dateFrom: "",
     dateTo: "",
@@ -21,10 +16,7 @@ export default function ExportForm({ exportInvoice, handleExportInvoice }) {
   }
 
   return (
-    <div
-      className="container__form"
-      style={exportInvoice ? null : { display: "none" }}
-    >
+    <div className="container__form">
       <form className="form to-left" onSubmit={handleSubmit}>
         <div className="form__close">
           <button
@@ -58,7 +50,6 @@ export default function ExportForm({ exportInvoice, handleExportInvoice }) {
             required
           />
         </div>
-
       </form>
     </div>
   );

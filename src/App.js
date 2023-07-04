@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Routes, Route, useNavigate } from "react-router-dom";
+import { auth, db } from "./firebase";
 import {
   persistence,
   getUserData,
@@ -10,7 +11,7 @@ import {
   openLoading,
   closeLoading,
 } from "./redux/actions";
-import { auth, db } from "./firebase";
+import swal from "sweetalert";
 
 import useListeners from "./listeners";
 import Loading from "./Components/Loading/Loading";
@@ -18,7 +19,7 @@ import ResetPassword from "./Components/ResetPassword/ResetPassword";
 import ResetEmail from "./Components/ResetEmail/ResetEmail";
 import Profile from "./Components/Dashboard/Profile/Profile";
 import InvoicesForm from "./Components/Dashboard/InvoicesForm/InvoicesForm";
-
+import Reports from "./Components/Dashboard/Reports/Reports";
 
 import Invoices from "./Components/Dashboard/Invoices/Invoices";
 import Products from "./Components/Dashboard/Products/Products";
@@ -26,16 +27,16 @@ import Client from "./Components/Dashboard/Client/Client";
 import Stores from "./Components/Dashboard/Stores/Stores";
 
 import ExportInvoice from "./Components/Dashboard/Forms/ExportForm/ExportForm";
-import AddProduct from "./Components/Dashboard/Forms/ProductForm/ProductForm";
-import AddClient from "./Components/Dashboard/Forms/ClientForm/ClientForm";
+import ProductForm from "./Components/Dashboard/Forms/ProductForm/ProductForm";
+import ClientForm from "./Components/Dashboard/Forms/ClientForm/ClientForm";
+import EstablecimientoForm from "./Components/Dashboard/Forms/EstablecimientoForm/EstablecimientoForm";
 
 import Login from "./Components/Login/Login";
 import Signin from "./Components/Signin/Signin";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import swal from "sweetalert";
-import Reports from "./Components/Dashboard/Reports/Reports";
+import { getStores } from "./redux/actions/stores/indes";
 
 function App() {
   const redirect = useNavigate();
@@ -76,6 +77,7 @@ function App() {
                 dispatch(getProducts()),
                 dispatch(getClients()),
                 dispatch(getInvoices(year, month, null)),
+                dispatch(getStores()),
               ])
                 .then(() => {
                   dispatch(closeLoading());
@@ -122,6 +124,7 @@ function App() {
     exportInvoice: false,
     addProduct: false,
     addClient: false,
+    addEstablecimiento: false,
   };
   const [form, setForm] = useState(initialState);
 
@@ -142,7 +145,7 @@ function App() {
   }
 
   function handleAddEstablecimiento() {
-    setForm({ ...initialState, addClient: !form.addClient });
+    setForm({ ...initialState, addEstablecimiento: !form.addEstablecimiento });
   }
   /* FORMS */
 
@@ -229,15 +232,16 @@ function App() {
         <Route path="/signin" element={<Signin />} />
       </Routes>
 
-      <ExportInvoice
-        exportInvoice={form.exportInvoice}
-        handleExportInvoice={handleExportInvoice}
-      />
-      <AddProduct
-        addProduct={form.addProduct}
-        handleAddProduct={handleAddProduct}
-      />
-      <AddClient addClient={form.addClient} handleAddClient={handleAddClient} />
+      {form.exportInvoice && (
+        <ExportInvoice handleExportInvoice={handleExportInvoice} />
+      )}
+      {form.addProduct && <ProductForm handleAddProduct={handleAddProduct} />}
+      {form.addClient && <ClientForm handleAddClient={handleAddClient} />}
+      {form.addEstablecimiento && (
+        <EstablecimientoForm
+          handleAddEstablecimiento={handleAddEstablecimiento}
+        />
+      )}
     </div>
   );
 }

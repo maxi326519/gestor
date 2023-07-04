@@ -10,6 +10,15 @@ export interface Establecimiento {
   LOC_USUKEY: string;
 }
 
+export interface ErrorEstablecimiento {
+  LOC_ESTABLECIMIENTO: string;
+  LOC_NOMBRE: string;
+  LOC_NUMERO: string;
+  LOC_PTOEMISION: string;
+  LOC_TELEFONO: string;
+  LOC_ESTADO: string;
+}
+
 export const initEstablecimiento: Establecimiento = {
   LOC_ESTABLECIMIENTO: "",
   LOC_IMPRIME: 0,
@@ -20,4 +29,13 @@ export const initEstablecimiento: Establecimiento = {
   LOC_TELEFONO: "",
   LOC_ESTADO: 0,
   LOC_USUKEY: "",
+};
+
+export const initErrorEstablecimiento: ErrorEstablecimiento = {
+  LOC_ESTABLECIMIENTO: "",
+  LOC_NOMBRE: "",
+  LOC_NUMERO: "",
+  LOC_PTOEMISION: "",
+  LOC_TELEFONO: "",
+  LOC_ESTADO: "",
 };

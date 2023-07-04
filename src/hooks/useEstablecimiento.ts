@@ -12,10 +12,10 @@ import {
 export interface UseEstablecimiento {
   establecimientos: Establecimiento[];
   actions: {
-    agregar: (establecimiento: Establecimiento) => void;
-    obtener: () => void;
-    actualizar: (establecimiento: Establecimiento) => void;
-    borrar: (establecimientoId: string) => void;
+    agregar: (establecimiento: Establecimiento) => Promise<any>;
+    obtener: () => Promise<any>;
+    actualizar: (establecimiento: Establecimiento) => Promise<any>;
+    borrar: (establecimientoId: string) => Promise<any>;
   };
 }
 
@@ -24,7 +24,7 @@ export default function useEstablecimiento(): UseEstablecimiento {
   const establecimientos = useSelector((state: RootState) => state.stores);
 
   async function agregarEstableciiento(establecimiento: Establecimiento) {
-    await dispatch<any>(setStore(establecimiento)).catch((e: Error) => {
+    return dispatch<any>(setStore(establecimiento)).catch((e: Error) => {
       console.log(e.message);
       swal(
         "Error",
@@ -34,7 +34,7 @@ export default function useEstablecimiento(): UseEstablecimiento {
     });
   }
   async function obtenerEstableciientos() {
-    await dispatch<any>(getStores()).catch((e: Error) => {
+    return dispatch<any>(getStores()).catch((e: Error) => {
       console.log(e.message);
       swal(
         "Error",
@@ -44,7 +44,7 @@ export default function useEstablecimiento(): UseEstablecimiento {
     });
   }
   async function actualizarEstableciiento(establecimiento: Establecimiento) {
-    await dispatch<any>(updateStore(establecimiento)).catch((e: Error) => {
+    return dispatch<any>(updateStore(establecimiento)).catch((e: Error) => {
       console.log(e.message);
       swal(
         "Error",
@@ -54,7 +54,7 @@ export default function useEstablecimiento(): UseEstablecimiento {
     });
   }
   async function borrarEstableciiento(establecimientoId: string) {
-    await dispatch<any>(deleteStore(establecimientoId)).catch((e: Error) => {
+    return dispatch<any>(deleteStore(establecimientoId)).catch((e: Error) => {
       console.log(e.message);
       swal(
         "Error",

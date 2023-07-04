@@ -87,24 +87,23 @@ export default function StoresList({ handleAddProduct, handleProfile }: Props) {
           type="button"
           onClick={handleAddProduct}
         >
-          <img src={addSquare} alt="add product" />
+          <img src={addSquare} alt="add stores" />
           <span>Establecimiento</span>
         </button>
       </div>
       <div className="dashboardList__grid">
-        <div className="product-card first-row">
-          <span>Codigo</span>
-          <span>Descripcion</span>
-          <span>Tipo</span>
-          <span>Precio</span>
-          <span>Impuesto</span>
-          <span>Editar</span>
-          <span>Eliminar</span>
+        <div className="item-card first-row">
+          <span>Establecimiento</span>
+          <span>Nombre</span>
+          <span>Numero</span>
+          <span>Pto. Emision</span>
+          <span>Telefono</span>
+          <span>Estado</span>
         </div>
         <div className="contentCard">
           {rows.length <= 0 ? (
             <div className="listEmpty">
-              <span>No hay productos</span>
+              <span>No hay establecimientos</span>
             </div>
           ) : (
             rows?.map((store: Establecimiento) => (

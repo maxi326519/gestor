@@ -9,7 +9,7 @@ import {
 
 import "../Form.css";
 
-export default function ProductForm({ addProduct, handleAddProduct }) {
+export default function ProductForm({ handleAddProduct }) {
   const products = useSelector((state) => state.products);
   const dispatch = useDispatch();
   const initialState = {
@@ -72,7 +72,6 @@ export default function ProductForm({ addProduct, handleAddProduct }) {
   return (
     <div
       className="container__form"
-      style={addProduct ? null : { display: "none" }}
     >
       <form className="form to-left" onSubmit={handleSubmit}>
         <div className="form__close">

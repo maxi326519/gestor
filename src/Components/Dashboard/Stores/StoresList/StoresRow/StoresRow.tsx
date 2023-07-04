@@ -37,7 +37,7 @@ export default function StoresRow({
   }
 
   return (
-    <div className="establecimiento-card">
+    <div className="item-card">
       <input
         className={`form-control ${disabled ? "input-disabled" : ""}`}
         value={establecimientoEditable.LOC_ESTABLECIMIENTO}
@@ -52,14 +52,6 @@ export default function StoresRow({
         onChange={handleChange}
         disabled={disabled}
         placeholder="Estado"
-        required
-      />
-      <input
-        className={`form-control ${disabled ? "input-disabled" : ""}`}
-        value={establecimientoEditable.LOC_IMPRIME}
-        onChange={handleChange}
-        disabled={disabled}
-        placeholder="Imprime"
         required
       />
       <input
