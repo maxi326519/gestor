@@ -1,0 +1,12 @@
+.dateFilter{
+  display: flex;
+  padding: 5px;
+  margin-left: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.dateFilter .date{
+  margin-right: 5px;
+  margin-bottom: 0px !important;
+}

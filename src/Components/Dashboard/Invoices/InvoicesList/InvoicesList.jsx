@@ -26,12 +26,12 @@ export default function InvoicesList({
   handleExportInvoice,
   handleProfile,
 }) {
-  const pdf = usePDF();
   const redirect = useNavigate();
   const dispatch = useDispatch();
-  const [invoicePDF, setPDF] = useState(null);
+  const pdf = usePDF();
   const invoices = useSelector((state) => state.invoices);
   const user = useSelector((state) => state.user.userDB);
+  const [invoicePDF, setPDF] = useState(null);
   const [rows, setRows] = useState([]);
   const [disabled, setDisabled] = useState(true);
   const [isChecked, setCheck] = useState([]);
@@ -168,10 +168,6 @@ export default function InvoicesList({
 
   function handleChangeFilter(e) {
     setFilter({ ...filter, [e.target.name]: e.target.value });
-  }
-
-  function handleViewPDF(i) {
-    setPDF(i);
   }
 
   function handleClosePDF(i) {

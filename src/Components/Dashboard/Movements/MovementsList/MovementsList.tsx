@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { logOut } from "../../../../redux/actions";
+import { closeLoading, logOut, openLoading } from "../../../../redux/actions";
 import { RootState } from "../../../../models/RootState";
 import { MovCabecera } from "../../../../models/movements";
 import swal from "sweetalert";
@@ -10,7 +10,13 @@ import MovementsRow from "./MovementsRow/MovementsRow";
 
 import logout from "../../../../assets/svg/logout.svg";
 import useMovimientos from "../../../../hooks/useMovimientos";
+import DateFilter from "../../../../component/DateFilter/DateFilter";
 
+interface Filter {
+  year: string;
+  month: string | null;
+  day: string | null;
+}
 interface Props {
   handleProfile: () => void;
 }
@@ -58,6 +64,13 @@ export default function MovementsList({ handleProfile }: Props) {
 
   function handleVerDetalles() {}
 
+  function handleObtenerMovimientos(filter: Filter) {
+    dispatch<any>(openLoading());
+    actions
+      .obtener(filter.year, filter.month, filter.day)
+      .then(() => dispatch<any>(closeLoading()));
+  }
+
   return (
     <div className="dashboardList">
       <div className="perfil">
@@ -78,6 +91,10 @@ export default function MovementsList({ handleProfile }: Props) {
           className="form-control"
           placeholder="Buscar movemente"
           onChange={handleChange}
+        />
+        <DateFilter
+          years={[2023]}
+          handleFilterDate={handleObtenerMovimientos}
         />
       </div>
       <div className="dashboardList__grid">
