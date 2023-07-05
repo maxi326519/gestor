@@ -7,8 +7,8 @@ import {
   updateUserData,
   openLoading,
   closeLoading,
-  verifyInvoiceNumber,
 } from "../../../redux/actions";
+import { ref, get } from "firebase/database";
 
 import SideBar from "../SideBar/SideBar";
 import AddData from "./AddData/AddData";
@@ -16,9 +16,10 @@ import InvoiceData from "./InvoiceData/InvoiceData";
 import InvoiceTable from "./invoiceTable/InvoiceTable";
 import AddProduct from "./AddProduct/AddProduct";
 import AddClient from "./AddClient/AddClient";
-import PDF from "../PDF/PDF";
 
 import "./InvoicesForm.css";
+import { usePDF } from "../PDF/usePDF.js";
+import { auth, db } from "../../../firebase.js";
 
 const initialInvoice = {
   CLI_CODIGO: 0,
@@ -77,12 +78,12 @@ export default function InvoicesForm({
   handleProfile,
 }) {
   const dispatch = useDispatch();
+  const pdf = usePDF();
   const user = useSelector((state) => state.user.userDB);
   const [formProduct, setFormproduct] = useState(false);
   const [formClient, setFormClient] = useState(false);
   const [newProducts, setNewProduct] = useState([]);
   const [invoice, setInvoice] = useState(initialInvoice);
-  const [invoicePDF, setPDF] = useState(null);
   const [discount, setDiscount] = useState(0);
 
   /* Calcular totales por cada cambio */
@@ -107,22 +108,29 @@ export default function InvoicesForm({
     let subtotalPorcentual = 0;
     let subtotalIVA = 0;
     let total = 0;
+    let productDiscount = 0;
 
     newProducts.forEach((p) => {
-      subtotal +=
-        p.VED_PUNITARIO * p.VED_CANTIDAD * (1 - p.VED_DESCUENTO / 100);
+      subtotal += Number(
+        (
+          p.VED_PUNITARIO *
+          p.VED_CANTIDAD *
+          (1 - p.VED_DESCUENTO / 100)
+        ).toFixed(2)
+      );
+      productDiscount +=
+        p.VED_CANTIDAD * (p.VED_PUNITARIO * (p.VED_DESCUENTO / 100));
 
       if (p.VED_IMPUESTO === "2") {
-        total +=
-          p.VED_PUNITARIOIVA * p.VED_CANTIDAD * (1 - p.VED_DESCUENTO / 100);
         subtotalIVA +=
           p.VED_PUNITARIO * p.VED_CANTIDAD * (1 - p.VED_DESCUENTO / 100);
       } else {
-        total += p.VED_PUNITARIO * p.VED_CANTIDAD * (1 - p.VED_DESCUENTO / 100);
         subtotalPorcentual +=
           p.VED_PUNITARIO * p.VED_CANTIDAD * (1 - p.VED_DESCUENTO / 100);
       }
     });
+
+    total = subtotal + subtotalIVA * 0.12;
 
     return {
       VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
@@ -139,16 +147,6 @@ export default function InvoicesForm({
   function handleSubmit(e) {
     e.preventDefault();
 
-/*     console.log("Prueba");
-    dispatch(verifyInvoiceNumber())
-      .then(() => {
-        console.log("todo bien");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    return false; */
-
     if (user.EMP_SECUENCIAL < 100) {
       if (handleValidations()) {
         dispatch(openLoading());
@@ -156,48 +154,46 @@ export default function InvoicesForm({
           ...invoice,
           ITE_DETALLES: newProducts,
           VEN_CLAVEACCESO: clave2(
-            invoice.CLI_IDENTIFICACION,
-            invoice.VEN_FECHA,
-            `00${invoice.VEN_NUMERO}`.slice(-9),
+            user.EMP_RUC,
+            invoice.VEN_FECHA.split("-").reverse().join("-"),
+            `00000000${invoice.VEN_NUMERO}`.slice(-9),
             `00${invoice.VEN_ESTABLECIMIENTO}`.slice(-3),
             `00${invoice.VEN_PTOEMISION}`.slice(-3),
-            user.EMP_CODIGO
+            Number(user.EMP_CODIGO)
           ),
         };
 
-        dispatch(postInvoice(newInvoice))
-          .then((d) => {
-            dispatch(
-              updateUserData({
-                EMP_NUMERO: Number(user.EMP_NUMERO) + 1,
-                EMP_SECUENCIAL: Number(user.EMP_SECUENCIAL) + 1,
-              })
-            ).then(() => {
+        handlePostInvoice(newInvoice, 1).catch(async (e) => {
+          dispatch(closeLoading());
+          if (e.message.includes("Ya existe ese numero de factura")) {
+            dispatch(openLoading());
+            newInvoice.VEN_NUMERO = await checkNumber(invoice.VEN_NUMERO);
+            newInvoice.VEN_CLAVEACCESO = clave2(
+              user.EMP_RUC,
+              newInvoice.VEN_FECHA.split("-").reverse().join("-"),
+              `00000000${newInvoice.VEN_NUMERO}`.slice(-9),
+              `00${newInvoice.VEN_ESTABLECIMIENTO}`.slice(-3),
+              `00${newInvoice.VEN_PTOEMISION}`.slice(-3),
+              Number(user.EMP_CODIGO)
+            )
+            handlePostInvoice(newInvoice).catch(() => {
               dispatch(closeLoading());
-              setPDF(newInvoice);
-              setInvoice({
-                ...initialInvoice,
-                VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
-                VEN_PTOEMISION: user.EMP_PTOEMISION,
-                VEN_NUMERO: user.EMP_NUMERO,
-              });
-              setNewProduct([]);
               swal(
-                "Guardado!",
-                "Su factura se agrego correctamente",
-                "success"
+                "Error",
+                "Surgio un error desconocido al cargar la factura",
+                "error"
               );
             });
-          })
-          .catch((e) => {
             dispatch(closeLoading());
+          } else {
             swal(
               "Error",
-              "Surgio un error desconocido al agregar la factura",
+              "Surgio un error desconocido al cargar la factura",
               "error"
             );
-            console.log(e);
-          });
+          }
+          console.log(e);
+        });
       } else {
         swal(
           "Faltan datos",
@@ -207,6 +203,52 @@ export default function InvoicesForm({
       }
     } else {
       swal("¡Atencion!", "Llegaste a tu limite de 100 facturas", "warning");
+    }
+  }
+
+  async function handlePostInvoice(invoice) {
+    return dispatch(postInvoice(invoice)).then(() => {
+      dispatch(
+        updateUserData({
+          EMP_NUMERO: Number(invoice.VEN_NUMERO) + 1,
+          EMP_SECUENCIAL: Number(user.EMP_SECUENCIAL) + 1,
+        })
+      ).then(() => {
+        pdf.openPDF(invoice);
+        setInvoice({
+          ...initialInvoice,
+          VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
+          VEN_PTOEMISION: user.EMP_PTOEMISION,
+          VEN_NUMERO: user.EMP_NUMERO,
+        });
+        setNewProduct([]);
+        dispatch(closeLoading());
+        swal("Guardado!", "Su factura se agrego correctamente", "success");
+      });
+    });
+  }
+
+  async function checkNumber(number) {
+    try {
+      const url = `users/${auth.currentUser.uid}/invoices/numbers`;
+      const snapshot = await get(ref(db, url));
+      const numbers = [];
+      let newNumber = Number(number);
+
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        Object.keys(data).forEach((id) => {
+          numbers.push(id);
+        });
+
+        while (numbers.some((n) => Number(n) === newNumber)) {
+          newNumber++;
+        }
+
+        return newNumber;
+      }
+    } catch (err) {
+      console.log(err);
     }
   }
 
@@ -261,27 +303,37 @@ export default function InvoicesForm({
   }
 
   function handleProduct(product) {
-    if (!newProducts.find((pi) => pi.ITE_CODIGO === product.ITE_CODIGO)) {
-      setNewProduct([
-        ...newProducts,
-        {
-          ITE_BARRAS: product.ITE_BARRAS,
-          ITE_CODIGO: product.ITE_CODIGO,
-          ITE_DESCRIPCION: product.ITE_DESCRIPCION,
-          VED_CANTIDAD: 1,
-          VED_DESCUENTO: 0,
-          VED_IMPUESTO: product.ITE_IMPUESTO,
-          VED_PORCENTAJE: "",
-          VED_PUNITARIO: product.ITE_PVP,
-          VED_PUNITARIOIVA:
-            product.ITE_IMPUESTO === "2"
-              ? (product.ITE_PVP * 1.12).toFixed(user.EMP_PRECISION)
-              : product.ITE_PVP,
-          VED_UKEY: product.USU_KEY,
-          VED_VALOR: product.ITE_PVP,
-          VEN_CODIGO: 0,
-        },
-      ]);
+    if (!newProducts.some((pi) => pi.ITE_CODIGO === product.ITE_CODIGO)) {
+      let data = {
+        ITE_BARRAS: product.ITE_BARRAS,
+        ITE_CODIGO: product.ITE_CODIGO,
+        ITE_DESCRIPCION: product.ITE_DESCRIPCION,
+        VED_CANTIDAD: 1,
+        VED_DESCUENTO: 0,
+        VED_IMPUESTO: product.ITE_IMPUESTO,
+        VED_PORCENTAJE: "",
+        VED_PUNITARIO: 0,
+        VED_PUNITARIOIVA: 0,
+        VED_UKEY: product.USU_KEY,
+        VED_VALOR: product.ITE_PVP,
+        VEN_CODIGO: 0,
+      };
+
+      if (user.EMP_INCLUYEIVA) {
+        data.VED_PUNITARIO =
+          product.ITE_IMPUESTO === "2"
+            ? (product.ITE_PVP / 1.12).toFixed(user.EMP_PRECISION)
+            : product.ITE_PVP;
+        data.VED_PUNITARIOIVA = product.ITE_PVP;
+      } else if (user.EMP_INCLUYEIVA === false) {
+        data.VED_PUNITARIO = product.ITE_PVP;
+        data.VED_PUNITARIOIVA =
+          product.ITE_IMPUESTO === "2"
+            ? (product.ITE_PVP * 1.12).toFixed(user.EMP_PRECISION)
+            : product.ITE_PVP;
+      }
+
+      setNewProduct([...newProducts, data]);
     }
   }
 
@@ -357,18 +409,12 @@ export default function InvoicesForm({
     );
   }
 
-  function handleClosePDF(i) {
-    setPDF(null);
-  }
-
-  function handleViewPDF() {
+  function handleOpenRide() {
     const currentInvoice = {
       ...invoice,
       ITE_DETALLES: newProducts,
     };
-    console.log(currentInvoice);
-    console.log(newProducts);
-    setPDF(currentInvoice);
+    pdf.openPDF(currentInvoice);
   }
 
   return (
@@ -379,9 +425,6 @@ export default function InvoicesForm({
         handleAddClient={handleAddClient}
       />
       <div className="dashboard__invoice to-left">
-        {invoicePDF ? (
-          <PDF invoice={invoicePDF} handleClosePDF={handleClosePDF}></PDF>
-        ) : null}{" "}
         <div className="invoice__top">
           <AddData
             invoice={invoice}
@@ -420,7 +463,7 @@ export default function InvoicesForm({
             Guardar factura
           </button>
 
-          <button className="btn btn-primary" onClick={handleViewPDF}>
+          <button className="btn btn-primary" onClick={handleOpenRide}>
             RIDE
           </button>
         </div>

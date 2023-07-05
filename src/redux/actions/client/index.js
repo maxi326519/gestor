@@ -1,12 +1,5 @@
 import { db, auth } from "../../../firebase";
-import {
-  collection,
-  doc,
-  addDoc,
-  getDocs,
-  updateDoc,
-  deleteDoc,
-} from "firebase/firestore";
+import { ref, push, set, get, update, remove } from "firebase/database";
 
 export const POST_CLIENT = "ADD_CLIENT";
 export const GET_CLIENTS = "GET_CLIENTS";
@@ -16,22 +9,22 @@ export const DELETE_CLIENT = "DELETE_CLIENT";
 export function postClient(client) {
   return async (dispatch) => {
     try {
-      const clients = collection(db, "users", auth.currentUser.uid, "clients");
-      const newCLient = await addDoc(clients, {
+      const clientsRef = ref(db, `users/${auth.currentUser.uid}/clients`);
+      const newClientRef = push(clientsRef);
+      if (!newClientRef) throw new Error("Error al agregar el cliente");
+
+      const newClientId = newClientRef.key;
+      const newClientData = {
         ...client,
         USU_KEY: auth.currentUser.uid,
-      });
-
-      if (!newCLient) throw new Error("Error al agregar el cliente");
-
-      const saveCLient = {
-        ...client,
-        CLI_CODIGO: newCLient.id,
+        CLI_CODIGO: newClientId,
       };
+
+      await set(newClientRef, newClientData);
 
       return dispatch({
         type: POST_CLIENT,
-        payload: saveCLient,
+        payload: client,
       });
     } catch (err) {
       throw new Error(err);
@@ -42,24 +35,17 @@ export function postClient(client) {
 export function getClients() {
   return async (dispatch) => {
     try {
-      const clientColl = collection(
-        db,
-        "users",
-        auth.currentUser.uid,
-        "clients"
-      );
-      const query = await getDocs(clientColl);
+      const clientsRef = ref(db, `users/${auth.currentUser.uid}/clients`);
+      const snapshot = await get(clientsRef);
 
       let clients = [];
-
-      if (!query.empty) {
-        query.forEach((doc) => {
-          clients.push({
-            ...doc.data(),
-            CLI_CODIGO: doc.id,
-          });
+      snapshot.forEach((childSnapshot) => {
+        clients.push({
+          ...childSnapshot.val(),
+          CLI_CODIGO: childSnapshot.key,
         });
-      }
+      });
+
       dispatch({
         type: GET_CLIENTS,
         payload: clients,
@@ -73,13 +59,8 @@ export function getClients() {
 export function updateClient(id, clientData) {
   return async (dispatch) => {
     try {
-      const clienColl = collection(
-        db,
-        "users",
-        auth.currentUser.uid,
-        "clients"
-      );
-      await updateDoc(doc(clienColl, id), clientData);
+      const clienRef = ref(db, `users/${auth.currentUser.uid}/clients/${id}`);
+      await update(clienRef, clientData);
 
       return dispatch({
         type: UPDATE_CLIENT,
@@ -94,13 +75,8 @@ export function updateClient(id, clientData) {
 export function deleteClient(id) {
   return async (dispatch) => {
     try {
-      const clienColl = collection(
-        db,
-        "users",
-        auth.currentUser.uid,
-        "clients"
-      );
-      await deleteDoc(doc(clienColl, id));
+      const clienRef = ref(db, `users/${auth.currentUser.uid}/clients/${id}`);
+      await remove(clienRef);
 
       return dispatch({
         type: DELETE_CLIENT,

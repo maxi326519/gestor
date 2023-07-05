@@ -52,15 +52,14 @@ export default function Signin() {
         } else if (e.message.includes("user")) {
           setError({ ...error, password: "La contraseña es incorrecta" });
           swal("Error", "Error no se encontro al usuario", "error");
-          console.log(e);
         } else {
           swal(
             "Error",
             "Error al iniciar sesión, intentelo mas tarde",
             "error"
           );
-          console.log(e);
         }
+        console.log(e);
       });
   }
 
@@ -68,11 +67,10 @@ export default function Signin() {
     dispatch(getUserData()).then((d) => {
       if (
         d.payload.EMP_PERFIL.DATOS_PERSONALES &&
-        d.payload.EMP_PERFIL.OTHER_DATA
+        d.payload.EMP_PERFIL.OTROS_DATOS
       ) {
         const year = new Date().getFullYear().toString();
         const month = `0${new Date().getMonth()}`.slice(-2);
-
         Promise.all([
           dispatch(getProducts()),
           dispatch(getClients()),
@@ -94,7 +92,7 @@ export default function Signin() {
           });
       } else {
         dispatch(closeLoading());
-        redirect("/signin/user");
+        redirect("/signin");
       }
     });
   }

@@ -29,7 +29,7 @@ const type = [
   { value: "06", name: "Pasaporte" },
 ];
 
-export default function ClientForm({ addClient, handleAddClient }) {
+export default function ClientForm({ handleAddClient }) {
   const clients = useSelector((state) => state.clients);
   const dispatch = useDispatch();
   const [client, setclient] = useState(initialState);
@@ -39,10 +39,10 @@ export default function ClientForm({ addClient, handleAddClient }) {
   });
 
   useEffect(() => {
-    if(client.CLI_IDENTIFICACION !== ""){
+    if (client.CLI_IDENTIFICACION !== "") {
       handleVerification(client.CLI_IDENTIFICACION);
     }
-  }, [client])
+  }, [client]);
 
   function handleChange(e) {
     const nombre = /^[a-zA-ZÁÉÍÓÚáéíóúñÑ\s]+$/;
@@ -50,7 +50,8 @@ export default function ClientForm({ addClient, handleAddClient }) {
     const correo = /^[\w.@]+$/;
     const telefono = /^[a-zA-Z0-9\s]+$/;
 
-    if (e.target.name === "CLI_IDENTIFICACION") handleVerification(e.target.value);
+    if (e.target.name === "CLI_IDENTIFICACION")
+      handleVerification(e.target.value);
     if (e.target.name === "CLI_EMAIL" && !correo.test(e.target.value))
       return false;
     if (e.target.name === "CLI_NOMBRE" && !nombre.test(e.target.value))
@@ -125,10 +126,7 @@ export default function ClientForm({ addClient, handleAddClient }) {
   }
 
   return (
-    <div
-      className="container__form"
-      style={addClient ? null : { display: "none" }}
-    >
+    <div className="container__form">
       <form className="form to-left" onSubmit={handleSubmit}>
         <div className="form__close">
           <h2>Nuevo Cliente</h2>

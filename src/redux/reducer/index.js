@@ -1,4 +1,4 @@
-/* import {
+import {
   SIGN_IN,
   LOG_IN,
   LOG_OUT,
@@ -22,26 +22,24 @@
   UPDATE_EMAIL,
   DELETE_CLIENT,
   DELETE_PRODUCT,
-} from "../actions"; */
+} from "../actions";
+import { UPDATE_LOCAL_PROFILE_DATA } from "../actions/user";
+import { initRootState } from "../../models/RootState";
+import {
+  DELETE_MOVEMENT,
+  GET_MOVEMENTS,
+  POST_MOVEMENT,
+  UPDATE_MOVEMENT,
+} from "../actions/movimientos";
+import {
+  DELETE_STORE,
+  GET_STORES,
+  POST_STORE,
+  UPDATE_STORE,
+} from "../actions/stores/index";
 
-const initialState = {
-  user: {
-    userDB: {
-      EMP_PERFIL: {},
-    },
-  },
-  clients: [],
-  products: [],
-  invoices: [],
-  loading: false,
-  alert: {
-    text: null,
-    isAcceptFunction: null,
-  },
-};
-
-export const Reducer = (state = initialState, action) => {
-/*   switch (action.type) {
+export const Reducer = (state = { ...initRootState }, action) => {
+  switch (action.type) {
     case SIGN_IN:
       return {
         ...state,
@@ -51,7 +49,10 @@ export const Reducer = (state = initialState, action) => {
     case LOG_IN:
       return {
         ...state,
-        user: action.payload,
+        user: {
+          ...state.user,
+          userDB: action.payload,
+        },
       };
 
     case PERSISTENCE:
@@ -61,7 +62,7 @@ export const Reducer = (state = initialState, action) => {
       };
 
     case LOG_OUT:
-      return initialState;
+      return { ...initRootState };
 
     case CONFIRM_REGISTER:
       return {
@@ -69,6 +70,15 @@ export const Reducer = (state = initialState, action) => {
         user: {
           ...state.user,
           userDB: { ...state.user.userDB, ...action.payload },
+        },
+      };
+
+    case UPDATE_LOCAL_PROFILE_DATA:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          userDB: action.payload,
         },
       };
 
@@ -103,7 +113,7 @@ export const Reducer = (state = initialState, action) => {
           ...state.user,
           userDB: {
             ...state.user.userDB,
-            EMP_LOGO: action.payload,
+            EMP_ARCHIVO: action.payload,
           },
         },
       };
@@ -113,7 +123,10 @@ export const Reducer = (state = initialState, action) => {
         ...state,
         user: {
           ...state.user,
-          EMP_EMAIL: action.payload,
+          userBD: {
+            ...state.user.userDB,
+            EMP_EMAIL: action.payload,
+          },
         },
       };
 
@@ -215,7 +228,82 @@ export const Reducer = (state = initialState, action) => {
         products: state.products.filter((p) => p.ITE_CODIGO !== action.payload),
       };
 
+    /* STORES */
+    case POST_STORE:
+      return {
+        ...state,
+        stores: [...state.stores, action.payload],
+      };
+
+    case GET_STORES:
+      return {
+        ...state,
+        stores: action.payload,
+      };
+
+    case UPDATE_STORE:
+      return {
+        ...state,
+        stores: state.stores.data.map((mov) =>
+          mov.LOC_ESTABLECIMIENTO === action.payload.LOC_ESTABLECIMIENTO
+            ? action.payload
+            : mov
+        ),
+      };
+
+    case DELETE_STORE:
+      return {
+        ...state,
+        stores: state.stores.data.filter(
+          (mov) => mov.LOC_ESTABLECIMIENTO !== action.payload
+        ),
+      };
+    /* STORES */
+
+    /* MOVEMENTS */
+    case POST_MOVEMENT:
+      return {
+        ...state,
+        movements: [...state.movements, action.payload],
+      };
+
+    case GET_MOVEMENTS:
+      return {
+        ...state,
+        movements: {
+          filters: {
+            year: action.payload.filters.year,
+            month: action.payload.filters.month,
+            day: action.payload.filters.day,
+          },
+          data: action.payload.data,
+        },
+      };
+
+    case UPDATE_MOVEMENT:
+      return {
+        ...state,
+        movements: {
+          ...state.movements,
+          data: state.movements.data.map((mov) =>
+            mov.MCA_CODIGO === action.payload.MCA_CODIGO ? action.payload : mov
+          ),
+        },
+      };
+
+    case DELETE_MOVEMENT:
+      return {
+        ...state,
+        movements: {
+          ...state.movements,
+          data: state.movements.data.filter(
+            (mov) => mov.MCA_CODIGO !== action.payload
+          ),
+        },
+      };
+    /* MOVEMENTS */
+
     default:
       return state;
-  } */
+  }
 };

@@ -1,12 +1,7 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  changeEmail,
-  closeLoading,
-  openLoading,
-  verifyEmailVerificationCode,
-} from "../../redux/actions";
+import { changeEmail, closeLoading, openLoading } from "../../redux/actions";
 import swal from "sweetalert";
 
 import styles from "./ResetEmail.module.css";
@@ -14,6 +9,7 @@ import styles from "./ResetEmail.module.css";
 export default function ResetEmail() {
   const dispatch = useDispatch();
   const redirect = useNavigate();
+  const user = useSelector((state) => state.user);
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
 
@@ -30,7 +26,7 @@ export default function ResetEmail() {
     event.preventDefault();
     if (!error) {
       dispatch(openLoading());
-      dispatch(changeEmail(email))
+      dispatch(changeEmail(email, user.userDB.EMP_RUC))
         .then(() => {
           dispatch(closeLoading());
           swal("Actualizado", "Se cambio el correco con exito", "success").then(
@@ -106,7 +102,7 @@ export default function ResetEmail() {
           <button className="btn btn-success" type="submit">
             cambiar
           </button>
-          <Link to="/login">{"< Volver"}</Link>
+          <Link to="/dashboard/invoices/add">{"< Volver"}</Link>
         </div>
       </form>
     </div>

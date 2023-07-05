@@ -6,7 +6,7 @@ import {
   openLoading,
   closeLoading,
   uploadFile,
-} from "../../../../redux/actions";
+} from "../../../redux/actions";
 
 import "./OtherData.css";
 

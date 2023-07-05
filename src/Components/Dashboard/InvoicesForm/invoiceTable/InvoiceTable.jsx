@@ -9,7 +9,7 @@ export default function InvoiceTable({
   newProducts,
   handleChangeProduct,
   handleChange,
-  handleProductRemove
+  handleProductRemove,
 }) {
   const [isDisabled, setDisabled] = useState(true);
 
@@ -26,59 +26,72 @@ export default function InvoiceTable({
 
   return (
     <div className="invoice-table">
-      <div
-        className={`invoice-row invoice-first-row ${
-          user.EMP_AUTOMATICO === 1 ? "detCantidad" : ""
-        }`}
-      >
-        <span>Borrar</span>
-        <span>Codigo</span>
-        <span>Descripcion</span>
-        {user.EMP_AUTOMATICO === 1 ? <span>Det. Cantidad</span> : null}
-        <span>Cantidad</span>
-        <span>Descuento %</span>
-        <span>Precio unitario</span>
-        <span>Precio unitario + IVA</span>
-        <span>Valor</span>
-      </div>
-      <div className="data-table">
-        {newProducts?.map((p) => (
+      <div className="product-table">
+        <div>
           <div
-            key={p.ITE_CODIGO}
-            className={`invoice-row ${
+            className={`invoice-row invoice-first-row ${
               user.EMP_AUTOMATICO === 1 ? "detCantidad" : ""
             }`}
           >
-            <button className="btn btn-danger" onClick={() => handleProductRemove(p)}>-</button>
-            <span>{p.ITE_CODIGO}</span>
-            <span>{p.ITE_DESCRIPCION}</span>
-            {user.EMP_AUTOMATICO === 1 ? <span>{p.detCantidad}</span> : null}
-            <input
-              className="amount"
-              type="number"
-              name="VED_CANTIDAD"
-              value={p.VED_CANTIDAD}
-              min={1}
-              onChange={(e) => handleChangeProduct(e, p.ITE_CODIGO)}
-            />
-            <input
-              className="amount"
-              type="number"
-              name="VED_DESCUENTO"
-              value={p.VED_DESCUENTO}
-              onChange={(e) => descuentoValidation(e, p.ITE_CODIGO)}
-            />
-            <span>{Number(p.VED_PUNITARIO).toFixed(user.EMP_PRECISION)}</span>
-            <input
-              className="amount"
-              type="number"
-              name="VED_PUNITARIOIVA"
-              value={p.VED_PUNITARIOIVA}
-              onChange={(e) => handleChangeProduct(e, p.ITE_CODIGO)}
-            />
-            <span>{Number(p.VED_VALOR).toFixed(2)}</span>
+            <span>Borrar</span>
+            <span>Codigo</span>
+            <span>Descripcion</span>
+            {user.EMP_AUTOMATICO === 1 ? <span>Det. Cantidad</span> : null}
+            <span>Cantidad</span>
+            <span>Descuento %</span>
+            <span>Precio unitario</span>
+            <span>Precio unitario + IVA</span>
+            <span>Valor</span>
           </div>
-        ))}
+          <div className="data-table">
+            {newProducts?.map((p) => (
+              <div
+                key={p.ITE_CODIGO}
+                className={`invoice-row ${
+                  user.EMP_AUTOMATICO === 1 ? "detCantidad" : ""
+                }`}
+              >
+                <button
+                  className="btn btn-danger"
+                  onClick={() => handleProductRemove(p)}
+                >
+                  -
+                </button>
+                <span>{p.ITE_CODIGO}</span>
+                <span>{p.ITE_DESCRIPCION}</span>
+                {user.EMP_AUTOMATICO === 1 ? (
+                  <span>{p.detCantidad}</span>
+                ) : null}
+                <input
+                  className="amount"
+                  type="number"
+                  name="VED_CANTIDAD"
+                  value={p.VED_CANTIDAD}
+                  min={1}
+                  onChange={(e) => handleChangeProduct(e, p.ITE_CODIGO)}
+                />
+                <input
+                  className="amount"
+                  type="number"
+                  name="VED_DESCUENTO"
+                  value={p.VED_DESCUENTO}
+                  onChange={(e) => descuentoValidation(e, p.ITE_CODIGO)}
+                />
+                <span>
+                  {Number(p.VED_PUNITARIO).toFixed(user.EMP_PRECISION)}
+                </span>
+                <input
+                  className="amount"
+                  type="number"
+                  name="VED_PUNITARIOIVA"
+                  value={p.VED_PUNITARIOIVA}
+                  onChange={(e) => handleChangeProduct(e, p.ITE_CODIGO)}
+                />
+                <span>{Number(p.VED_VALOR).toFixed(2)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
       <div className="adicional">
         <div className="data-aditional">

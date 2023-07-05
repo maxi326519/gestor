@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import swal from "sweetalert";
-import { storage } from "../../../../firebase";
+import { storage } from "../../firebase";
 import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
 import {
   confirmFacturaElectronica,
   openLoading,
   closeLoading,
-} from "../../../../redux/actions";
+} from "../../redux/actions";
 import "./ElectronicInvoice.css";
 import { useNavigate } from "react-router-dom";
 

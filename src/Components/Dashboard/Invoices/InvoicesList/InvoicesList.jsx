@@ -19,6 +19,7 @@ import logout from "../../../../assets/svg/logout.svg";
 
 import "../../Dashboard.css";
 import "./InvoicesList.css";
+import { usePDF } from "../../PDF/usePDF";
 
 export default function InvoicesList({
   handleAddInvoice,
@@ -27,9 +28,10 @@ export default function InvoicesList({
 }) {
   const redirect = useNavigate();
   const dispatch = useDispatch();
-  const [invoicePDF, setPDF] = useState(null);
+  const pdf = usePDF();
   const invoices = useSelector((state) => state.invoices);
   const user = useSelector((state) => state.user.userDB);
+  const [invoicePDF, setPDF] = useState(null);
   const [rows, setRows] = useState([]);
   const [disabled, setDisabled] = useState(true);
   const [isChecked, setCheck] = useState([]);
@@ -64,8 +66,6 @@ export default function InvoicesList({
     setYears(years);
     setDays(dayArr);
   }, [invoices]);
-
-  useEffect(() => console.log(isChecked), [isChecked]);
 
   function handleChange(e) {
     const value = e.target.value;
@@ -106,37 +106,21 @@ export default function InvoicesList({
       })
         .then(async (r) => {
           if (r) {
-            let error = 0;
-
+            dispatch(openLoading());
             for (let i = 0; i < isChecked.length; i++) {
               const invoiceAuth = rows.find(
                 (invoice) => invoice.VEN_CODIGO === isChecked[i]
               );
 
-              dispatch(openLoading());
               await dispatch(
                 updateInvoice(isChecked[i], {
                   ...invoiceAuth,
                   VEN_ESTADO: 3,
                 })
-              ).catch(error++);
+              );
             }
 
             dispatch(closeLoading());
-
-            if (error === 1) {
-              swal(
-                "Error",
-                `Hubo un inconveniente al intentar autorizar una factura, intentelo mas tarde`,
-                "error"
-              );
-            } else {
-              swal(
-                "Actualizado",
-                `Se actualizaron ${isChecked.length} facturas con exito`,
-                "success"
-              );
-            }
             setAll(false);
             setCheck([]);
             handleCheck();
@@ -146,7 +130,7 @@ export default function InvoicesList({
           dispatch(closeLoading());
           swal(
             "Error",
-            `Hubo un inconveniente al intentar autorizar una factura, intentelo mas tarde`,
+            `Hubo un error al intentar autorizar una factura, intentelo mas tarde`,
             "error"
           );
           console.log(e);
@@ -184,10 +168,6 @@ export default function InvoicesList({
 
   function handleChangeFilter(e) {
     setFilter({ ...filter, [e.target.name]: e.target.value });
-  }
-
-  function handleViewPDF(i) {
-    setPDF(i);
   }
 
   function handleClosePDF(i) {
@@ -362,9 +342,7 @@ export default function InvoicesList({
               <InvoiceCard
                 key={invoice.VEN_CODIGO}
                 invoice={invoice}
-                viewPDF={() => {
-                  handleViewPDF(invoice);
-                }}
+                viewPDF={() => pdf.openPDF(invoice)}
                 disabled={disabled}
                 isChecked={isChecked}
                 setCheck={setCheck}
