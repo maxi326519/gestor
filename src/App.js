@@ -20,7 +20,7 @@ import ResetPassword from "./Components/ResetPassword/ResetPassword";
 import ResetEmail from "./Components/ResetEmail/ResetEmail";
 import Profile from "./Components/Dashboard/Profile/Profile";
 import InvoicesForm from "./Components/Dashboard/InvoicesForm/InvoicesForm";
-import Reports from "./Components/Dashboard/Reports/Reports";
+import Movements from "./Components/Dashboard/Movements/Movements";
 
 import Invoices from "./Components/Dashboard/Invoices/Invoices";
 import Products from "./Components/Dashboard/Products/Products";
@@ -203,9 +203,9 @@ function App() {
           }
         />
         <Route
-          path="/dashboard/reports"
+          path="/dashboard/movements"
           element={
-            <Reports
+            <Movements
               handleExportInvoice={handleExportInvoice}
               handleAddProduct={handleAddProduct}
               handleAddClient={handleAddClient}

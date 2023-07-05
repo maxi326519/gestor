@@ -1,7 +1,5 @@
-import React from "react";
-
 import SideBar from "../SideBar/SideBar";
-import ReportsList from "./ReportsList/ReportsList";
+import MovementsList from "./MovementsList/MovementsList";
 
 import "../Dashboard.css";
 
@@ -12,7 +10,7 @@ interface Props {
   handleAddEstablecimiento: () => void;
 }
 
-export default function Reports({
+export default function Movements({
   handleAddProduct,
   handleAddClient,
   handleProfile,
@@ -26,10 +24,7 @@ export default function Reports({
         handleAddEstablecimiento={handleAddEstablecimiento}
       />
       <div className="dashboard__container to-left">
-        <ReportsList
-          handleAddProduct={handleAddProduct}
-          handleProfile={handleProfile}
-        />
+        <MovementsList handleProfile={handleProfile} />
       </div>
     </div>
   );

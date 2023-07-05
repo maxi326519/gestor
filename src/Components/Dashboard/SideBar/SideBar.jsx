@@ -10,8 +10,9 @@ import invoices from "../../../assets/svg/invoices.svg";
 import list from "../../../assets/svg/list.svg";
 import addSquere from "../../../assets/svg/add-square.svg";
 import options from "../../../assets/svg/options.svg";
-import reports from "../../../assets/svg/reports.svg";
 import stores from "../../../assets/svg/stores.svg";
+import movements from "../../../assets/svg/movements.svg";
+import reports from "../../../assets/svg/reports.svg";
 
 export default function SideBar({
   handleAddProduct,
@@ -24,7 +25,7 @@ export default function SideBar({
     products: false,
     clients: false,
     stores: false,
-    reports: false,
+    movements: false,
   };
   const [accordion, setAccordion] = useState(initialState);
   const [isOpen, setOpen] = useState(false);
@@ -136,19 +137,19 @@ export default function SideBar({
       ],
     },
     {
-      label: "Reportes",
+      label: "Movimientos",
       acordion: {
-        name: "reports",
-        value: accordion.reports,
+        name: "movements",
+        value: accordion.movements,
       },
-      icon: { svg: reports, alt: "reports" },
+      icon: { svg: movements, alt: "movements" },
       subItems: [
         {
           type: "Link",
           value: "list",
           label: "Listado",
           icon: { svg: list, alt: "list" },
-          to: "/dashboard/reports",
+          to: "/dashboard/movements",
         },
       ],
     },

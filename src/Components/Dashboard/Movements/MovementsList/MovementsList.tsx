@@ -2,35 +2,33 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logOut } from "../../../../redux/actions";
+import { RootState } from "../../../../models/RootState";
+import { MovCabecera } from "../../../../models/movements";
+import swal from "sweetalert";
+
+import MovementsRow from "./MovementsRow/MovementsRow";
 
 import logout from "../../../../assets/svg/logout.svg";
-import swal from "sweetalert";
-import ReportsRow from "./ReportsRow/ReportsRow";
-import { MovCabecera } from "../../../../models/reportes";
-import { RootState } from "../../../../models/RootState";
+import useMovimientos from "../../../../hooks/useMovimientos";
 
 interface Props {
-  handleAddProduct: () => void;
   handleProfile: () => void;
 }
 
-export default function ProductList({
-  handleAddProduct,
-  handleProfile,
-}: Props) {
+export default function MovementsList({ handleProfile }: Props) {
   const redirect = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user.userDB);
-  const reports = useSelector((state: RootState) => state.reports);
+  const { movimientos, actions } = useMovimientos();
   const [rows, setRows] = useState([]);
 
-  useEffect(() => setRows(reports), [reports]);
+  useEffect(() => setRows(movimientos), [movimientos]);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const value = event.target.value;
 
     setRows(
-      reports.filter((report) => {
+      movimientos.filter((movement) => {
         if (value === "") return true;
         return false;
       })
@@ -58,12 +56,12 @@ export default function ProductList({
     });
   }
 
-  function handleVerDetalles(): void {}
+  function handleVerDetalles() {}
 
   return (
     <div className="dashboardList">
       <div className="perfil">
-        <h3>Reportes</h3>
+        <h3>Movimientos</h3>
         <button
           className="btn btn-primary btn-sesion"
           type="button"
@@ -78,7 +76,7 @@ export default function ProductList({
       <div className="dashboardList__searchBar">
         <input
           className="form-control"
-          placeholder="Buscar reporte"
+          placeholder="Buscar movemente"
           onChange={handleChange}
         />
       </div>
@@ -95,13 +93,13 @@ export default function ProductList({
         <div className="contentCard">
           {rows.length <= 0 ? (
             <div className="listEmpty">
-              <span>No hay productos</span>
+              <span>No hay movimientos</span>
             </div>
           ) : (
-            rows?.map((movReport: MovCabecera) => (
-              <ReportsRow
-                key={movReport.MCA_CODIGO}
-                movReport={movReport}
+            rows?.map((movimiento: MovCabecera) => (
+              <MovementsRow
+                key={movimiento.MCA_CODIGO}
+                movimiento={movimiento}
                 handleVerDetalles={handleVerDetalles}
               />
             ))
