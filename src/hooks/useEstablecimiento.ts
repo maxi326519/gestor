@@ -7,7 +7,7 @@ import {
   getStores,
   setStore,
   updateStore,
-} from "../redux/actions/stores/indes";
+} from "../redux/actions/stores/index";
 
 export interface UseEstablecimiento {
   establecimientos: Establecimiento[];

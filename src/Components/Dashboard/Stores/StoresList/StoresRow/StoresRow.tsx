@@ -39,6 +39,7 @@ export default function StoresRow({
   return (
     <div className="item-card">
       <input
+        name="LOC_ESTABLECIMIENTO"
         className={`form-control ${disabled ? "input-disabled" : ""}`}
         value={establecimientoEditable.LOC_ESTABLECIMIENTO}
         onChange={handleChange}
@@ -47,6 +48,7 @@ export default function StoresRow({
         required
       />
       <input
+        name="LOC_ESTADO"
         className={`form-control ${disabled ? "input-disabled" : ""}`}
         value={establecimientoEditable.LOC_ESTADO}
         onChange={handleChange}
@@ -55,6 +57,7 @@ export default function StoresRow({
         required
       />
       <input
+        name="LOC_NOMBRE"
         className={`form-control ${disabled ? "input-disabled" : ""}`}
         value={establecimientoEditable.LOC_NOMBRE}
         onChange={handleChange}
@@ -63,6 +66,7 @@ export default function StoresRow({
         required
       />
       <input
+        name="LOC_NUMERO"
         className={`form-control ${disabled ? "input-disabled" : ""}`}
         value={establecimientoEditable.LOC_NUMERO}
         onChange={handleChange}
@@ -71,6 +75,7 @@ export default function StoresRow({
         required
       />
       <input
+        name="LOC_PTOEMISION"
         className={`form-control ${disabled ? "input-disabled" : ""}`}
         value={establecimientoEditable.LOC_PTOEMISION}
         onChange={handleChange}
@@ -79,6 +84,7 @@ export default function StoresRow({
         required
       />
       <input
+        name="LOC_TELEFONO"
         className={`form-control ${disabled ? "input-disabled" : ""}`}
         value={establecimientoEditable.LOC_TELEFONO}
         onChange={handleChange}

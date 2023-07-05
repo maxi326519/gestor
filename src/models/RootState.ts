@@ -4,11 +4,12 @@ export interface RootState {
   invoices: Array<any>;
   clients: Array<any>;
   products: Array<any>;
-  stores: [],
-  reports: [],
+  stores: [];
+  movements: [];
 }
 
 export const initRootState: RootState = {
+  loading: false,
   user: {
     userDB: {
       EMP_PERFIL: {},
@@ -18,6 +19,5 @@ export const initRootState: RootState = {
   clients: [],
   products: [],
   stores: [],
-  reports: [],
-  loading: false,
+  movements: [],
 };

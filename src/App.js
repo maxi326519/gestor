@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { auth, db } from "./firebase";
+import { getStores } from "./redux/actions/stores/index";
 import {
   persistence,
   getUserData,
@@ -36,7 +37,6 @@ import Signin from "./Components/Signin/Signin";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import { getStores } from "./redux/actions/stores/indes";
 
 function App() {
   const redirect = useNavigate();

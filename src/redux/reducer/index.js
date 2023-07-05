@@ -26,18 +26,17 @@ import {
 import { UPDATE_LOCAL_PROFILE_DATA } from "../actions/user";
 import { initRootState } from "../../models/RootState";
 import {
-  DELETE_MOV_REPORT,
-  GET_MOV_REPORTS,
-  POST_MOV_REPORT,
-  UPDATE_MOV_REPORT,
-} from "../actions/reports";
-import { MovCabecera } from "../../models/reportes";
+  DELETE_MOVEMENT,
+  GET_MOVEMENTS,
+  POST_MOVEMENT,
+  UPDATE_MOVEMENT,
+} from "../actions/movimientos";
 import {
   DELETE_STORE,
   GET_STORES,
   POST_STORE,
   UPDATE_STORE,
-} from "../actions/stores/indes";
+} from "../actions/stores/index";
 
 export const Reducer = (state = { ...initRootState }, action) => {
   switch (action.type) {
@@ -261,17 +260,17 @@ export const Reducer = (state = { ...initRootState }, action) => {
       };
     /* STORES */
 
-    /* REPORTS */
-    case POST_MOV_REPORT:
+    /* MOVEMENTS */
+    case POST_MOVEMENT:
       return {
         ...state,
-        reports: [...state.reports, action.payload],
+        movements: [...state.movements, action.payload],
       };
 
-    case GET_MOV_REPORTS:
+    case GET_MOVEMENTS:
       return {
         ...state,
-        reports: {
+        movements: {
           filters: {
             year: action.payload.filters.year,
             month: action.payload.filters.month,
@@ -281,28 +280,28 @@ export const Reducer = (state = { ...initRootState }, action) => {
         },
       };
 
-    case UPDATE_MOV_REPORT:
+    case UPDATE_MOVEMENT:
       return {
         ...state,
-        reports: {
-          ...state.reports,
-          data: state.reports.data.map((mov) =>
+        movements: {
+          ...state.movements,
+          data: state.movements.data.map((mov) =>
             mov.MCA_CODIGO === action.payload.MCA_CODIGO ? action.payload : mov
           ),
         },
       };
 
-    case DELETE_MOV_REPORT:
+    case DELETE_MOVEMENT:
       return {
         ...state,
-        reports: {
-          ...state.reports,
-          data: state.reports.data.filter(
+        movements: {
+          ...state.movements,
+          data: state.movements.data.filter(
             (mov) => mov.MCA_CODIGO !== action.payload
           ),
         },
       };
-    /* REPORTS */
+    /* MOVEMENTS */
 
     default:
       return state;
