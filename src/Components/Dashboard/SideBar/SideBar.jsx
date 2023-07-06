@@ -26,6 +26,7 @@ export default function SideBar({
     clients: false,
     stores: false,
     movements: false,
+    kardex: false,
   };
   const [accordion, setAccordion] = useState(initialState);
   const [isOpen, setOpen] = useState(false);
@@ -150,6 +151,23 @@ export default function SideBar({
           label: "Listado",
           icon: { svg: list, alt: "list" },
           to: "/dashboard/movements",
+        },
+      ],
+    },
+    {
+      label: "Kardex",
+      acordion: {
+        name: "kardex",
+        value: accordion.kardex,
+      },
+      icon: { svg: reports, alt: "kardex" },
+      subItems: [
+        {
+          type: "Link",
+          value: "list",
+          label: "Listado",
+          icon: { svg: list, alt: "list" },
+          to: "/dashboard/kardex",
         },
       ],
     },

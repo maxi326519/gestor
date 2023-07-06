@@ -37,6 +37,7 @@ import Signin from "./Components/Signin/Signin";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
+import Kardex from "./Components/Dashboard/Kardex/Kardex";
 
 function App() {
   const redirect = useNavigate();
@@ -206,6 +207,18 @@ function App() {
           path="/dashboard/movements"
           element={
             <Movements
+              handleExportInvoice={handleExportInvoice}
+              handleAddProduct={handleAddProduct}
+              handleAddClient={handleAddClient}
+              handleProfile={handleProfile}
+              handleAddEstablecimiento={handleAddEstablecimiento}
+            />
+          }
+        />
+        <Route
+          path="/dashboard/kardex"
+          element={
+            <Kardex
               handleExportInvoice={handleExportInvoice}
               handleAddProduct={handleAddProduct}
               handleAddClient={handleAddClient}
