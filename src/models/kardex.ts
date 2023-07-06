@@ -1,5 +1,5 @@
 export interface ReporteKardex {
-  KDX_CODIGO: number;
+  KDX_CODIGO: string;
   KDX_TIPO: number;
   MOV_CODIGO: MovCodigo;
   KDX_DOCUMENTO: number;
@@ -16,6 +16,8 @@ export interface ReporteKardex {
   KDX_USUKEY: string;
 }
 
+export interface FiltrosKardex {}
+
 export enum MovCodigo {
   INGRESO = 1,
   EGRESO = 2,
@@ -27,7 +29,7 @@ export enum KdxFGenerado {
 }
 
 export const initReporteKardex: ReporteKardex = {
-  KDX_CODIGO: 0,
+  KDX_CODIGO: "",
   KDX_TIPO: 0,
   MOV_CODIGO: MovCodigo.EGRESO,
   KDX_DOCUMENTO: 0,
@@ -43,3 +45,5 @@ export const initReporteKardex: ReporteKardex = {
   KDX_COSTO: 0,
   KDX_USUKEY: "",
 };
+
+export const initFiltrosKardex: FiltrosKardex = {};

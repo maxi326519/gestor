@@ -1,3 +1,5 @@
+import { FiltrosKardex, ReporteKardex, initFiltrosKardex } from "./kardex";
+
 export interface RootState {
   loading: boolean;
   user: any;
@@ -6,6 +8,10 @@ export interface RootState {
   products: Array<any>;
   stores: [];
   movements: [];
+  kardex: {
+    filters: FiltrosKardex,
+    data: ReporteKardex[]
+  }
 }
 
 export const initRootState: RootState = {
@@ -20,4 +26,8 @@ export const initRootState: RootState = {
   products: [],
   stores: [],
   movements: [],
+  kardex: {
+    filters: initFiltrosKardex,
+    data: []
+  }
 };

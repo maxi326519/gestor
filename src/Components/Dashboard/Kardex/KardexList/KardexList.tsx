@@ -3,38 +3,39 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { closeLoading, logOut, openLoading } from "../../../../redux/actions";
 import { RootState } from "../../../../models/RootState";
-import { MovCabecera } from "../../../../models/movements";
+import { ReporteKardex } from "../../../../models/kardex";
 import swal from "sweetalert";
 
-import MovementsRow from "./MovementsRow/MovementsRow";
+import KardexRow from "./KardexRow/KardexRow";
+import DateFilter from "../../../../component/DateFilter/DateFilter";
+import useKardex from "../../../../hooks/useKardex";
 
 import logout from "../../../../assets/svg/logout.svg";
-import useMovimientos from "../../../../hooks/useMovimientos";
-import DateFilter from "../../../../component/DateFilter/DateFilter";
 
 interface Filter {
   year: string;
   month: string | null;
   day: string | null;
 }
+
 interface Props {
   handleProfile: () => void;
 }
 
-export default function MovementsList({ handleProfile }: Props) {
+export default function KardexList({ handleProfile }: Props) {
   const redirect = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user.userDB);
-  const { movimientos, actions } = useMovimientos();
-  const [rows, setRows] = useState([]);
+  const { kardexList, actions } = useKardex();
+  const [rows, setRows] = useState<ReporteKardex[]>([]);
 
-  useEffect(() => setRows(movimientos), [movimientos]);
+  useEffect(() => setRows(kardexList), [kardexList]);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const value = event.target.value;
 
     setRows(
-      movimientos.filter((movement) => {
+      kardexList.filter((kardex) => {
         if (value === "") return true;
         return false;
       })
@@ -64,7 +65,7 @@ export default function MovementsList({ handleProfile }: Props) {
 
   function handleVerDetalles() {}
 
-  function handleObtenerMovimientos(filter: Filter) {
+  function handleObtenerKardex(filter: Filter) {
     dispatch<any>(openLoading());
     actions
       .obtener(filter.year, filter.month, filter.day)
@@ -74,7 +75,7 @@ export default function MovementsList({ handleProfile }: Props) {
   return (
     <div className="dashboardList">
       <div className="perfil">
-        <h3>Movimientos</h3>
+        <h3>Kardex</h3>
         <button
           className="btn btn-primary btn-sesion"
           type="button"
@@ -89,34 +90,34 @@ export default function MovementsList({ handleProfile }: Props) {
       <div className="dashboardList__searchBar">
         <input
           className="form-control"
-          placeholder="Buscar movimient"
+          placeholder="Buscar kardex"
           onChange={handleChange}
         />
-        <DateFilter
-          years={[2023]}
-          handleFilterDate={handleObtenerMovimientos}
-        />
+        <DateFilter years={[2023]} handleFilterDate={handleObtenerKardex} />
       </div>
       <div className="dashboardList__grid">
         <div className="product-card first-row">
-          <span>Codigo</span>
           <span>Fecha</span>
-          <span>Estado</span>
-          <span>Movimiento</span>
-          <span>Observaciones</span>
           <span>Tipo</span>
-          <span>Detalles</span>
+          <span>Documento</span>
+          <span>Codigo de producto</span>
+          <span>Local</span>
+          <span>Cantidad</span>
+          <span>Precio unitario</span>
+          <span>Saldo</span>
+          <span>Costo</span>
+          <span>Descripcion</span>
         </div>
         <div className="contentCard">
           {rows.length <= 0 ? (
             <div className="listEmpty">
-              <span>No hay movimientos</span>
+              <span>No hay kardexs</span>
             </div>
           ) : (
-            rows?.map((movimiento: MovCabecera) => (
-              <MovementsRow
-                key={movimiento.MCA_CODIGO}
-                movimiento={movimiento}
+            rows?.map((kardex: ReporteKardex) => (
+              <KardexRow
+                key={kardex.KDX_CODIGO}
+                kardex={kardex}
                 handleVerDetalles={handleVerDetalles}
               />
             ))
