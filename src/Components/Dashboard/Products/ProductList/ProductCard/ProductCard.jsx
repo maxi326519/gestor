@@ -24,6 +24,7 @@ export default function ProductCard({ product }) {
   ];
 
   function handleEdit() {
+    if (disabled) setProduct(product);
     setDisabled(!disabled);
   }
 
@@ -148,6 +149,14 @@ export default function ProductCard({ product }) {
         <option value="0">No</option>
         <option value="2">Si</option>
       </select>
+      <input
+        className={`form-control ${disabled ? "input-disabled" : ""}`}
+        name="ITE_CANTIDAD"
+        value={editProduct.ITE_CANTIDAD || 0}
+        onChange={handleChange}
+        disabled={disabled}
+        required
+      />
       <div className="edit-buttons">
         <button
           className={`btn ${disabled ? "btn-primary" : "btn-success"}`}

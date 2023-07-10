@@ -107,7 +107,6 @@ const formasDePago = [
 
 // Create Document Component
 export default function PDF({ invoice, user, barCode }) {
-
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -221,16 +220,18 @@ export default function PDF({ invoice, user, barCode }) {
                 {p.ITE_CODIGO}
               </Text>
               <Text style={{ ...styles.text, width: "60px" }}>
-                {Number(Number(p.VED_CANTIDAD).toFixed(2)).toFixed(2)}
+                {Number(Number(p.VED_CANTIDAD).toFixed(2))}
               </Text>
               <Text style={{ ...styles.text, flexGrow: "1" }}>
                 {p.ITE_DESCRIPCION}
               </Text>
               <Text style={{ ...styles.text, width: "60px" }}>
-                {Number(Number(p.VED_PUNITARIO).toFixed(user.EMP_PRECISION)).toFixed(2)}
+                {Number(
+                  Number(p.VED_PUNITARIO).toFixed(user.EMP_PRECISION)
+                ).toFixed(2)}
               </Text>
               <Text style={{ ...styles.text, width: "70px" }}>
-                {p.VED_DESCUENTO.toFixed(2).toFixed(2)}
+                {p.VED_DESCUENTO.toFixed(2)}
               </Text>
               <Text style={{ ...styles.text, width: "80px" }}>
                 {Number(p.VED_VALOR).toFixed(2)}

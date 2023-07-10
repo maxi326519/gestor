@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import swal from "sweetalert";
-import clave2 from "../../../functions/Clave.ts";
+import { ref, get } from "firebase/database";
+import { usePDF } from "../PDF/usePDF.js";
+import { auth, db } from "../../../firebase.js";
 import {
   postInvoice,
   updateUserData,
   openLoading,
   closeLoading,
 } from "../../../redux/actions";
-import { ref, get } from "firebase/database";
+import swal from "sweetalert";
+import clave2 from "../../../functions/Clave.ts";
+import useInvoice from "../../../hooks/useInvoice";
 
 import SideBar from "../SideBar/SideBar";
 import AddData from "./AddData/AddData";
@@ -18,8 +21,6 @@ import AddProduct from "./AddProduct/AddProduct";
 import AddClient from "./AddClient/AddClient";
 
 import "./InvoicesForm.css";
-import { usePDF } from "../PDF/usePDF.js";
-import { auth, db } from "../../../firebase.js";
 
 const initialInvoice = {
   CLI_CODIGO: 0,
@@ -80,6 +81,7 @@ export default function InvoicesForm({
   const dispatch = useDispatch();
   const pdf = usePDF();
   const user = useSelector((state) => state.user.userDB);
+  const invoices = useInvoice();
   const [formProduct, setFormproduct] = useState(false);
   const [formClient, setFormClient] = useState(false);
   const [newProducts, setNewProduct] = useState([]);
@@ -175,7 +177,7 @@ export default function InvoicesForm({
               `00${newInvoice.VEN_ESTABLECIMIENTO}`.slice(-3),
               `00${newInvoice.VEN_PTOEMISION}`.slice(-3),
               Number(user.EMP_CODIGO)
-            )
+            );
             handlePostInvoice(newInvoice).catch(() => {
               dispatch(closeLoading());
               swal(
@@ -207,14 +209,17 @@ export default function InvoicesForm({
   }
 
   async function handlePostInvoice(invoice) {
-    return dispatch(postInvoice(invoice)).then(() => {
+    return invoices.cargarFacturaDeVenta(invoice).then(() => {
       dispatch(
         updateUserData({
           EMP_NUMERO: Number(invoice.VEN_NUMERO) + 1,
           EMP_SECUENCIAL: Number(user.EMP_SECUENCIAL) + 1,
         })
       ).then(() => {
+        // MOSTRAR EL PDF
         pdf.openPDF(invoice);
+
+        // REINICIAR LOS DATOS
         setInvoice({
           ...initialInvoice,
           VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
@@ -308,6 +313,7 @@ export default function InvoicesForm({
         ITE_BARRAS: product.ITE_BARRAS,
         ITE_CODIGO: product.ITE_CODIGO,
         ITE_DESCRIPCION: product.ITE_DESCRIPCION,
+        ITE_CANTIDAD: product.ITE_CANTIDAD,
         VED_CANTIDAD: 1,
         VED_DESCUENTO: 0,
         VED_IMPUESTO: product.ITE_IMPUESTO,

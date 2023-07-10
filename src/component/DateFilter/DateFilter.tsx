@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import styles from "./DateFilter.module.css";
 
 const months = [
-  { value: "00", name: "Todos" },
+  { value: "", name: "Todos" },
   { value: "01", name: "Enero" },
   { value: "02", name: "Febrero" },
   { value: "03", name: "Marzo" },
@@ -39,7 +39,7 @@ export default function DateFilter({ years, handleFilterDate }: Porps) {
 
   useEffect(() => {
     // If any month selected
-    if (filter.month !== "00") {
+    if (filter.month !== "") {
       // Number of days
       var days = new Date(
         Number(filter.year),
@@ -57,7 +57,11 @@ export default function DateFilter({ years, handleFilterDate }: Porps) {
   }, [filter]);
 
   function handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
-    setFilter({ ...filter, [event.target.name]: event.target.value });
+    if (event.target.name === "month" && event.target.value === "") {
+      setFilter({ ...filter, month: "", day: "" });
+    } else {
+      setFilter({ ...filter, [event.target.name]: event.target.value });
+    }
   }
 
   function handleApply() {
@@ -114,7 +118,7 @@ export default function DateFilter({ years, handleFilterDate }: Porps) {
           value={filter.day || ""}
           onChange={handleChange}
         >
-          <option value="00">Todos</option>
+          <option value="">Todos</option>
           {days.map((day) => (
             <option key={day} value={`0${day}`.slice(-2)}>
               {`0${day}`.slice(-2)}

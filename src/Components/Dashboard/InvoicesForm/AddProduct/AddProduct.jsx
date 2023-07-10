@@ -15,7 +15,7 @@ export default function AddProduct({
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
-    setRows(products);
+    setRows(products.filter((product) => product.ITE_CANTIDAD > 0));
     setAdded(
       products.map((p) => {
         return {
@@ -30,6 +30,7 @@ export default function AddProduct({
     const value = e.target.value;
     setRows(
       products.filter((row) => {
+        if (!row.ITE_CANTIDAD || row.ITE_CANTIDAD <= 0) return false;
         if (value === "") return true;
         if (row.ITE_CODIGO.toLowerCase().includes(value.toLowerCase()))
           return true;

@@ -15,7 +15,13 @@ export function postKardex(newKardex: ReporteKardex) {
     if (!auth.currentUser) throw new Error("user not logued in");
 
     // Reports collections
-    const kardexRef = ref(db, `users/${auth.currentUser.uid}/kardex`);
+    const date = newKardex.KDX_REGISTRO.split("-");
+    const year = date[0];
+    const month = date[1];
+    const kardexRef = ref(
+      db,
+      `users/${auth.currentUser.uid}/kardex/${year}/${month}`
+    );
     const newKardexRef = child(kardexRef, newKardex.KDX_CODIGO);
 
     // Post data

@@ -33,14 +33,10 @@ export function postInvoice(invoice) {
       const month = date[1];
       const invoiceRef = ref(
         db,
-        `users/${auth.currentUser.uid}/invoices/${year}/${month}`
+        `users/${auth.currentUser.uid}/invoices/${year}/${month}/${invoice.VEN_CODIGO}`
       );
-      const query = await push(invoiceRef, invoice);
 
-      const newInvoice = {
-        ...invoice,
-        VEN_CODIGO: query.key,
-      };
+      await set(invoiceRef, invoice);
 
       await set(
         ref(
@@ -48,7 +44,7 @@ export function postInvoice(invoice) {
           `users/${auth.currentUser.uid}/invoices/numbers/${invoice.VEN_NUMERO}`
         ),
         {
-          VEN_CODIGO: query.key,
+          VEN_CODIGO: invoice.VEN_CODIGO,
           VEN_NUMERO: `${`00${invoice.VEN_ESTABLECIMIENTO}`.slice(
             -3
           )}-${`00${invoice.VEN_PTOEMISION}`.slice(
@@ -59,7 +55,7 @@ export function postInvoice(invoice) {
 
       return dispatch({
         type: POST_INVOICE,
-        payload: newInvoice,
+        payload: invoice,
       });
     } catch (err) {
       throw new Error(err);

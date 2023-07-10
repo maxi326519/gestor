@@ -93,6 +93,7 @@ export default function ProductList({ handleAddProduct, handleProfile }) {
           <span>Tipo</span>
           <span>Precio</span>
           <span>Impuesto</span>
+          <span>Impuesto</span>
           <span>Editar</span>
           <span>Eliminar</span>
         </div>

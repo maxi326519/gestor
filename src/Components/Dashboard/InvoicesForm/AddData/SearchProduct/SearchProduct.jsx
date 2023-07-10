@@ -7,13 +7,14 @@ export default function SearchProduct({ handleProduct, handleFormProduct }) {
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
-    setRows(products);
+    setRows(products.filter((product) => product.ITE_CANTIDAD > 0));
   }, [products]);
 
   function handleSearch(e) {
     const value = e.target.value;
     setRows(
       products.filter((p) => {
+        if (!p.ITE_CANTIDAD || p.ITE_CANTIDAD <= 0) return false;
         if (p.ITE_CODIGO.toLowerCase().includes(value.toLowerCase()))
           return true;
         if (p.ITE_DESCRIPCION.toLowerCase().includes(value.toLowerCase()))

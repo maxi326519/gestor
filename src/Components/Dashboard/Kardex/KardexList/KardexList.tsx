@@ -26,16 +26,22 @@ export default function KardexList({ handleProfile }: Props) {
   const redirect = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user.userDB);
-  const { kardexList, actions } = useKardex();
+  const filters = useSelector((state: RootState) => state.kardex.filters);
+  const kardex = useKardex();
   const [rows, setRows] = useState<ReporteKardex[]>([]);
 
-  useEffect(() => setRows(kardexList), [kardexList]);
+  useEffect(() => {
+    if (kardex.listado.length <= 0)
+      kardex.obtener(filters.year, filters.month, filters.day);
+  }, []);
+
+  useEffect(() => setRows(kardex.listado), [kardex]);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const value = event.target.value;
 
     setRows(
-      kardexList.filter((kardex) => {
+      kardex.listado.filter((kardex) => {
         if (value === "") return true;
         return false;
       })
@@ -67,7 +73,7 @@ export default function KardexList({ handleProfile }: Props) {
 
   function handleObtenerKardex(filter: Filter) {
     dispatch<any>(openLoading());
-    actions
+    kardex
       .obtener(filter.year, filter.month, filter.day)
       .then(() => dispatch<any>(closeLoading()));
   }
@@ -96,11 +102,11 @@ export default function KardexList({ handleProfile }: Props) {
         <DateFilter years={[2023]} handleFilterDate={handleObtenerKardex} />
       </div>
       <div className="dashboardList__grid">
-        <div className="product-card first-row">
+        <div className="kardex-card first-row">
           <span>Fecha</span>
           <span>Tipo</span>
           <span>Documento</span>
-          <span>Codigo de producto</span>
+          <span>Codigo de kardexo</span>
           <span>Local</span>
           <span>Cantidad</span>
           <span>Precio unitario</span>

@@ -15,11 +15,17 @@ export function postMovement(newMovement: MovCabecera) {
     if (!auth.currentUser) throw new Error("user not logued in");
 
     // Reports collections
-    const movementsRef = ref(db, `users/${auth.currentUser.uid}/movements`);
-    const newMovementRef = child(movementsRef, newMovement.MCA_CODIGO);
+    const date = newMovement.MCA_FECHA.split("-");
+    const year = date[0];
+    const month = date[1];
+    const movementsRef = ref(
+      db,
+      `users/${auth.currentUser.uid}/movimiento/${year}/${month}`
+    );
+    const newMovChil = child(movementsRef, newMovement.MCA_CODIGO);
 
     // Post data
-    await set(newMovementRef, newMovement);
+    await set(newMovChil, newMovement);
 
     try {
       dispatch({
@@ -37,56 +43,59 @@ export function getMovements(
   day: string | null
 ) {
   return async (dispatch: Dispatch) => {
+    console.log(year);
+    console.log(month);
+    console.log(day);
+
     try {
       // Check if the user is logued in
       if (!auth.currentUser) throw new Error("user not logued in");
 
       // Reports url
-      const movementsUrl = `users/${auth.currentUser.uid}/movements`;
+      const movementsUrl = `users/${auth.currentUser.uid}/movimiento`;
 
       // Variables
       let movements: MovCabecera[] = [];
 
       // If year, month and day exist
-      if (year || month || day) {
-        const movementsRef = ref(db, `${movementsUrl}/${year}/${month}/${day}`);
+      if (year && month && day) {
+        console.log("Year-month-day");
+        const movementsRef = ref(db, `${movementsUrl}/${year}/${month}`);
         const snapshot = await get(movementsRef);
 
         // Save data
         snapshot.forEach((movement) => {
-          movements.push(movement.val());
+          const currentMovement: MovCabecera = movement.val();
+
+          if (currentMovement.MCA_FECHA === `${year}-${month}-${day}`) {
+            movements.push(movement.val());
+          }
         });
 
         // Day filter
         movements = movements.filter(
           (mov) => mov.MCA_FECHA === `${year}-${month}-${day}`
         );
-      }
-
-      // If yea and month
-      if (year || month) {
+      } else if (year && month) {
+        // If yea and month
+        console.log("Year-month");
         const movementsRef = ref(db, `${movementsUrl}/${year}/${month}`);
+        const snapshot = await get(movementsRef);
+
+        // Save data
+        snapshot.forEach((movement) => {
+          movements.push(movement.val());
+        });
+      } else if (year) {
+        // If just year exist
+        console.log("Year");
+        const movementsRef = ref(db, `${movementsUrl}/${year}`);
         const snapshot = await get(movementsRef);
 
         // Save data
         snapshot.forEach((month) => {
           month.forEach((movement) => {
             movements.push(movement.val());
-          });
-        });
-      }
-
-      // If just year exist
-      if (year) {
-        const movementsRef = ref(db, `${movementsUrl}/${year}`);
-        const snapshot = await get(movementsRef);
-
-        // Save data
-        snapshot.forEach((years) => {
-          years.forEach((month) => {
-            month.forEach((movement) => {
-              movements.push(movement.val());
-            });
           });
         });
       }
@@ -117,7 +126,7 @@ export function updateMovement(movement: MovCabecera) {
     // Node ref
     const movementRef = ref(
       db,
-      `users/${auth.currentUser.uid}/movements/${year}/${month}/${movement.MCA_CODIGO}`
+      `users/${auth.currentUser.uid}/movimiento/${year}/${month}/${movement.MCA_CODIGO}`
     );
 
     // Update data
@@ -146,7 +155,7 @@ export function deleteMovement(movementId: string, movDate: string) {
     // Node ref
     const movementRef = ref(
       db,
-      `users/${auth.currentUser.uid}/movements/${year}/${month}/${movementId}`
+      `users/${auth.currentUser.uid}/movimiento/${year}/${month}/${movementId}`
     );
 
     // Remove data

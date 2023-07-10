@@ -67,6 +67,7 @@ export default function InvoiceTable({
                   type="number"
                   name="VED_CANTIDAD"
                   value={p.VED_CANTIDAD}
+                  max={p.ITE_CANTIDAD || 0}
                   min={1}
                   onChange={(e) => handleChangeProduct(e, p.ITE_CODIGO)}
                 />

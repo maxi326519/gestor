@@ -1,13 +1,13 @@
 {
   "ITE_BARRAS": "CLI20",
-  "ITE_CODIGO": 0,          /* ID */
+  "ITE_CODIGO": 0 /* ID */,
   "ITE_DESCRIPCION": "CCLEANER LiCENCIA",
-  "ITE_ESTADO": 1, /* default */
-  "ITE_ICE": 0, /* default */
-  "ITE_IMPUESTO": 0, /* 0 o 2 */
-  "ITE_PVP": 15, /*  Precio unitario */
-  "ITE_TIPO": 1, /* 0 producto 1 servicio */
-  "LOC_CODIGO": 0, /* default */
-  "USU_KEY": "clave_Authentification",
-  "VED_CANTIDAD": 0 /* default */
+  "ITE_ESTADO": 1 /* default */,
+  "ITE_ICE": 0 /* default */,
+  "ITE_IMPUESTO": 0 /* 0 o 2 */,
+  "ITE_PVP": 15 /*  Precio unitario */,
+  "ITE_TIPO": 1 /* 0 producto 1 servicio */,
+  "ITE_CANTIDAD": 0 /* default */,
+  "LOC_CODIGO": 0 /* default */,
+  "USU_KEY": "clave_Authentification"
 }

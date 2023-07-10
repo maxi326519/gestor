@@ -37,6 +37,12 @@ import {
   POST_STORE,
   UPDATE_STORE,
 } from "../actions/stores/index";
+import {
+  DELETE_KARDEX,
+  GET_KARDEXS,
+  POST_KARDEX,
+  UPDATE_KARDEX,
+} from "../actions/kardex";
 
 export const Reducer = (state = { ...initRootState }, action) => {
   switch (action.type) {
@@ -204,7 +210,9 @@ export const Reducer = (state = { ...initRootState }, action) => {
       return {
         ...state,
         products: state.products.map((p) =>
-          p.ITE_CODIGO === action.payload.ITE_CODIGO ? action.payload : p
+          p.ITE_CODIGO === action.payload.ITE_CODIGO
+            ? { ...p, ...action.payload }
+            : p
         ),
       };
 
@@ -264,7 +272,10 @@ export const Reducer = (state = { ...initRootState }, action) => {
     case POST_MOVEMENT:
       return {
         ...state,
-        movements: [...state.movements, action.payload],
+        movements: {
+          ...state.movements,
+          data: [...state.movements.data, action.payload],
+        },
       };
 
     case GET_MOVEMENTS:
@@ -302,6 +313,52 @@ export const Reducer = (state = { ...initRootState }, action) => {
         },
       };
     /* MOVEMENTS */
+
+    /* KARDEXS */
+    case POST_KARDEX:
+      return {
+        ...state,
+        kardex: {
+          ...state.kardex,
+          data: [...state.kardex.data, action.payload],
+        },
+      };
+
+    case GET_KARDEXS:
+      return {
+        ...state,
+        kardex: {
+          filters: {
+            year: action.payload.filters.year,
+            month: action.payload.filters.month,
+            day: action.payload.filters.day,
+          },
+          data: action.payload.data,
+        },
+      };
+
+    case UPDATE_KARDEX:
+      return {
+        ...state,
+        kardex: {
+          ...state.kardex,
+          data: state.kardex.data.map((kar) =>
+            kar.KDX_CODIGO === action.payload.KDX_CODIGO ? action.payload : kar
+          ),
+        },
+      };
+
+    case DELETE_KARDEX:
+      return {
+        ...state,
+        kardex: {
+          ...state.kardex,
+          data: state.kardex.data.filter(
+            (kar) => kar.KDX_CODIGO !== action.payload
+          ),
+        },
+      };
+    /* KARDEXS */
 
     default:
       return state;

@@ -1,4 +1,9 @@
 import { FiltrosKardex, ReporteKardex, initFiltrosKardex } from "./kardex";
+import {
+  FiltrosMovimientos,
+  MovCabecera,
+  initFiltrosMovimientos,
+} from "./movements";
 
 export interface RootState {
   loading: boolean;
@@ -7,11 +12,14 @@ export interface RootState {
   clients: Array<any>;
   products: Array<any>;
   stores: [];
-  movements: [];
+  movements: {
+    filter: FiltrosMovimientos;
+    data: MovCabecera[];
+  };
   kardex: {
-    filters: FiltrosKardex,
-    data: ReporteKardex[]
-  }
+    filters: FiltrosKardex;
+    data: ReporteKardex[];
+  };
 }
 
 export const initRootState: RootState = {
@@ -25,9 +33,12 @@ export const initRootState: RootState = {
   clients: [],
   products: [],
   stores: [],
-  movements: [],
+  movements: {
+    filter: initFiltrosMovimientos,
+    data: [],
+  },
   kardex: {
     filters: initFiltrosKardex,
-    data: []
-  }
+    data: [],
+  },
 };

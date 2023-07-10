@@ -1,11 +1,13 @@
+import { TipoDeMovimiento } from "./movements";
+
 export interface ReporteKardex {
   KDX_CODIGO: string;
-  KDX_TIPO: number;
-  MOV_CODIGO: MovCodigo;
+  KDX_TIPO: TipoDeMovimiento;
+  MOV_CODIGO: string;
   KDX_DOCUMENTO: number;
   KDX_GENERADO: KdxFGenerado;
   KDX_REGISTRO: string;
-  ITE_CODIGO: number;
+  ITE_CODIGO: string;
   LOT_CODIGO: number;
   KDX_LOCAL: number;
   KDX_DESCRIPCION: string;
@@ -16,11 +18,11 @@ export interface ReporteKardex {
   KDX_USUKEY: string;
 }
 
-export interface FiltrosKardex {}
-
-export enum MovCodigo {
-  INGRESO = 1,
-  EGRESO = 2,
+export interface FiltrosKardex {
+  itemId: string;
+  year: string;
+  month: string;
+  day: string;
 }
 
 export enum KdxFGenerado {
@@ -30,12 +32,12 @@ export enum KdxFGenerado {
 
 export const initReporteKardex: ReporteKardex = {
   KDX_CODIGO: "",
-  KDX_TIPO: 0,
-  MOV_CODIGO: MovCodigo.EGRESO,
+  KDX_TIPO: TipoDeMovimiento.EGRESO,
+  MOV_CODIGO: "",
   KDX_DOCUMENTO: 0,
   KDX_GENERADO: KdxFGenerado.FACTURACION,
   KDX_REGISTRO: "",
-  ITE_CODIGO: 0,
+  ITE_CODIGO: "",
   LOT_CODIGO: 0,
   KDX_LOCAL: 0,
   KDX_DESCRIPCION: "",
@@ -46,4 +48,9 @@ export const initReporteKardex: ReporteKardex = {
   KDX_USUKEY: "",
 };
 
-export const initFiltrosKardex: FiltrosKardex = {};
+export const initFiltrosKardex: FiltrosKardex = {
+  itemId: "",
+  year: new Date().getFullYear().toString(),
+  month: new Date().getMonth().toString(),
+  day: "",
+};

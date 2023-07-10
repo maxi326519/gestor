@@ -3,14 +3,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { closeLoading, logOut, openLoading } from "../../../../redux/actions";
 import { RootState } from "../../../../models/RootState";
-import { MovCabecera } from "../../../../models/movements";
+import { MovCabecera, MovDetalle } from "../../../../models/movements";
+import useMovimientos from "../../../../hooks/useMovimientos";
 import swal from "sweetalert";
 
 import MovementsRow from "./MovementsRow/MovementsRow";
+import DateFilter from "../../../../component/DateFilter/DateFilter";
 
 import logout from "../../../../assets/svg/logout.svg";
-import useMovimientos from "../../../../hooks/useMovimientos";
-import DateFilter from "../../../../component/DateFilter/DateFilter";
+import MovementsDetails from "./MovementsDetails/MovementsDetails";
 
 interface Filter {
   year: string;
@@ -25,16 +26,30 @@ export default function MovementsList({ handleProfile }: Props) {
   const redirect = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user.userDB);
-  const { movimientos, actions } = useMovimientos();
-  const [rows, setRows] = useState([]);
+  const filters = useSelector((state: RootState) => state.movements.filter);
+  const movimientos = useMovimientos();
+  const [rows, setRows] = useState<MovCabecera[]>([]);
+  const [detalles, setDetalles] = useState<MovDetalle[]>([]);
+  const [years, setYears] = useState<string[]>([]);
 
-  useEffect(() => setRows(movimientos), [movimientos]);
+  useEffect(() => {
+    const yearList: string[] = [];
+    let currentYear = new Date().getFullYear() - 30;
+    for (let i = 0; i <= 30; i++) {
+      yearList.push((currentYear + i).toString());
+    }
+    setYears(yearList.sort());
+
+    if (movimientos.data.length === 0)
+      movimientos.obtener(filters.year, filters.month, filters.day);
+  }, []);
+  useEffect(() => setRows(movimientos.data), [movimientos]);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const value = event.target.value;
 
     setRows(
-      movimientos.filter((movement) => {
+      movimientos.data.filter((movement) => {
         if (value === "") return true;
         return false;
       })
@@ -62,17 +77,29 @@ export default function MovementsList({ handleProfile }: Props) {
     });
   }
 
-  function handleVerDetalles() {}
-
   function handleObtenerMovimientos(filter: Filter) {
     dispatch<any>(openLoading());
-    actions
+    movimientos
       .obtener(filter.year, filter.month, filter.day)
       .then(() => dispatch<any>(closeLoading()));
   }
 
+  function handleVerDetalles(movimiento: MovCabecera) {
+    setDetalles(movimiento.MCA_DETALLES);
+  }
+
+  function handleCerrarDetalles() {
+    setDetalles([]);
+  }
+
   return (
     <div className="dashboardList">
+      {detalles.length > 0 && (
+        <MovementsDetails
+          details={detalles}
+          handleClose={handleCerrarDetalles}
+        />
+      )}
       <div className="perfil">
         <h3>Movimientos</h3>
         <button
@@ -92,19 +119,15 @@ export default function MovementsList({ handleProfile }: Props) {
           placeholder="Buscar movimient"
           onChange={handleChange}
         />
-        <DateFilter
-          years={[2023]}
-          handleFilterDate={handleObtenerMovimientos}
-        />
+        <DateFilter years={years} handleFilterDate={handleObtenerMovimientos} />
       </div>
       <div className="dashboardList__grid">
-        <div className="product-card first-row">
-          <span>Codigo</span>
+        <div className="movement-card first-row">
           <span>Fecha</span>
-          <span>Estado</span>
-          <span>Movimiento</span>
-          <span>Observaciones</span>
           <span>Tipo</span>
+          <span>Productos</span>
+          <span>Cantidad items</span>
+          <span>Monto</span>
           <span>Detalles</span>
         </div>
         <div className="contentCard">
