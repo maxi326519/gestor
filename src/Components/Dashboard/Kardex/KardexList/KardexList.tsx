@@ -32,7 +32,6 @@ export default function KardexList({ handleProfile }: Props) {
 
   useEffect(() => {
     setRows(kardex.listado);
-    console.log("Se actualizó el listado: ", kardex.listado);
   }, [kardex.listado]);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {

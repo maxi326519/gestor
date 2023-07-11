@@ -61,7 +61,6 @@ function App() {
     do {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       intentos++;
-      console.log(intentos);
       // Leemos la sesion del usuario
       if (auth.currentUser) {
         listener.init(auth, db, dispatch);
