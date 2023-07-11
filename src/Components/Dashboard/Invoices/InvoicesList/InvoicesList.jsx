@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { usePDF } from "../../PDF/usePDF";
 import {
   closeLoading,
   openLoading,
@@ -6,32 +9,23 @@ import {
   getInvoices,
   logOut,
 } from "../../../../redux/actions";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 
 import InvoiceCard from "./InvoiceCard/InvoiceCard";
 import Excel from "../Excel/Excel";
-import PDF from "../../PDF/PDF";
 
 import addSquare from "../../../../assets/svg/add-square.svg";
 import logout from "../../../../assets/svg/logout.svg";
 
 import "../../Dashboard.css";
 import "./InvoicesList.css";
-import { usePDF } from "../../PDF/usePDF";
 
-export default function InvoicesList({
-  handleAddInvoice,
-  handleExportInvoice,
-  handleProfile,
-}) {
+export default function InvoicesList({ handleProfile }) {
   const redirect = useNavigate();
   const dispatch = useDispatch();
   const pdf = usePDF();
   const invoices = useSelector((state) => state.invoices);
   const user = useSelector((state) => state.user.userDB);
-  const [invoicePDF, setPDF] = useState(null);
   const [rows, setRows] = useState([]);
   const [disabled, setDisabled] = useState(true);
   const [isChecked, setCheck] = useState([]);
@@ -170,10 +164,6 @@ export default function InvoicesList({
     setFilter({ ...filter, [e.target.name]: e.target.value });
   }
 
-  function handleClosePDF(i) {
-    setPDF(null);
-  }
-
   function handleLogOut() {
     swal({
       text: "¿Seguro que desea cerrar sesión?",
@@ -197,9 +187,6 @@ export default function InvoicesList({
 
   return (
     <div className="dashboardList">
-      {invoicePDF ? (
-        <PDF invoice={invoicePDF} handleClosePDF={handleClosePDF}></PDF>
-      ) : null}
       <div className="perfil">
         <h3>Listado de Facturas</h3>
         <button
@@ -342,7 +329,7 @@ export default function InvoicesList({
               <InvoiceCard
                 key={invoice.VEN_CODIGO}
                 invoice={invoice}
-                viewPDF={() => pdf.openPDF(invoice)}
+                viewPDF={() => pdf.openInvoicePDF(invoice)}
                 disabled={disabled}
                 isChecked={isChecked}
                 setCheck={setCheck}

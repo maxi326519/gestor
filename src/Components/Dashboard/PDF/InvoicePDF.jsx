@@ -1,4 +1,3 @@
-import { useEffect, useState, useRef } from "react";
 import {
   Document,
   Page,
@@ -6,11 +5,8 @@ import {
   View,
   Image,
   StyleSheet,
-  PDFViewer,
 } from "@react-pdf/renderer";
-import { useSelector } from "react-redux";
 
-import "./PDF.css";
 
 const styles = StyleSheet.create({
   page: {
@@ -106,7 +102,7 @@ const formasDePago = [
 ];
 
 // Create Document Component
-export default function PDF({ invoice, user, barCode }) {
+export default function InvoicePDF({ invoice, user, barCode }) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>

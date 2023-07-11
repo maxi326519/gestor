@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ref, get } from "firebase/database";
-import { usePDF } from "../PDF/usePDF.js";
+import { usePDF } from "../PDF/usePDF";
 import { auth, db } from "../../../firebase.js";
 import {
-  postInvoice,
   updateUserData,
   openLoading,
   closeLoading,

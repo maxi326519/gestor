@@ -188,7 +188,6 @@ function App() {
           path="/dashboard/invoices"
           element={
             <Invoices
-              handleExportInvoice={handleExportInvoice}
               handleAddProduct={handleAddProduct}
               handleAddClient={handleAddClient}
               handleProfile={handleProfile}
