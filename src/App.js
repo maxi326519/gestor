@@ -38,12 +38,16 @@ import Signin from "./Components/Signin/Signin";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import Kardex from "./Components/Dashboard/Kardex/Kardex";
+import useReporteKardex from "./hooks/useKardex";
+import useMovimientos from "./hooks/useMovimientos";
 
 function App() {
   const redirect = useNavigate();
   const dispatch = useDispatch();
   const listener = useListeners();
   const loading = useSelector((state) => state.loading);
+  const kardex = useReporteKardex();
+  const movimientos = useMovimientos();
   const [profile, setProfile] = useState(false);
 
   useEffect(async () => {
@@ -79,6 +83,8 @@ function App() {
                 dispatch(getClients()),
                 dispatch(getInvoices(year, month, null)),
                 dispatch(getStores()),
+                movimientos.obtener(year, month, null),
+                kardex.obtener(year, month, null),
               ])
                 .then(() => {
                   dispatch(closeLoading());

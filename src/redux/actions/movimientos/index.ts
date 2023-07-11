@@ -43,10 +43,6 @@ export function getMovements(
   day: string | null
 ) {
   return async (dispatch: Dispatch) => {
-    console.log(year);
-    console.log(month);
-    console.log(day);
-
     try {
       // Check if the user is logued in
       if (!auth.currentUser) throw new Error("user not logued in");
@@ -59,7 +55,6 @@ export function getMovements(
 
       // If year, month and day exist
       if (year && month && day) {
-        console.log("Year-month-day");
         const movementsRef = ref(db, `${movementsUrl}/${year}/${month}`);
         const snapshot = await get(movementsRef);
 
@@ -78,7 +73,6 @@ export function getMovements(
         );
       } else if (year && month) {
         // If yea and month
-        console.log("Year-month");
         const movementsRef = ref(db, `${movementsUrl}/${year}/${month}`);
         const snapshot = await get(movementsRef);
 
@@ -88,7 +82,6 @@ export function getMovements(
         });
       } else if (year) {
         // If just year exist
-        console.log("Year");
         const movementsRef = ref(db, `${movementsUrl}/${year}`);
         const snapshot = await get(movementsRef);
 

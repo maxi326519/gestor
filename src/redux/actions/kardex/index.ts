@@ -54,8 +54,8 @@ export function getKardexs(
       let kardex: ReporteKardex[] = [];
 
       // If year, month and day exist
-      if (year || month || day) {
-        const kardexRef = ref(db, `${kardexUrl}/${year}/${month}/${day}`);
+      if (year && month && day) {
+        const kardexRef = ref(db, `${kardexUrl}/${year}/${month}`);
         const snapshot = await get(kardexRef);
 
         // Save data
@@ -67,32 +67,24 @@ export function getKardexs(
         kardex = kardex.filter(
           (mov) => mov.KDX_REGISTRO === `${year}-${month}-${day}`
         );
-      }
-
-      // If yea and month
-      if (year || month) {
+      } else if (year && month) {
+        // If yea and month
         const kardexRef = ref(db, `${kardexUrl}/${year}/${month}`);
+        const snapshot = await get(kardexRef);
+
+        // Save data
+        snapshot.forEach((month) => {
+          kardex.push(month.val());
+        });
+      } else if (year) {
+        // If just year exist
+        const kardexRef = ref(db, `${kardexUrl}/${year}`);
         const snapshot = await get(kardexRef);
 
         // Save data
         snapshot.forEach((month) => {
           month.forEach((kardexData) => {
             kardex.push(kardexData.val());
-          });
-        });
-      }
-
-      // If just year exist
-      if (year) {
-        const kardexRef = ref(db, `${kardexUrl}/${year}`);
-        const snapshot = await get(kardexRef);
-
-        // Save data
-        snapshot.forEach((years) => {
-          years.forEach((month) => {
-            month.forEach((kardexData) => {
-              kardex.push(kardexData.val());
-            });
           });
         });
       }

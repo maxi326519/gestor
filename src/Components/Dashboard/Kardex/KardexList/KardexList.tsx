@@ -31,11 +31,9 @@ export default function KardexList({ handleProfile }: Props) {
   const [rows, setRows] = useState<ReporteKardex[]>([]);
 
   useEffect(() => {
-    if (kardex.listado.length <= 0)
-      kardex.obtener(filters.year, filters.month, filters.day);
-  }, []);
-
-  useEffect(() => setRows(kardex.listado), [kardex]);
+    setRows(kardex.listado);
+    console.log("Se actualizó el listado: ", kardex.listado);
+  }, [kardex.listado]);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const value = event.target.value;
@@ -105,14 +103,12 @@ export default function KardexList({ handleProfile }: Props) {
         <div className="kardex-card first-row">
           <span>Fecha</span>
           <span>Tipo</span>
-          <span>Documento</span>
-          <span>Codigo de kardexo</span>
+          <span>Codigo de producto</span>
+          <span>Descripcion del producto</span>
           <span>Local</span>
           <span>Cantidad</span>
-          <span>Precio unitario</span>
+          <span>Precio U.</span>
           <span>Saldo</span>
-          <span>Costo</span>
-          <span>Descripcion</span>
         </div>
         <div className="contentCard">
           {rows.length <= 0 ? (

@@ -39,9 +39,6 @@ export default function MovementsList({ handleProfile }: Props) {
       yearList.push((currentYear + i).toString());
     }
     setYears(yearList.sort());
-
-    if (movimientos.data.length === 0)
-      movimientos.obtener(filters.year, filters.month, filters.day);
   }, []);
   useEffect(() => setRows(movimientos.data), [movimientos]);
 

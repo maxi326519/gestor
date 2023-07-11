@@ -1,6 +1,6 @@
 .kardex-card {
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
+  grid-template-columns: 120px 100px 200px 1fr 80px 100px 100px 80px;
   grid-template-rows: 1fr;
   gap: 10px;
   padding: 10px;

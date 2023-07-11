@@ -30,7 +30,7 @@ export interface UseReporteKardex {
 
 export default function useReporteKardex(): UseReporteKardex {
   const dispatch = useDispatch();
-  const kardexList = useSelector((state: RootState) => state.stores);
+  const kardexList = useSelector((state: RootState) => state.kardex.data);
 
   async function agregarKardex(movimiento: MovCabecera) {
     const kardexList: ReporteKardex[] = movimiento.MCA_DETALLES.map(
@@ -66,13 +66,17 @@ export default function useReporteKardex(): UseReporteKardex {
   ) {
     return dispatch<any>(getKardexs(year, month, day)).catch((e: Error) => {
       console.log(e.message);
-      swal("Error", "Error al agregar el kardex, inténtelo mas tarde", "error");
+      swal("Error", "Error al obtener el kardex, inténtelo mas tarde", "error");
     });
   }
   async function actualizarKardex(kardex: ReporteKardex) {
     return dispatch<any>(updateKardex(kardex)).catch((e: Error) => {
       console.log(e.message);
-      swal("Error", "Error al agregar el kardex, inténtelo mas tarde", "error");
+      swal(
+        "Error",
+        "Error al actualizar el kardex, inténtelo mas tarde",
+        "error"
+      );
     });
   }
   async function borrarKardex(kardexId: string, kardexDate: string) {
@@ -81,7 +85,7 @@ export default function useReporteKardex(): UseReporteKardex {
         console.log(e.message);
         swal(
           "Error",
-          "Error al agregar el kardex, inténtelo mas tarde",
+          "Error al borrar el kardex, inténtelo mas tarde",
           "error"
         );
       }
