@@ -1,7 +1,5 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import { ReporteKardex } from "../../../models/kardex";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../models/RootState";
 import { Producto } from "../../../models/productos";
 
 const styles = StyleSheet.create({
@@ -86,14 +84,6 @@ const styles = StyleSheet.create({
   },
 });
 
-interface Props {
-  kardexList: ReporteKardex[];
-  product: string;
-  local: string;
-  products: Producto[];
-  date: string;
-}
-
 // Create Document Component
 export default function KardexPDF({
   kardexList,
@@ -101,7 +91,7 @@ export default function KardexPDF({
   local,
   products,
   date,
-}: Props) {
+}) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -145,7 +135,7 @@ export default function KardexPDF({
             </Text>
           </View>
 
-          {kardexList?.map((kardex: ReporteKardex) => (
+          {kardexList?.map((kardex) => (
             <View style={styles.tablaRows}>
               <Text style={{ ...styles.text, width: "60px" }}>
                 {kardex.KDX_REGISTRO}
@@ -159,8 +149,7 @@ export default function KardexPDF({
               <Text style={{ ...styles.text, flexGrow: 1 }}>
                 {
                   products.find(
-                    (product: Producto) =>
-                      kardex.ITE_CODIGO === product.ITE_CODIGO
+                    (product) => kardex.ITE_CODIGO === product.ITE_CODIGO
                   )?.ITE_DESCRIPCION
                 }
               </Text>

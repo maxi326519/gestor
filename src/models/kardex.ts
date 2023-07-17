@@ -3,18 +3,18 @@ import { TipoDeMovimiento } from "./movements";
 export interface ReporteKardex {
   KDX_CODIGO: string;
   KDX_TIPO: TipoDeMovimiento;
-  MOV_CODIGO: string;
-  KDX_DOCUMENTO: number;
-  KDX_GENERADO: KdxFGenerado;
-  KDX_REGISTRO: string;
+  MCA_MOVIMIENTO: number; // saltar
+  KDX_ID_DOCUMENTO: number; // id de factura o de movimiento
+  KDX_GENERADO: KdxGenerado;
+  KDX_FECHA: string;
   ITE_CODIGO: string;
-  LOT_CODIGO: number;
-  KDX_LOCAL: number;
-  KDX_DESCRIPCION: string;
+  LOT_CODIGO?: number; // NUll por el momento
+  KDX_LOCAL: number;  
+  KDX_DESCRIPCION: string;  // {MCA_MOVIMIENTO} 001-001-00000008123 
   KDX_CANTIDAD: number;
   KDX_PUNITARIO: number;
-  KDX_SALDO: number;
-  KDX_COSTO: number;
+  KDX_SALDO: number; // Existencias restastes
+  KDX_COSTO: number; // 0
   KDX_USUKEY: string;
 }
 
@@ -25,9 +25,9 @@ export interface FiltrosKardex {
   day: string;
 }
 
-export enum KdxFGenerado {
-  FACTURACION = "facturacion",
-  INVENTARIOS = "inventarios",
+export enum KdxGenerado {
+  VENTA = "venta",
+  MOVIMIENTO = "movimiento",
 }
 
 export const initReporteKardex: ReporteKardex = {
