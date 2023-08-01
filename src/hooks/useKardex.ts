@@ -1,64 +1,35 @@
 import { RootState } from "../models/RootState";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  KdxFGenerado,
-  ReporteKardex,
-  initReporteKardex,
-} from "../models/kardex";
 import { auth, db } from "../firebase";
 import { push, ref } from "firebase/database";
-import { MovCabecera } from "../models/movements";
+import { TipoDeMovimiento } from "../models/movements";
+import { Factura, FacturaDetalle } from "../models/factura";
 import {
   deleteKardex,
   getKardexs,
   postKardex,
   updateKardex,
 } from "../redux/actions/kardex/index";
+import {
+  KdxGenerado,
+  ReporteKardex,
+  initReporteKardex,
+} from "../models/kardex";
 import swal from "sweetalert";
 
-export interface UseReporteKardex {
-  listado: ReporteKardex[];
-  agregar: (movimiento: MovCabecera) => Promise<any>;
-  obtener: (
-    year: string,
-    month: string | null,
-    day: string | null
-  ) => Promise<any>;
-  actualizar: (kardex: ReporteKardex) => Promise<any>;
-  borrar: (kardexId: string, kardexDate: string) => Promise<any>;
-}
-
-export default function useReporteKardex(): UseReporteKardex {
+export default function useReporteKardex() {
   const dispatch = useDispatch();
   const kardexList = useSelector((state: RootState) => state.kardex.data);
 
-  async function agregarKardex(movimiento: MovCabecera) {
-    const kardexList: ReporteKardex[] = movimiento.MCA_DETALLES.map(
-      (detalle): ReporteKardex => {
-        return {
-          ...initReporteKardex,
-          MOV_CODIGO: movimiento.MCA_CODIGO,
-          KDX_CODIGO: createKardexKey(movimiento.MCA_FECHA),
-          KDX_TIPO: movimiento.MCA_TIPO,
-          KDX_GENERADO: KdxFGenerado.FACTURACION,
-          KDX_REGISTRO: movimiento.MCA_FECHA,
-          ITE_CODIGO: detalle.ITE_CODIGO,
-          LOT_CODIGO: detalle.MDE_LOTE,
-          KDX_LOCAL: movimiento.LOC_CODIGO,
-          KDX_CANTIDAD: detalle.MDE_CANTIDAD,
-          KDX_PUNITARIO: detalle.MDE_PRECIO,
-          KDX_COSTO: detalle.MDE_OCOSTOS,
-        };
-      }
-    );
+  async function agregarKardex(listaKardex: ReporteKardex[]) {
 
-    return Promise.all([
-      ...kardexList.map((kardex) => dispatch<any>(postKardex(kardex))),
-    ]).catch((e: Error) => {
-      console.log(e.message);
-      swal("Error", "Error al agregar el kardex, inténtelo mas tarde", "error");
-    });
+    return dispatch<any>(postKardex(listaKardex))
+      .catch((e: Error) => {
+        console.log(e.message);
+        swal("Error", "Error al agregar el kardex, inténtelo mas tarde", "error");
+      });
   }
+
   async function obtenerKardex(
     year: string,
     month: string | null,
@@ -92,6 +63,26 @@ export default function useReporteKardex(): UseReporteKardex {
     );
   }
 
+  function crearKardex(detalle: FacturaDetalle, factura: Factura, tipo: TipoDeMovimiento) {
+    return {
+      ...initReporteKardex,
+      KDX_CODIGO: createKardexKey(factura.VEN_FECHA),
+      KDX_TIPO: tipo,
+      MCA_MOVIMIENTO: 0,
+      KDX_ID_DOCUMENTO: factura.VEN_CODIGO,
+      KDX_GENERADO: KdxGenerado.VENTA,
+      KDX_FECHA: factura.VEN_FECHA,
+      ITE_CODIGO: detalle.ITE_CODIGO,
+      KDX_LOCAL: factura.LOC_CODIGO,
+      KDX_DESCRIPCION: detalle.ITE_DESCRIPCION,
+      KDX_CANTIDAD: detalle.ITE_CANTIDAD,
+      KDX_PUNITARIO: detalle.VED_PUNITARIO,
+      KDX_SALDO: detalle.ITE_CANTIDAD * detalle.VED_PUNITARIO,
+      KDX_COSTO: 0,
+      KDX_USUKEY: auth.currentUser!.uid,
+    };
+  }
+
   function createKardexKey(fecha: string): string {
     const date = fecha.split("-");
     const year = date[0];
@@ -103,9 +94,11 @@ export default function useReporteKardex(): UseReporteKardex {
 
   return {
     listado: kardexList,
+    crear: crearKardex,
     agregar: agregarKardex,
     obtener: obtenerKardex,
     actualizar: actualizarKardex,
     borrar: borrarKardex,
+    createKey: createKardexKey,
   };
 }

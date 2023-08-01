@@ -38,7 +38,7 @@ export const initRootState: RootState = {
     data: [],
   },
   kardex: {
-    filters: initFiltrosKardex,
+    filters: initFiltrosKardex(),
     data: [],
   },
 };

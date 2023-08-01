@@ -320,7 +320,7 @@ export const Reducer = (state = { ...initRootState }, action) => {
         ...state,
         kardex: {
           ...state.kardex,
-          data: [...state.kardex.data, action.payload],
+          data: [...state.kardex.data, ...action.payload],
         },
       };
 

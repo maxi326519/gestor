@@ -8,24 +8,29 @@ export const POST_KARDEX = "POST_KARDEX";
 export const GET_KARDEXS = "GET_KARDEXS";
 export const UPDATE_KARDEX = "UPDATE_KARDEX";
 export const DELETE_KARDEX = "DELETE_KARDEX";
+export const DELETE_KARDEX_BY_INVOICE_ID = "DELETE_KARDEX_BY_INVOICE_ID";
 
-export function postKardex(newKardex: ReporteKardex) {
+export function postKardex(newKardex: ReporteKardex[]) {
   return async (dispatch: Dispatch) => {
     // Check if the user is logued in
     if (!auth.currentUser) throw new Error("user not logued in");
 
-    // Reports collections
-    const date = newKardex.KDX_REGISTRO.split("-");
-    const year = date[0];
-    const month = date[1];
-    const kardexRef = ref(
-      db,
-      `users/${auth.currentUser.uid}/kardex/${year}/${month}`
-    );
-    const newKardexRef = child(kardexRef, newKardex.KDX_CODIGO);
+    await Promise.all(newKardex.map((kardex: ReporteKardex) => {
+      // Get dates
+      const date = kardex.KDX_FECHA.split("-");
+      const year = date[0];
+      const month = date[1];
 
-    // Post data
-    await set(newKardexRef, newKardex);
+      // Realtime ref
+      const kardexRef = ref(
+        db,
+        `users/${auth.currentUser!.uid}/kardex/${year}/${month}`
+      );
+      const newKardexRef = child(kardexRef, kardex.KDX_CODIGO);
+
+      // Post data
+      return set(newKardexRef, newKardex);
+    }));
 
     try {
       dispatch({
@@ -65,7 +70,7 @@ export function getKardexs(
 
         // Day filter
         kardex = kardex.filter(
-          (mov) => mov.KDX_REGISTRO === `${year}-${month}-${day}`
+          (mov) => mov.KDX_FECHA === `${year}-${month}-${day}`
         );
       } else if (year && month) {
         // If yea and month
@@ -108,7 +113,7 @@ export function updateKardex(kardex: ReporteKardex) {
     if (!auth.currentUser) throw new Error("user not logued in");
 
     // Date split, and node ref
-    const dateSplit = kardex.KDX_REGISTRO.split("-");
+    const dateSplit = kardex.KDX_FECHA.split("-");
     const year = dateSplit[0];
     const month = dateSplit[1];
 

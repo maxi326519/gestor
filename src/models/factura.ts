@@ -63,6 +63,7 @@ export interface FacturaDetalle {
   VED_VALOR: number;
   VEN_CODIGO: string;
   VED_UKEY: string;
+  KDX_CODIGO: string,
 }
 
 export const initFactura: Factura = {

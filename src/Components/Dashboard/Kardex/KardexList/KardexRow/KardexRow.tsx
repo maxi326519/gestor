@@ -14,7 +14,7 @@ export default function KardexRow({ kardex, handleVerDetalles }: Props) {
   const products = useSelector((state: RootState) => state.products);
   return (
     <div key={kardex.KDX_CODIGO} className="kardex-card">
-      <span>{kardex.KDX_REGISTRO}</span>
+{/*       <span>{kardex.KDX_REGISTRO}</span> */}
       <span>{kardex.KDX_TIPO}</span>
       <span>{kardex.ITE_CODIGO}</span>
       <span>
