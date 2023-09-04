@@ -29,7 +29,7 @@ export function postKardex(newKardex: ReporteKardex[]) {
       const newKardexRef = child(kardexRef, kardex.KDX_CODIGO);
 
       // Post data
-      return set(newKardexRef, newKardex);
+      return set(newKardexRef, kardex);
     }));
 
     try {
@@ -64,10 +64,12 @@ export function getKardexs(
         const snapshot = await get(kardexRef);
 
         // Save data
-        snapshot.forEach((kardexData) => {
-          kardex.push(kardexData.val());
-        });
-
+        if (snapshot.exists()) {
+          const month = snapshot.val();
+          Object.keys(month).forEach((key) => {
+            kardex.push(month[key]);
+          });
+        }
         // Day filter
         kardex = kardex.filter(
           (mov) => mov.KDX_FECHA === `${year}-${month}-${day}`
@@ -78,20 +80,28 @@ export function getKardexs(
         const snapshot = await get(kardexRef);
 
         // Save data
-        snapshot.forEach((month) => {
-          kardex.push(month.val());
-        });
+        if (snapshot.exists()) {
+          const month = snapshot.val();
+          console.log(month);
+          Object.keys(month).forEach((key) => {
+            kardex.push(month[key]);
+          });
+        }
       } else if (year) {
         // If just year exist
         const kardexRef = ref(db, `${kardexUrl}/${year}`);
         const snapshot = await get(kardexRef);
 
         // Save data
-        snapshot.forEach((month) => {
-          month.forEach((kardexData) => {
-            kardex.push(kardexData.val());
+        if (snapshot.exists()) {
+          const year = snapshot.val();
+          Object.keys(year).forEach((key) => {
+            const month = year[key];
+            Object.keys(month).forEach((key) => {
+              kardex.push(month[key]);
+            });
           });
-        });
+        }
       }
 
       dispatch({

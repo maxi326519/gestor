@@ -227,7 +227,7 @@ export default function InvoicePDF({ invoice, user, barCode }) {
                 ).toFixed(2)}
               </Text>
               <Text style={{ ...styles.text, width: "70px" }}>
-                {p.VED_DESCUENTO.toFixed(2)}
+                {Number(p.VED_DESCUENTO).toFixed(2)}
               </Text>
               <Text style={{ ...styles.text, width: "80px" }}>
                 {Number(p.VED_VALOR).toFixed(2)}

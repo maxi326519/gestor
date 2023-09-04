@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ref, get } from "firebase/database";
 import { usePDF } from "../PDF/usePDF";
 import { auth, db } from "../../../firebase.js";
+import { initFactura } from "../../../models/factura";
 import {
   updateUserData,
   openLoading,
@@ -21,58 +22,9 @@ import AddClient from "./AddClient/AddClient";
 
 import "./InvoicesForm.css";
 
-const initialInvoice = {
-  CLI_CODIGO: 0,
-  CLI_DIRECCION: "S/N",
-  CLI_EMAIL: "-",
-  CLI_IDENTIFICACION: "9999999999999",
-  CLI_NOMBRE: "CONSUMIDOR FINAL",
-  CLI_TELEFONO: "-",
-  CLI_TIPOIDE: "-",
-  EMP_CODIGO: 0,
-  ITE_CODIGO: 0,
-  ITE_COSTO: 0,
-  ITE_EXISTENCIA: 0,
-  LOC_CODIGO: 0,
-  PTO_CODIGO: 0,
-  USU_CODIGO: 0,
-  VDR_CODIGO: 0,
-  VED_CODIGO: 0,
-  VEN_CAMPO1: "",
-  VEN_CAMPO2: "",
-  VEN_CAMPO3: "",
-  VEN_CLAVEACCESO: null,
-  VEN_CODIGO: 0,
-  VEN_COMISION: 0,
-  VEN_DESCUENTO: 0,
-  VEN_ESTABLECIMIENTO: 1,
-  VEN_ESTADO: 1,
-  VEN_FAUTORIZA: 1,
-  VEN_FECHA: new Date().toISOString().split("T")[0],
-  VEN_FPAGO: "01",
-  VEN_GUIA: "-",
-  VEN_ICE: 0.0,
-  VEN_IMPRESO: 0.0,
-  VEN_IVA: 0.0,
-  VEN_NUMERO: 1,
-  VEN_PTOEMISION: 1,
-  VEN_RETENCION: 0.0,
-  VEN_SRI: 0.0,
-  VEN_SUBTOTAL: 0.0,
-  VEN_SUBTOTAL0: 0.0,
-  VEN_SUBTOTAL12: 0.0,
-  VEN_SUBTOTALEXCENTIVA: 0.0,
-  VEN_SUBTOTALNOIVA: 0.0,
-  VEN_TIPODOC: "",
-  VEN_TOTAL: 0.0,
-  VEN_UKEY: "",
-  VEN_VALOR1: "",
-  VEN_VALOR2: "",
-  VEN_VALOR3: "",
-};
-
 export default function InvoicesForm({
   handleAddInvoice,
+  handleAddStock,
   handleAddProduct,
   handleAddClient,
   handleProfile,
@@ -84,7 +36,7 @@ export default function InvoicesForm({
   const [formProduct, setFormproduct] = useState(false);
   const [formClient, setFormClient] = useState(false);
   const [newProducts, setNewProduct] = useState([]);
-  const [invoice, setInvoice] = useState(initialInvoice);
+  const [invoice, setInvoice] = useState(initFactura());
   const [discount, setDiscount] = useState(0);
 
   /* Calcular totales por cada cambio */
@@ -95,12 +47,24 @@ export default function InvoicesForm({
     });
   }, [newProducts, user, discount]);
 
-  function handleChange(e) {
-    if (e.target.name === "VEN_DESCUENTO_POR") {
-      if (Number(e.target.value) <= 100 && Number(e.target.value) >= 0)
-        setDiscount(Number(e.target.value));
+  function handleChange(event) {
+    const name = event.target.name;
+    const value = event.target.value;
+
+    if (name === "VEN_DESCUENTO_POR") {
+      if (Number(value) <= 100 && Number(value) >= 0) {
+        setDiscount(Number(value));
+        setNewProduct(
+          newProducts.map((detalle) => ({
+            ...detalle,
+            VED_DESCUENTO: value,
+            VED_VALOR:
+              detalle.VED_PUNITARIO * detalle.VED_CANTIDAD * (1 - value / 100),
+          }))
+        );
+      }
     } else {
-      setInvoice({ ...invoice, [e.target.name]: e.target.value });
+      setInvoice({ ...invoice, [name]: value });
     }
   }
 
@@ -109,7 +73,7 @@ export default function InvoicesForm({
     let subtotalPorcentual = 0;
     let subtotalIVA = 0;
     let total = 0;
-    let productDiscount = 0;
+    let descuento = 0;
 
     newProducts.forEach((p) => {
       subtotal += Number(
@@ -119,8 +83,8 @@ export default function InvoicesForm({
           (1 - p.VED_DESCUENTO / 100)
         ).toFixed(2)
       );
-      productDiscount +=
-        p.VED_CANTIDAD * (p.VED_PUNITARIO * (p.VED_DESCUENTO / 100));
+
+      descuento += p.VED_PUNITARIO * (discount / 100);
 
       if (p.VED_IMPUESTO === "2") {
         subtotalIVA +=
@@ -137,11 +101,11 @@ export default function InvoicesForm({
       VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
       VEN_PTOEMISION: user.EMP_PTOEMISION,
       VEN_NUMERO: user.EMP_NUMERO,
-      VEN_DESCUENTO: total * (discount / 100).toFixed(2),
+      VEN_DESCUENTO: descuento,
       VEN_SUBTOTAL: subtotal.toFixed(2),
       VEN_SUBTOTAL0: subtotalPorcentual.toFixed(2),
       VEN_SUBTOTAL12: subtotalIVA.toFixed(2),
-      VEN_TOTAL: (total * (1 - discount / 100)).toFixed(2),
+      VEN_TOTAL: total.toFixed(2),
     };
   }
 
@@ -216,11 +180,11 @@ export default function InvoicesForm({
         })
       ).then(() => {
         // MOSTRAR EL PDF
-        pdf.openPDF(invoice);
+        pdf.openInvoicePDF(invoice);
 
         // REINICIAR LOS DATOS
         setInvoice({
-          ...initialInvoice,
+          ...initFactura(),
           VEN_ESTABLECIMIENTO: user.EMP_ESTABLECIMIENTO,
           VEN_PTOEMISION: user.EMP_PTOEMISION,
           VEN_NUMERO: user.EMP_NUMERO,
@@ -279,23 +243,14 @@ export default function InvoicesForm({
       },
     }).then((r) => {
       if (r) {
-        setInvoice(initialInvoice);
+        setInvoice(initFactura());
         setNewProduct([]);
       }
     });
   }
 
   function handleClearClient() {
-    setInvoice({
-      ...initialInvoice,
-      CLI_CODIGO: 0,
-      CLI_DIRECCION: "S/N",
-      CLI_EMAIL: "-",
-      CLI_IDENTIFICACION: "9999999999999",
-      CLI_NOMBRE: "CONSUMIDOR FINAL",
-      CLI_TELEFONO: "-",
-      CLI_TIPOIDE: "-",
-    });
+    setInvoice(initFactura());
   }
 
   function handleFormProduct() {
@@ -427,6 +382,7 @@ export default function InvoicesForm({
       <SideBar
         handleAddInvoice={handleAddInvoice}
         handleAddProduct={handleAddProduct}
+        handleAddStock={handleAddStock}
         handleAddClient={handleAddClient}
       />
       <div className="dashboard__invoice to-left">

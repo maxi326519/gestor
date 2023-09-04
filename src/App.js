@@ -12,6 +12,8 @@ import {
   openLoading,
   closeLoading,
 } from "./redux/actions";
+import useReporteKardex from "./hooks/useKardex";
+import useMovimientos from "./hooks/useMovimientos";
 import swal from "sweetalert";
 
 import useListeners from "./listeners";
@@ -29,17 +31,16 @@ import Stores from "./Components/Dashboard/Stores/Stores";
 
 import ExportInvoice from "./Components/Dashboard/Forms/ExportForm/ExportForm";
 import ProductForm from "./Components/Dashboard/Forms/ProductForm/ProductForm";
+import StockForm from "./Components/Dashboard/Forms/StockForm/StockForm";
 import ClientForm from "./Components/Dashboard/Forms/ClientForm/ClientForm";
 import EstablecimientoForm from "./Components/Dashboard/Forms/EstablecimientoForm/EstablecimientoForm";
+import Kardex from "./Components/Dashboard/Kardex/Kardex";
 
 import Login from "./Components/Login/Login";
 import Signin from "./Components/Signin/Signin";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import Kardex from "./Components/Dashboard/Kardex/Kardex";
-import useReporteKardex from "./hooks/useKardex";
-import useMovimientos from "./hooks/useMovimientos";
 
 function App() {
   const redirect = useNavigate();
@@ -129,6 +130,7 @@ function App() {
     addInvoice: false,
     exportInvoice: false,
     addProduct: false,
+    addProductStock: false,
     addClient: false,
     addEstablecimiento: false,
   };
@@ -144,6 +146,10 @@ function App() {
 
   function handleAddProduct() {
     setForm({ ...initialState, addProduct: !form.addProduct });
+  }
+
+  function handleAddStock() {
+    setForm({ ...initialState, addStock: !form.addStock });
   }
 
   function handleAddClient() {
@@ -167,6 +173,7 @@ function App() {
           element={
             <Products
               handleAddProduct={handleAddProduct}
+              handleAddStock={handleAddStock}
               handleAddClient={handleAddClient}
               handleProfile={handleProfile}
               handleAddEstablecimiento={handleAddEstablecimiento}
@@ -178,6 +185,7 @@ function App() {
           element={
             <Client
               handleAddProduct={handleAddProduct}
+              handleAddStock={handleAddStock}
               handleAddClient={handleAddClient}
               handleProfile={handleProfile}
               handleAddEstablecimiento={handleAddEstablecimiento}
@@ -189,6 +197,7 @@ function App() {
           element={
             <Invoices
               handleAddProduct={handleAddProduct}
+              handleAddStock={handleAddStock}
               handleAddClient={handleAddClient}
               handleProfile={handleProfile}
               handleAddEstablecimiento={handleAddEstablecimiento}
@@ -201,6 +210,7 @@ function App() {
             <Stores
               handleExportInvoice={handleExportInvoice}
               handleAddProduct={handleAddProduct}
+              handleAddStock={handleAddStock}
               handleAddClient={handleAddClient}
               handleProfile={handleProfile}
               handleAddEstablecimiento={handleAddEstablecimiento}
@@ -213,6 +223,7 @@ function App() {
             <Movements
               handleExportInvoice={handleExportInvoice}
               handleAddProduct={handleAddProduct}
+              handleAddStock={handleAddStock}
               handleAddClient={handleAddClient}
               handleProfile={handleProfile}
               handleAddEstablecimiento={handleAddEstablecimiento}
@@ -225,6 +236,7 @@ function App() {
             <Kardex
               handleExportInvoice={handleExportInvoice}
               handleAddProduct={handleAddProduct}
+              handleAddStock={handleAddStock}
               handleAddClient={handleAddClient}
               handleProfile={handleProfile}
               handleAddEstablecimiento={handleAddEstablecimiento}
@@ -238,6 +250,7 @@ function App() {
               addInvoice={form.addInvoice}
               handleExportInvoice={handleExportInvoice}
               handleAddProduct={handleAddProduct}
+              handleAddStock={handleAddStock}
               handleAddClient={handleAddClient}
               handleProfile={handleProfile}
               handleAddEstablecimiento={handleAddEstablecimiento}
@@ -253,6 +266,12 @@ function App() {
         <ExportInvoice handleExportInvoice={handleExportInvoice} />
       )}
       {form.addProduct && <ProductForm handleAddProduct={handleAddProduct} />}
+      {form.addStock && (
+        <StockForm
+          handleAddStock={handleAddStock}
+          handleAddProduct={handleAddProduct}
+        />
+      )}
       {form.addClient && <ClientForm handleAddClient={handleAddClient} />}
       {form.addEstablecimiento && (
         <EstablecimientoForm

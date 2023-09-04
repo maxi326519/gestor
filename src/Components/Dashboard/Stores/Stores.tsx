@@ -5,6 +5,7 @@ import "../Dashboard.css";
 
 interface Props {
   handleAddProduct: () => void;
+  handleAddStock: () => void;
   handleAddClient: () => void;
   handleProfile: () => void;
   handleAddEstablecimiento: () => void;
@@ -12,6 +13,7 @@ interface Props {
 
 export default function Stores({
   handleAddProduct,
+  handleAddStock,
   handleAddClient,
   handleProfile,
   handleAddEstablecimiento,
@@ -20,6 +22,7 @@ export default function Stores({
     <div className="dashboard">
       <SideBar
         handleAddProduct={handleAddProduct}
+        handleAddStock={handleAddStock}
         handleAddClient={handleAddClient}
         handleAddEstablecimiento={handleAddEstablecimiento}
       />

@@ -59,7 +59,6 @@ export default function useMovimientos() {
 
     return Promise.all([
       dispatch<any>(postMovement(nuevoMovimiento)),
-      kardex.agregar(nuevoMovimiento),
     ]).catch((e: Error) => {
       console.log(e.message);
       swal(

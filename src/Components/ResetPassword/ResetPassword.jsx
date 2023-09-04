@@ -1,11 +1,12 @@
-import { useState } from "react";
-import styles from "./ResetPassword.module.css";
-import { Link, useNavigate } from "react-router-dom";
-import { sendPasswordResetEmail } from "firebase/auth";
-import swal from "sweetalert";
-import { auth } from "../../firebase";
-import { useDispatch } from "react-redux";
 import { closeLoading, openLoading } from "../../redux/actions";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useState } from "react";
+import { auth } from "../../firebase";
+import swal from "sweetalert";
+
+import styles from "./ResetPassword.module.css";
 
 export default function ResetPassword() {
   const dispatch = useDispatch();

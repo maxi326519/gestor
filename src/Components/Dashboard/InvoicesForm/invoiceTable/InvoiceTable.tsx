@@ -1,5 +1,19 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { Factura, FacturaDetalle } from "../../../../models/factura";
+import { User } from "../../../../models/usuario";
+
 import "./InvoiceTable.css";
+
+interface Props {
+  user: User,
+  invoice: Factura,
+  discount: number,
+  setDiscount: (discount: number) => void,
+  newProducts: FacturaDetalle[],
+  handleChangeProduct: (event: React.ChangeEvent<HTMLInputElement>, productCode: string) => void,
+  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
+  handleProductRemove: (product: FacturaDetalle) => void,
+}
 
 export default function InvoiceTable({
   user,
@@ -10,12 +24,12 @@ export default function InvoiceTable({
   handleChangeProduct,
   handleChange,
   handleProductRemove,
-}) {
+}: Props) {
   const [isDisabled, setDisabled] = useState(true);
 
-  function descuentoValidation(e, code) {
-    if (Number(e.target.value) <= 100 && Number(e.target.value) >= 0) {
-      handleChangeProduct(e, code);
+  function descuentoValidation(event: React.ChangeEvent<HTMLInputElement>, code: string) {
+    if (Number(event.target.value) <= 100 && Number(event.target.value) >= 0) {
+      handleChangeProduct(event, code);
     }
   }
 
@@ -29,9 +43,8 @@ export default function InvoiceTable({
       <div className="product-table">
         <div>
           <div
-            className={`invoice-row invoice-first-row ${
-              user.EMP_AUTOMATICO === 1 ? "detCantidad" : ""
-            }`}
+            className={`invoice-row invoice-first-row ${user.EMP_AUTOMATICO === 1 ? "detCantidad" : ""
+              }`}
           >
             <span>Borrar</span>
             <span>Codigo</span>
@@ -44,51 +57,53 @@ export default function InvoiceTable({
             <span>Valor</span>
           </div>
           <div className="data-table">
-            {newProducts?.map((p) => (
+            {newProducts?.map((product) => (
               <div
-                key={p.ITE_CODIGO}
-                className={`invoice-row ${
-                  user.EMP_AUTOMATICO === 1 ? "detCantidad" : ""
-                }`}
+                key={product.ITE_CODIGO}
+                className={`invoice-row ${user.EMP_AUTOMATICO === 1 ? "detCantidad" : ""
+                  }`}
               >
                 <button
                   className="btn btn-danger"
-                  onClick={() => handleProductRemove(p)}
+                  type="button"
+                  onClick={() => handleProductRemove(product)}
                 >
                   -
                 </button>
-                <span>{p.ITE_CODIGO}</span>
-                <span>{p.ITE_DESCRIPCION}</span>
+                <span>{product.ITE_CODIGO}</span>
+                <span>{product.ITE_DESCRIPCION}</span>
                 {user.EMP_AUTOMATICO === 1 ? (
-                  <span>{p.detCantidad}</span>
+                  <span>{product.VED_DET_CANTIDAD}</span>
                 ) : null}
                 <input
-                  className="amount"
-                  type="number"
                   name="VED_CANTIDAD"
-                  value={p.VED_CANTIDAD}
-                  max={p.ITE_CANTIDAD || 0}
+                  type="number"
+                  className="amount"
+                  value={product.VED_CANTIDAD}
                   min={1}
-                  onChange={(e) => handleChangeProduct(e, p.ITE_CODIGO)}
+                  placeholder="Cantidad"
+                  onChange={(event) => handleChangeProduct(event, product.ITE_CODIGO)}
                 />
                 <input
-                  className="amount"
-                  type="number"
                   name="VED_DESCUENTO"
-                  value={p.VED_DESCUENTO}
-                  onChange={(e) => descuentoValidation(e, p.ITE_CODIGO)}
+                  type="number"
+                  className="amount"
+                  value={product.VED_DESCUENTO}
+                  placeholder="Descueto"
+                  onChange={(event) => descuentoValidation(event, product.ITE_CODIGO)}
                 />
                 <span>
-                  {Number(p.VED_PUNITARIO).toFixed(user.EMP_PRECISION)}
+                  {Number(product.VED_PUNITARIO).toFixed(user.EMP_PRECISION)}
                 </span>
                 <input
-                  className="amount"
-                  type="number"
                   name="VED_PUNITARIOIVA"
-                  value={p.VED_PUNITARIOIVA}
-                  onChange={(e) => handleChangeProduct(e, p.ITE_CODIGO)}
+                  type="number"
+                  className="amount"
+                  value={Number(product.VED_PUNITARIOIVA).toFixed(2)}
+                  placeholder="Precio Unit."
+                  onChange={(event) => handleChangeProduct(event, product.ITE_CODIGO)}
                 />
-                <span>{Number(p.VED_VALOR).toFixed(2)}</span>
+                <span>{Number(product.VED_VALOR).toFixed(2)}</span>
               </div>
             ))}
           </div>
@@ -99,22 +114,20 @@ export default function InvoiceTable({
           <h5>Informacion Adicional:</h5>
           <div className="aditional-input-container">
             <input
-              className={`form-control ${
-                invoice.VEN_CAMPO1 === "" && invoice.VEN_VALOR1 !== ""
-                  ? "is-invalid"
-                  : ""
-              }`}
+              className={`form-control ${invoice.VEN_CAMPO1 === "" && invoice.VEN_VALOR1 !== ""
+                ? "is-invalid"
+                : ""
+                }`}
               name="VEN_CAMPO1"
               value={invoice.VEN_CAMPO1}
               placeholder="Nombre"
               onChange={handleChange}
             />
             <input
-              className={`form-control ${
-                invoice.VEN_CAMPO1 !== "" && invoice.VEN_VALOR1 === ""
-                  ? "is-invalid"
-                  : ""
-              }`}
+              className={`form-control ${invoice.VEN_CAMPO1 !== "" && invoice.VEN_VALOR1 === ""
+                ? "is-invalid"
+                : ""
+                }`}
               name="VEN_VALOR1"
               value={invoice.VEN_VALOR1}
               placeholder="Valor"
@@ -124,22 +137,20 @@ export default function InvoiceTable({
 
           <div className="aditional-input-container">
             <input
-              className={`form-control ${
-                invoice.VEN_CAMPO2 === "" && invoice.VEN_VALOR2 !== ""
-                  ? "is-invalid"
-                  : ""
-              }`}
+              className={`form-control ${invoice.VEN_CAMPO2 === "" && invoice.VEN_VALOR2 !== ""
+                ? "is-invalid"
+                : ""
+                }`}
               name="VEN_CAMPO2"
               value={invoice.VEN_CAMPO2}
               placeholder="Nombre"
               onChange={handleChange}
             />
             <input
-              className={`form-control ${
-                invoice.VEN_CAMPO2 !== "" && invoice.VEN_VALOR2 === ""
-                  ? "is-invalid"
-                  : ""
-              }`}
+              className={`form-control ${invoice.VEN_CAMPO2 !== "" && invoice.VEN_VALOR2 === ""
+                ? "is-invalid"
+                : ""
+                }`}
               name="VEN_VALOR2"
               value={invoice.VEN_VALOR2}
               placeholder="Valor"
@@ -149,22 +160,20 @@ export default function InvoiceTable({
 
           <div className="aditional-input-container">
             <input
-              className={`form-control ${
-                invoice.VEN_CAMPO3 === "" && invoice.VEN_VALOR3 !== ""
-                  ? "is-invalid"
-                  : ""
-              }`}
+              className={`form-control ${invoice.VEN_CAMPO3 === "" && invoice.VEN_VALOR3 !== ""
+                ? "is-invalid"
+                : ""
+                }`}
               name="VEN_CAMPO3"
               value={invoice.VEN_CAMPO3}
               placeholder="Nombre"
               onChange={handleChange}
             />
             <input
-              className={`form-control ${
-                invoice.VEN_CAMPO3 !== "" && invoice.VEN_VALOR3 === ""
-                  ? "is-invalid"
-                  : ""
-              }`}
+              className={`form-control ${invoice.VEN_CAMPO3 !== "" && invoice.VEN_VALOR3 === ""
+                ? "is-invalid"
+                : ""
+                }`}
               name="VEN_VALOR3"
               value={invoice.VEN_VALOR3}
               placeholder="Valor"
@@ -190,6 +199,7 @@ export default function InvoiceTable({
                   value={discount}
                   min={0}
                   max={100}
+                  placeholder="%"
                   onChange={handleChange}
                   disabled={isDisabled}
                 />

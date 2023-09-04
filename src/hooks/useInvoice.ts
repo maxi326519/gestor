@@ -5,13 +5,13 @@ import { push, ref } from "firebase/database";
 import { auth, db } from "../firebase";
 import { postInvoice } from "../redux/actions";
 import { TipoDeMovimiento } from "../models/movements";
-import useProducto from "./useProductos";
+/* import useProducto from "./useProductos"; */
 import useReporteKardex from "./useKardex";
 
 export default function useInvoice() {
   const dispatch = useDispatch();
   const invoices = useSelector((state: RootState) => state.invoices);
-  const productos = useProducto();
+  /*   const productos = useProducto(); */
   const useKardex = useReporteKardex();
 
   function cargarFacturaDeVenta(factura: Factura) {
@@ -31,7 +31,7 @@ export default function useInvoice() {
     // Subimos todos los datos
     return Promise.all([
       dispatch<any>(postInvoice(facturaActual)),
-      productos.actualizarExistencias(facturaActual.ITE_DETALLES),
+      /*       productos.actualizarExistencias(facturaActual.ITE_DETALLES), */
       useKardex.agregar(kardex)
     ]);
   }

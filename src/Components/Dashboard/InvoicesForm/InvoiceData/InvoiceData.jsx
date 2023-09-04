@@ -148,6 +148,7 @@ export default function InvoiceData({
       </div>
       <span className="invoice-clave">{clave}</span>
       <div className="invoice-data">
+        
         {/* DATE */}
         <div className="form-floating mb-3">
           <input

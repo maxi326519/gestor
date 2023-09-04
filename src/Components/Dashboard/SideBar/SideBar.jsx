@@ -16,6 +16,7 @@ import reports from "../../../assets/svg/reports.svg";
 
 export default function SideBar({
   handleAddProduct,
+  handleAddStock,
   handleAddClient,
   handleAddEstablecimiento,
 }) {
@@ -81,6 +82,16 @@ export default function SideBar({
             handleOpen();
           },
         },
+        {
+          type: "Button",
+          value: "add stock",
+          label: "Agregar Stock",
+          icon: { svg: addSquere, alt: "addSquere" },
+          handler: () => {
+            handleAddStock();
+            handleOpen();
+          },
+        },
       ],
     },
     {
@@ -138,23 +149,6 @@ export default function SideBar({
       ],
     },
     {
-      label: "Movimientos",
-      acordion: {
-        name: "movements",
-        value: accordion.movements,
-      },
-      icon: { svg: movements, alt: "movements" },
-      subItems: [
-        {
-          type: "Link",
-          value: "list",
-          label: "Listado",
-          icon: { svg: list, alt: "list" },
-          to: "/dashboard/movements",
-        },
-      ],
-    },
-    {
       label: "Kardex",
       acordion: {
         name: "kardex",
@@ -171,6 +165,23 @@ export default function SideBar({
         },
       ],
     },
+    /*     {
+      label: "Movimientos",
+      acordion: {
+        name: "movements",
+        value: accordion.movements,
+      },
+      icon: { svg: movements, alt: "movements" },
+      subItems: [
+        {
+          type: "Link",
+          value: "list",
+          label: "Listado",
+          icon: { svg: list, alt: "list" },
+          to: "/dashboard/movements",
+        },
+      ],
+    }, */
   ];
 
   function handleAccordion(name) {

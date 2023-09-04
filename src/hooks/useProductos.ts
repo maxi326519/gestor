@@ -1,15 +1,15 @@
-import swal from "sweetalert";
 import { RootState } from "../models/RootState";
 import { useDispatch, useSelector } from "react-redux";
 import { Producto } from "../models/productos";
-import { Factura, FacturaDetalle } from "../models/factura";
+import { FacturaDetalle } from "../models/factura";
+import { ReporteKardex } from "../models/kardex";
 import {
   deleteProduct,
   getProducts,
   postProduct,
   updateProduct,
 } from "../redux/actions";
-import useMovimientos from "./useMovimientos";
+import swal from "sweetalert";
 
 export interface UseProducto {
   listado: Producto[];
@@ -17,13 +17,15 @@ export interface UseProducto {
   obtener: () => Promise<any>;
   actualizar: (producto: Producto) => Promise<any>;
   borrar: (productoId: string) => Promise<any>;
-  actualizarExistencias: (facturaDetalle: FacturaDetalle[]) => Promise<any>;
+  existencias: {
+    agregar: (products: Producto[], kardex: ReporteKardex[]) => Promise<any>;
+    vender: (facturaDetalle: FacturaDetalle[]) => Promise<any>;
+  }
 }
 
 export default function useProducto(): UseProducto {
   const dispatch = useDispatch();
   const productos = useSelector((state: RootState) => state.stores);
-  const movimientos = useMovimientos();
 
   async function agregarProducto(producto: Producto) {
     return dispatch<any>(postProduct(producto)).catch((e: Error) => {
@@ -66,14 +68,16 @@ export default function useProducto(): UseProducto {
     });
   }
 
-  async function actualizarExistencias(detalles: FacturaDetalle[]) {
+  async function agregarExistencias(products: Producto[], kardex: ReporteKardex[]) {
+    // Convertimos los datos del detalle para actualizar el producto
+  }
+
+  async function venderExistencias(detalles: FacturaDetalle[]) {
     // Convertimos los datos del detalle para actualizar el producto
     const porductData = detalles.map((detalle) => ({
       ITE_CODIGO: detalle.ITE_CODIGO,
       ITE_CANTIDAD: detalle.ITE_CANTIDAD - detalle.VED_CANTIDAD,
     }));
-
-    console.log("Actualizando existencias");
 
     return Promise.all([
       ...porductData.map((producto) => actualizarProducto(producto)),
@@ -108,6 +112,9 @@ export default function useProducto(): UseProducto {
     obtener: obtenerProductos,
     actualizar: actualizarProducto,
     borrar: borrarProducto,
-    actualizarExistencias,
+    existencias: {
+      agregar: agregarExistencias,
+      vender: venderExistencias
+    }
   };
 }

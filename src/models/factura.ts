@@ -23,17 +23,17 @@ export interface Factura {
   VEN_CODIGO: string;
   VEN_COMISION: number;
   VEN_DESCUENTO: number;
-  VEN_ESTABLECIMIENTO: string;
+  VEN_ESTABLECIMIENTO: number;
   VEN_ESTADO: number;
-  VEN_FAUTORIZA: string;
+  VEN_FAUTORIZA: number;
   VEN_FECHA: string;
-  VEN_FPAGO: number;
+  VEN_FPAGO: string;
   VEN_GUIA: string;
   VEN_ICE: number;
   VEN_IMPRESO: number;
   VEN_IVA: number;
-  VEN_NUMERO: string;
-  VEN_PTOEMISION: string;
+  VEN_NUMERO: number;
+  VEN_PTOEMISION: number;
   VEN_RETENCION: number;
   VEN_SRI: number;
   VEN_SUBTOTAL: number;
@@ -54,6 +54,7 @@ export interface FacturaDetalle {
   ITE_CODIGO: string;
   ITE_DESCRIPCION: string;
   ITE_CANTIDAD: number;
+  VED_DET_CANTIDAD: number;
   VED_CANTIDAD: number;
   VED_DESCUENTO: number;
   VED_IMPUESTO: number;
@@ -66,14 +67,14 @@ export interface FacturaDetalle {
   KDX_CODIGO: string,
 }
 
-export const initFactura: Factura = {
+export const initFactura = (): Factura => ({
   CLI_CODIGO: 0,
-  CLI_DIRECCION: "",
-  CLI_EMAIL: "",
-  CLI_IDENTIFICACION: "",
-  CLI_NOMBRE: "",
-  CLI_TELEFONO: "",
-  CLI_TIPOIDE: "",
+  CLI_DIRECCION: "S/N",
+  CLI_EMAIL: "-",
+  CLI_IDENTIFICACION: "9999999999999",
+  CLI_NOMBRE: "CONSUMIDOR FINAL",
+  CLI_TELEFONO: "-",
+  CLI_TIPOIDE: "-",
   EMP_CODIGO: 0,
   ITE_CODIGO: 0,
   ITE_COSTO: 0,
@@ -91,28 +92,28 @@ export const initFactura: Factura = {
   VEN_CODIGO: "",
   VEN_COMISION: 0,
   VEN_DESCUENTO: 0,
-  VEN_ESTABLECIMIENTO: "",
-  VEN_ESTADO: 0,
-  VEN_FAUTORIZA: "",
-  VEN_FECHA: "",
-  VEN_FPAGO: 0,
-  VEN_GUIA: "",
-  VEN_ICE: 0,
-  VEN_IMPRESO: 0,
-  VEN_IVA: 0,
-  VEN_NUMERO: "",
-  VEN_PTOEMISION: "",
-  VEN_RETENCION: 0,
-  VEN_SRI: 0,
-  VEN_SUBTOTAL: 0,
-  VEN_SUBTOTAL0: 0,
-  VEN_SUBTOTAL12: 0,
-  VEN_SUBTOTALEXCENTIVA: 0,
-  VEN_SUBTOTALNOIVA: 0,
+  VEN_ESTABLECIMIENTO: 1,
+  VEN_ESTADO: 1,
+  VEN_FAUTORIZA: 1,
+  VEN_FECHA: new Date().toISOString().split("T")[0],
+  VEN_FPAGO: "01",
+  VEN_GUIA: "-",
+  VEN_ICE: 0.0,
+  VEN_IMPRESO: 0.0,
+  VEN_IVA: 0.0,
+  VEN_NUMERO: 1,
+  VEN_PTOEMISION: 1,
+  VEN_RETENCION: 0.0,
+  VEN_SRI: 0.0,
+  VEN_SUBTOTAL: 0.0,
+  VEN_SUBTOTAL0: 0.0,
+  VEN_SUBTOTAL12: 0.0,
+  VEN_SUBTOTALEXCENTIVA: 0.0,
+  VEN_SUBTOTALNOIVA: 0.0,
   VEN_TIPODOC: "",
-  VEN_TOTAL: 0,
+  VEN_TOTAL: 0.0,
   VEN_UKEY: "",
   VEN_VALOR1: "",
   VEN_VALOR2: "",
   VEN_VALOR3: "",
-};
+});

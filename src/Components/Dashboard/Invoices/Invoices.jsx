@@ -5,6 +5,7 @@ import "../Dashboard.css";
 
 export default function Invoices({
   handleAddProduct,
+  handleAddStock,
   handleAddClient,
   handleProfile,
   handleAddEstablecimiento,
@@ -13,7 +14,8 @@ export default function Invoices({
     <div className="dashboard">
       <SideBar
         handleAddProduct={handleAddProduct}
-        handleAddClient={handleAddClient}
+              handleAddStock={handleAddStock}
+              handleAddClient={handleAddClient}
         handleAddEstablecimiento={handleAddEstablecimiento}
       />
       <div className="dashboard__container to-left">
