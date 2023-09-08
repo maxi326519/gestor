@@ -84,7 +84,7 @@ export default function InvoicesForm({
         ).toFixed(2)
       );
 
-      descuento += p.VED_PUNITARIO * (discount / 100);
+      descuento += p.VED_PUNITARIO *  p.VED_CANTIDAD * (p.VED_DESCUENTO / 100);
 
       if (p.VED_IMPUESTO === "2") {
         subtotalIVA +=
